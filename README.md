@@ -45,7 +45,7 @@ Running: /opt/structure/bin/structure -K 1 -i input_file.structure -o results_ad
 After each run, the corresponding ouput file is saved to the location choosen in
 the *Output dir* argument.
 
-When all tasks are performed the program will exit with the following message:
+When all tasks are performed the program will exit with the message:
 "All jobs finished."
 
 
