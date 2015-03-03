@@ -3,7 +3,11 @@ A simple program to paralelize the runs of the [Structure](http://pritchardlab.s
 
 ##Requirements
 Python3. Only uses modules from the standard library.
-It **might** also work with python2, but it was not tested.
+
+It also work with python2, however, Ctrl+c will not kill the process graciously.
+
+Running in python3 also yelds ~11% speed gains (altough this testing was limited).
+
 
 ##Installation
 Just place the script "structure_threader.py" on any location on your $PATH.
