@@ -19,6 +19,8 @@
 # Where "K" is the number of "Ks" to test, "reps" is the number of replicates
 # and num_of_threads is the number of threads.
 
+# TODO: Add argparse.
+
 import subprocess
 from multiprocessing import Pool
 
