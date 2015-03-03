@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Eric6 project
+*.e4p
