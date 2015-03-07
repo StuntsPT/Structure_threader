@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-# Usage: python3 structure_threader.py K reps infile outpath num_of_threads
-# Where "K" is the number of "Ks" to test, "reps" is the number of replicates
-# and num_of_threads is the number of threads.
+# Usage: python3 structure_threader.py -K Ks -reps replicates -i infile -o outpath -t num_of_threads -p path_to_structure
+# Where "-K" is the number of "Ks" to test, "-reps" is the number of replicates,
+# "-t"  is the number of threads and "-p" is the path to structure binary in the personal environment.
 
-# TODO: Add argparse.
 
 import subprocess
 from multiprocessing import Pool
@@ -58,6 +57,7 @@ arg = parser.parse_args()
 
 ################################
 
+#with argparse, no need for this lines
 # Where is structure?
 #structure_bin = "/opt/structure/bin/structure"
 
