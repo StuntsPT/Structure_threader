@@ -15,23 +15,57 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-# Usage: python3 structure_threader.py K reps infile outpath num_of_threads
-# Where "K" is the number of "Ks" to test, "reps" is the number of replicates
-# and num_of_threads is the number of threads.
+# Usage: python3 structure_threader.py -K Ks -reps replicates -i infile -o outpath -t num_of_threads -p path_to_structure
+# Where "-K" is the number of "Ks" to test, "-reps" is the number of replicates,
+# "-t"  is the number of threads and "-p" is the path to structure binary in the personal environment.
 
-# TODO: Add argparse.
 
 import subprocess
 from multiprocessing import Pool
+import argparse
 
+# # # # # ARGUMENT LIST # # # # # #
+
+parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
+prog="Structure_threader", formatter_class=argparse.RawTextHelpFormatter)
+
+parser.add_argument("-K", dest="Ks", nargs=1, required=True,
+help="Number of Ks to run (default:6)\n",
+metavar="int", default=6)
+
+parser.add_argument("-reps", dest="replicates", nargs=1, required=True,
+help="Number of replicate runs for each value of K (default:20)\n",
+metavar="int", default=20)
+
+parser.add_argument("-i", dest="infile", nargs=1, required=True,
+help="Input file \n",
+metavar="infile")
+
+parser.add_argument("-o", dest="outpath", nargs=1, required=True,
+help="Directory where the results will be stored in\n",
+metavar="output_directory")
+
+parser.add_argument("-t", dest="threads", nargs=1, required=True,
+help="Number of threads to use (default:4)\n",
+metavar="int", default=4)
+
+parser.add_argument("-p", dest="structure_bin", nargs=1, required=True,
+help="Location of the structure binary in your environment (default:/opt/structure/bin/structure)\n",
+metavar="/bin/structure", default="/opt/structure/bin/structure")
+
+arg = parser.parse_args()
+
+################################
+
+#with argparse, no need for this lines
 # Where is structure?
-structure_bin = "/opt/structure/bin/structure"
+#structure_bin = "/opt/structure/bin/structure"
 
 
 def runprogram(iterations):
     """Run each structure job."""
     K, rep_num = iterations
-    cli = [structure_bin, "-K", str(K), "-i", infile, "-o", outpath + "/K"
+    cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o", arg.outpath + "/K"
            + str(K) + "_rep" + str(rep_num)]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
@@ -70,4 +104,4 @@ if __name__ == "__main__":
     outpath = argv[4]
     threads = int(argv[5])
 
-    structure_threader(Ks, replicates, threads)
+    structure_threader(arg.Ks, arg.replicates, arg.threads)

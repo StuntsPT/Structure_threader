@@ -12,8 +12,6 @@ Running in python3 also yelds ~11% speed gains (altough this testing was limited
 ##Installation
 Just place the script "structure_threader.py" on any location on your $PATH.
 
-Before the 1st run, don't forget to edit "Where is structure?" in the source
-code to provide the location of the structure binary in your environment.
 
 ##Running
 The program takes a few arguments:
@@ -23,17 +21,17 @@ The program takes a few arguments:
 * Input file
 * Output dir
 * Number of threads
+* Structure location
 
 Example: 
 
 ```
-structure_threader.py 6 20 input_file.structure results_admix/ 4
+structure_threader.py -K Ks -reps replicates -i infile -o outpath -t num_of_threads -p path_to_structure
 ```
 
-Where 6 is the number of "Ks" to run and 20 is the number of replicate runs for
-each value of "K", "input_file.structure" is the input file, 
-"results_admix" is the directory where the output results should be stored
-and 4 is the number of threads to use.
+Where -K is the number of "Ks" to run, -reps is the number of replicate runs for
+each value of "K", -i is the input file for structure, -o is the directory where the output results should be stored,
+-t is the number of threads to use and -p the path for the structure bin file in each personal environment.
 
 The program should be run in the same directory as the files "mainparams" and
 "extraparams" are stored and configured.
