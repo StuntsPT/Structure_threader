@@ -26,48 +26,48 @@ import argparse
 
 # # # # # ARGUMENT LIST # # # # # #
 
-parser = argparse.ArgumentParser(description = "A simple program to paralelize the runs of the Structure software.",
-                                 prog = "Structure_threader", 
-                                 formatter_class = argparse.RawTextHelpFormatter)
+parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
+                                 prog="Structure_threader",
+                                 formatter_class=argparse.RawTextHelpFormatter)
 
-parser.add_argument("-K", dest = "Ks", nargs = 1, required = True,
-                    help = "Number of Ks to run (default:6)\n", 
-                    metavar = "int", default = 6)
+parser.add_argument("-K", dest="Ks", nargs=1, required=True,
+                    help="Number of Ks to run (default:6)\n",
+                    metavar="int", default=6)
 
-parser.add_argument("-reps", dest = "replicates", nargs = 1, required = True,
-                    help = "Number of replicate runs for each value of K (default:20)\n",
-                    metavar = "int", default = 20)
+parser.add_argument("-reps", dest="replicates", nargs=1, required=True,
+                    help="Number of replicate runs for each value of K (default:20)\n",
+                    metavar="int", default=20)
 
-parser.add_argument("-i", dest = "infile", nargs = 1, required = True,
-                    help = "Input file \n", metavar = "infile")
+parser.add_argument("-i", dest="infile", nargs=1, required=True,
+                    help="Input file \n", metavar="infile")
 
-parser.add_argument("-o", dest = "outpath", nargs = 1, required = True,
-                    help = "Directory where the results will be stored in\n",
-                    metavar = "output_directory")
+parser.add_argument("-o", dest="outpath", nargs=1, required=True,
+                    help="Directory where the results will be stored in\n",
+                    metavar="output_directory")
 
-parser.add_argument("-t", dest = "threads", nargs = 1, required = True,
-                    help = "Number of threads to use (default:4)\n",
-                    metavar = "int", default = 4)
+parser.add_argument("-t", dest="threads", nargs=1, required=True,
+                    help="Number of threads to use (default:4)\n",
+                    metavar="int", default=4)
 
-parser.add_argument("-p", dest = "structure_bin", nargs = 1, required = True,
-                    help = "Location of the structure binary in your environment (default:/opt/structure/bin/structure)\n",
-                    metavar = "/bin/structure", 
-                    default = "/opt/structure/bin/structure")
+parser.add_argument("-p", dest="structure_bin", nargs=1, required=True,
+                    help="Location of the structure binary in your environment (default:/opt/structure/bin/structure)\n",
+                    metavar="/bin/structure",
+                    default="/opt/structure/bin/structure")
 
 arg = parser.parse_args()
 
 ################################
 
-#with argparse, no need for this lines
+# with argparse, no need for this lines
 # Where is structure?
-#structure_bin = "/opt/structure/bin/structure"
+# structure_bin = "/opt/structure/bin/structure"
 
 
 def runprogram(iterations):
     """Run each structure job."""
     K, rep_num = iterations
-    cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o", arg.outpath + "/K"
-           + str(K) + "_rep" + str(rep_num)]
+    cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
+           arg.outpath + "/K" + str(K) + "_rep" + str(rep_num)]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
