@@ -22,48 +22,13 @@
 
 import subprocess
 from multiprocessing import Pool
-import argparse
-
-# # # # # ARGUMENT LIST # # # # # #
-
-parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
-                                 prog="Structure_threader",
-                                 formatter_class=argparse.RawTextHelpFormatter)
-
-parser.add_argument("-K", dest="Ks", nargs=1, required=True,
-                    help="Number of Ks to run (default:6)\n",
-                    metavar="int")
-
-parser.add_argument("-r", dest="replicates", nargs=1, required=True,
-                    help="Number of replicate runs for each value of K (default:20)\n",
-                    metavar="int", default=20)
-
-parser.add_argument("-i", dest="infile", nargs=1, required=True,
-                    help="Input file \n", metavar="infile")
-
-parser.add_argument("-o", dest="outpath", nargs=1, required=True,
-                    help="Directory where the results will be stored in\n",
-                    metavar="output_directory")
-
-parser.add_argument("-t", dest="threads", nargs=1, required=True,
-                    help="Number of threads to use (default:4)\n",
-                    metavar="int", default=4)
-
-parser.add_argument("-p", dest="structure_bin", nargs=1, required=True,
-                    help="Location of the structure binary in your environment (default:structure - use structure from your $PATH)\n",
-                    metavar="structure_bin",
-                    default="structure")
-
-arg = parser.parse_args()
-
-################################
 
 
 def runprogram(iterations):
     """Run each structure job."""
     K, rep_num = iterations
-    cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
-           arg.outpath + "/K" + str(K) + "_rep" + str(rep_num)]
+    cli = [arg.structure_bin[0], "-K", str(K), "-i", infile, "-o", outpath + "/K"
+           + str(K) + "_rep" + str(rep_num)]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
@@ -93,11 +58,43 @@ def structure_threader(Ks, replicates, threads):
 
 
 if __name__ == "__main__":
-    # Number of K
-    Ks = range(1, arg.Ks + 1)
-    # Number of replicates
-    replicates = range(1, arg.replicates + 1)
-    infile = arg.infile
-    outpath = arg.outpath
+    import argparse
+    # Argument list
+    parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
+                                     prog="Structure_threader",
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    
+    parser.add_argument("-K", dest="Ks", nargs=1, required=True,
+                        help="Number of Ks to run (default:6)\n",
+                        metavar="int")
+    
+    parser.add_argument("-r", dest="replicates", nargs=1, required=True,
+                        help="Number of replicate runs for each value of K (default:20)\n",
+                        metavar="int", default=20)
+    
+    parser.add_argument("-i", dest="infile", nargs=1, required=True,
+                        help="Input file \n", metavar="infile")
+    
+    parser.add_argument("-o", dest="outpath", nargs=1, required=True,
+                        help="Directory where the results will be stored in\n",
+                        metavar="output_directory")
+    
+    parser.add_argument("-t", dest="threads", nargs=1, required=True,
+                        help="Number of threads to use (default:4)\n",
+                        metavar="int", default=4)
+    
+    parser.add_argument("-p", dest="structure_bin", nargs=1, required=True,
+                        help="Location of the structure binary in your environment (default:structure - use structure from your $PATH)\n",
+                        metavar="structure_bin",
+                        default="structure")
+    
+    arg = parser.parse_args()
 
-    structure_threader(Ks, replicates, arg.threads)
+    # Number of K
+    Ks = range(1, int(arg.Ks[0]) + 1)
+    # Number of replicates
+    replicates = range(1, int(arg.replicates[0]) + 1)
+    infile = arg.infile[0]
+    outpath = arg.outpath[0]
+
+    structure_threader(Ks, replicates, int(arg.threads[0]))
