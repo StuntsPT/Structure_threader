@@ -75,6 +75,7 @@ def runprogram(iterations):
 
     # This loop does nothing, but seems to be required for the program to fully
     # run all the jobs...
+    # TODO: Add optional logging here
     for lines in program.stdout:
         pass
 
