@@ -32,9 +32,9 @@ parser = argparse.ArgumentParser(description="A simple program to paralelize the
 
 parser.add_argument("-K", dest="Ks", nargs=1, required=True,
                     help="Number of Ks to run (default:6)\n",
-                    metavar="int", default=6)
+                    metavar="int")
 
-parser.add_argument("-reps", dest="replicates", nargs=1, required=True,
+parser.add_argument("-r", dest="replicates", nargs=1, required=True,
                     help="Number of replicate runs for each value of K (default:20)\n",
                     metavar="int", default=20)
 
@@ -50,17 +50,13 @@ parser.add_argument("-t", dest="threads", nargs=1, required=True,
                     metavar="int", default=4)
 
 parser.add_argument("-p", dest="structure_bin", nargs=1, required=True,
-                    help="Location of the structure binary in your environment (default:/opt/structure/bin/structure)\n",
-                    metavar="/bin/structure",
-                    default="/opt/structure/bin/structure")
+                    help="Location of the structure binary in your environment (default:structure - use structure from your $PATH)\n",
+                    metavar="structure_bin",
+                    default="structure")
 
 arg = parser.parse_args()
 
 ################################
-
-# with argparse, no need for this lines
-# Where is structure?
-# structure_bin = "/opt/structure/bin/structure"
 
 
 def runprogram(iterations):
@@ -97,13 +93,11 @@ def structure_threader(Ks, replicates, threads):
 
 
 if __name__ == "__main__":
-    from sys import argv
     # Number of K
-    Ks = range(1, int(argv[1]) + 1)
+    Ks = range(1, arg.Ks + 1)
     # Number of replicates
-    replicates = range(1, int(argv[2]) + 1)
-    infile = argv[3]
-    outpath = argv[4]
-    threads = int(argv[5])
+    replicates = range(1, arg.replicates + 1)
+    infile = arg.infile
+    outpath = arg.outpath
 
-    structure_threader(arg.Ks, arg.replicates, arg.threads)
+    structure_threader(Ks, replicates, arg.threads)
