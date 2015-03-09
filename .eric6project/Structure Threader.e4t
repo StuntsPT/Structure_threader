@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-5.1.dtd">
+<!-- eric6 tasks file for project Structure Threader -->
+<!-- Saved: 2015-03-09, 17:12:14 -->
+<Tasks version="5.1">
+  <ProjectScanFilter></ProjectScanFilter>
+  <Task priority="1" completed="False" type="1">
+    <Summary>TODO: Add optional logging here</Summary>
+    <Description></Description>
+    <Created>2015-03-09, 17:12:11</Created>
+    <Resource>
+      <Filename>structure_threader.py</Filename>
+      <Linenumber>39</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>
