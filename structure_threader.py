@@ -67,6 +67,10 @@ if __name__ == "__main__":
     parser.add_argument("-K", dest="Ks", type=int, required=True,
                         help="Number of Ks to run\n",
                         metavar="int")
+
+    parser.add_argument("--min_K", dest="minK", type=int, required=False,
+                        help="Minimum value of \"K\" to test (default:1)\n",
+                        metavar="int", default=1)
     
     parser.add_argument("-R", dest="replicates", type=int, required=True,
                         help="Number of replicate runs for each value of K (default:20)\n",
@@ -96,7 +100,7 @@ if __name__ == "__main__":
 
     # Number of K
     # TODO: Add min value of "K".
-    Ks = range(1, arg.Ks + 1)
+    Ks = range(arg.minK, arg.Ks + 1)
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
     infile = arg.infile
