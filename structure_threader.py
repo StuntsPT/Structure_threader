@@ -35,8 +35,16 @@ def runprogram(iterations):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
 
-    # TODO: Add optional logging here
     out, err = program.communicate()
+    
+    # Handle logging for debugging purposes.
+    if arg.log == True:
+        print("Writing logfile...")
+        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log", "w")
+        for lines in out:
+            logfile.write(out.decode("UTF-8"))
+        logfile.close()
+
     return out, err
 
 
