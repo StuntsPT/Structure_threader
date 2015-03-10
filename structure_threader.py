@@ -27,7 +27,7 @@ from multiprocessing import Pool
 def runprogram(iterations):
     """Run each structure job."""
     K, rep_num = iterations
-    cli = [arg.structure_bin[0], "-K", str(K), "-i", infile, "-o", outpath + "/K"
+    cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", outpath + "/K"
            + str(K) + "_rep" + str(rep_num)]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
@@ -64,41 +64,42 @@ if __name__ == "__main__":
                                      prog="Structure_threader",
                                      formatter_class=argparse.RawTextHelpFormatter)
     
-    parser.add_argument("-K", dest="Ks", nargs=1, required=True,
+    parser.add_argument("-K", dest="Ks", type=int, required=True,
                         help="Number of Ks to run\n",
                         metavar="int")
     
-    parser.add_argument("-R", dest="replicates", nargs=1, required=True,
+    parser.add_argument("-R", dest="replicates", type=int, required=True,
                         help="Number of replicate runs for each value of K (default:20)\n",
                         metavar="int", default=20)
     
-    parser.add_argument("-i", dest="infile", nargs=1, required=True,
+    parser.add_argument("-i", dest="infile", type=str, required=True,
                         help="Input file \n", metavar="infile")
     
-    parser.add_argument("-o", dest="outpath", nargs=1, required=True,
+    parser.add_argument("-o", dest="outpath", type=str, required=True,
                         help="Directory where the results will be stored in\n",
                         metavar="output_directory")
     
-    parser.add_argument("-t", dest="threads", nargs=1, required=True,
+    parser.add_argument("-t", dest="threads", type=int, required=True,
                         help="Number of threads to use (default:4)\n",
                         metavar="int", default=4)
     
-    parser.add_argument("-p", dest="structure_bin", nargs=1, required=False,
+    parser.add_argument("-p", dest="structure_bin", type=str, required=False,
                         help="Location of the structure binary in your environment (default:structure - use structure from your $PATH)\n",
                         metavar="structure_bin",
                         default="structure")
     
-    parser.add_argument("--log", dest="log", nargs=1, required=False,
+    parser.add_argument("--log", dest="log", type=bool, required=False,
                         help="Choose this option if you want to enable logging",
                         metavar="bool", default=False)
                         
     arg = parser.parse_args()
 
     # Number of K
-    Ks = range(1, int(arg.Ks[0]) + 1)
+    # TODO: Add min value of "K".
+    Ks = range(1, arg.Ks + 1)
     # Number of replicates
-    replicates = range(1, int(arg.replicates[0]) + 1)
-    infile = arg.infile[0]
-    outpath = arg.outpath[0]
+    replicates = range(1, arg.replicates + 1)
+    infile = arg.infile
+    outpath = arg.outpath
 
-    structure_threader(Ks, replicates, int(arg.threads[0]))
+    structure_threader(Ks, replicates, arg.threads)
