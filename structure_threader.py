@@ -99,7 +99,6 @@ if __name__ == "__main__":
     arg = parser.parse_args()
 
     # Number of K
-    # TODO: Add min value of "K".
     Ks = range(arg.minK, arg.Ks + 1)
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
