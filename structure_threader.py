@@ -21,6 +21,7 @@
 
 
 import subprocess
+import itertools
 from multiprocessing import Pool
 
 
@@ -42,12 +43,7 @@ def runprogram(iterations):
 def structure_threader(Ks, replicates, threads):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
     pool = Pool(threads)
-    jobs = []
-    # Ugly, ugly code. But since we are just dealing with counts here, we can
-    # just leave it like that...
-    for k in Ks:
-        for rep in replicates:
-            jobs.append((k, rep))
+    jobs = list(itertools.product(Ks, replicates))
 
     pool.map(runprogram, jobs)
     pool.close()
