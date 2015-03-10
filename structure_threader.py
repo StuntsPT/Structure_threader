@@ -32,13 +32,11 @@ def runprogram(iterations):
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT)
+                               stderr=subprocess.PIPE)
 
-    # This loop does nothing, but seems to be required for the program to fully
-    # run all the jobs...
     # TODO: Add optional logging here
-    for lines in program.stdout:
-        pass
+    out, err = program.communicate()
+    return out, err
 
 
 def structure_threader(Ks, replicates, threads):
