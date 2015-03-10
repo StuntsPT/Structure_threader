@@ -34,18 +34,21 @@ def runprogram(iterations):
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
-
-    out, err = program.communicate()
     
     # Handle logging for debugging purposes.
     if arg.log == True:
         print("Writing logfile...")
+        program_stdout = []
         logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log", "w")
-        for lines in out:
-            logfile.write(out.decode("UTF-8"))
+        for lines in program.stdout:
+            lines = lines.decode("utf-8").strip()
+            print(lines)
+            program_stdout.append(lines)
         logfile.close()
-
-    return out, err
+    
+    else:
+        out, err = program.communicate()
+        return out, err
 
 
 def structure_threader(Ks, replicates, threads):
