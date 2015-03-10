@@ -55,3 +55,4 @@ target/
 
 # Eric6 project
 *.e4p
+.eric*
