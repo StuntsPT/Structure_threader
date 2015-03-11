@@ -45,9 +45,13 @@ def runprogram(iterations):
             print(lines)
             program_stdout.append(lines)
         logfile.close()
+        return program_stdout
     
     else:
         out, err = program.communicate()
+        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log", "w")
+        logfile.write(str(out))
+        logfile.close()
         return out, err
 
 
