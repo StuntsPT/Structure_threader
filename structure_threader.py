@@ -37,21 +37,17 @@ def runprogram(iterations):
     
     # Handle logging for debugging purposes.
     if arg.log == True:
-        print("Writing logfile...")
-        program_stdout = []
-        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log", "w")
-        for lines in program.stdout:
-            lines = lines.decode("utf-8").strip()
-            print(lines)
-            program_stdout.append(lines)
+        out, err = program.communicate()
+        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log",
+                       "w")
+        print("Writing logfile for K" + str(K) + ", replicate " + str(rep_num) +
+              ". Please wait...")
+        logfile.write(out.decode("UTF-8"))
         logfile.close()
-        return program_stdout
+        return out, err
     
     else:
         out, err = program.communicate()
-        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log", "w")
-        logfile.write(str(out))
-        logfile.close()
         return out, err
 
 
