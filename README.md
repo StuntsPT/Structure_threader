@@ -53,7 +53,7 @@ When all tasks are performed the program will exit with the message:
 
 ##Downstream
 
-The results directory is ready to be zipped and used in [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/).
+The results directory is ready to be zipped and used in [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) or [CLUMPAK](http://clumpak.tau.ac.il/).
 
 ##Test data
 
