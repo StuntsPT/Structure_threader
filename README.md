@@ -57,7 +57,7 @@ The results directory is ready to be zipped and used in [Structure Harvester](ht
 
 ##Test data
 
-The directory in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
+The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
 You can find documentation about it inside the directory itself.
 
 ##License
