@@ -53,9 +53,10 @@ def draw_plot(timearray):
     plt.xlabel("Number of threads")
     plt.ylabel("Speed increase")
     plt.legend(loc=2, fontsize="small")
-    plt.savefig("/home/francisco/Dropbox/Science/Papers/Submissions/In progress/Structure_threader/Figures/test.svg", format="svg")
+    plt.savefig(argv[1] + "_plot.svg", format="svg")
     #plt.show()
 
 if __name__ == "__main__":
-    timearray = data_harverster("/home/francisco/aa.csv")
+    from sys import argv
+    timearray = data_harverster(argv[1])
     draw_plot(timearray)
