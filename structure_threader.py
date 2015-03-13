@@ -34,9 +34,9 @@ def runprogram(iterations):
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
-    
+
     # Handle logging for debugging purposes.
-    if arg.log == True:
+    if arg.log is True:
         out, err = program.communicate()
         logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log",
                        "w")
@@ -45,7 +45,7 @@ def runprogram(iterations):
         logfile.write(out.decode("UTF-8"))
         logfile.close()
         return out, err
-    
+
     else:
         out, err = program.communicate()
         return out, err
