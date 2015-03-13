@@ -1,4 +1,4 @@
-#Test Data for  * Structure_threader*
+#Test Data for  *Structure_threader*
 
 In this directory you will find the data that was used to benchmark *Structure_threader*.
 
@@ -8,7 +8,7 @@ In this directory you will find the data that was used to benchmark *Structure_t
 * extraparams
 * joblist.txt
 * mainparams
-*TestData.structure
+* TestData.structure
 
 ###benchmark.sh
 
