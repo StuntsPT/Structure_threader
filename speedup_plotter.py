@@ -39,14 +39,22 @@ def draw_plot(timearray):
     oldxeon.insert(0, 1)
 
     plt.axis([0, 16, 0, 16])
-    plt.plot([1, 2, 4, 6, 8], i7, 'b-s')
-    plt.plot([1, 2, 4, 6, 8], amd, 'r-^')
-    plt.plot([1, 2, 4, 6, 8, 10, 12, 14, 16], oldxeon, 'y-o')
-    plt.plot([1, 2, 4, 6, 8], e5, 'gp-')
+    plt.plot([1, 2, 4, 6, 8], i7, 'k-s', fillstyle="full", ms=7, label="i7")
+    plt.plot([1, 2, 4, 6, 8], amd, 'k-^', fillstyle="full", ms=7,
+             label="FX-8350")
+    plt.plot([1, 2, 4, 6, 8, 10, 12, 14, 16], oldxeon, 'k-o', fillstyle="full",
+             ms=7, label="E5520")
+    plt.plot([1, 2, 4, 6, 8], e5, 'kx-', fillstyle="full", ms=7,
+             label="E5-2609")
+    
+    plt.plot(range(16), range(16), 'k-.', label="Linear scaling")
     
     plt.grid(True)
-    plt.plot(range(16), range(16))
-    plt.show()
+    plt.xlabel("Number of threads")
+    plt.ylabel("Speed increase")
+    plt.legend(loc=2, fontsize="small")
+    plt.savefig("/home/francisco/Dropbox/Science/Papers/Submissions/In progress/Structure_threader/Figures/test.svg", format="svg")
+    #plt.show()
 
 if __name__ == "__main__":
     timearray = data_harverster("/home/francisco/aa.csv")
