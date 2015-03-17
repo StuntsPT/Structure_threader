@@ -35,20 +35,19 @@ def runprogram(iterations):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
 
+    out, err = map(lambda x: x.decode("utf-8"), program.communicate())
+
     # Handle logging for debugging purposes.
     if arg.log is True:
-        out, err = program.communicate()
+
         logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log",
                        "w")
         print("Writing logfile for K" + str(K) + ", replicate " + str(rep_num) +
               ". Please wait...")
-        logfile.write(out.decode("UTF-8"))
+        logfile.write(out)
         logfile.close()
-        return out, err
 
-    else:
-        out, err = program.communicate()
-        return out, err
+    return out, err
 
 
 def structure_threader(Ks, replicates, threads):
