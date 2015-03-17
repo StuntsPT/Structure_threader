@@ -47,7 +47,7 @@ def runprogram(iterations):
 
     out, err = map(lambda x: x.decode("utf-8"), program.communicate())
 
-    # Check for errors using signature string
+    # Check for errors using STRUCTURE's signature string
     sign = "Exiting the program due to error(s) listed above."
     if sign in out:
         arg.log = True
