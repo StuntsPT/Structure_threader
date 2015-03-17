@@ -20,6 +20,7 @@
 # "-t"  is the number of threads and "-p" is the path to structure binary in the personal environment.
 
 
+import os
 import subprocess
 import itertools
 from multiprocessing import Pool
@@ -27,39 +28,71 @@ from multiprocessing import Pool
 
 def runprogram(iterations):
     """Run each structure job."""
+
+    # This attribute will be populated with the worker exit code and output file
+    #  and  returned. First element is the exit code itself (0 if all normal,
+    # -1 if  error), Second element will contain the output file to identify
+    # the worker
+    worker_status = (None, None)
+
     K, rep_num = iterations
-    cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", outpath + "/K"
-           + str(K) + "_rep" + str(rep_num)]
+    # Keeps correct directory separator across OS's
+    output_file = os.path.join(outpath, "K" + str(K) + "_rep" + str(rep_num))
+
+    cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
 
+    out, err = map(lambda x: x.decode("utf-8"), program.communicate())
+
+    # Check for errors using signature string
+    sign = "Exiting the program due to error(s) listed above."
+    if sign in out:
+        arg.log = True
+        worker_status = (-1, output_file)
+    else:
+        worker_status = (0, None)
+
     # Handle logging for debugging purposes.
     if arg.log is True:
-        out, err = program.communicate()
-        logfile = open(outpath + "/K" + str(K) + "_rep" + str(rep_num) + ".log",
-                       "w")
-        print("Writing logfile for K" + str(K) + ", replicate " + str(rep_num) +
-              ". Please wait...")
-        logfile.write(out.decode("UTF-8"))
-        logfile.close()
-        return out, err
 
-    else:
-        out, err = program.communicate()
-        return out, err
+        logfile = open(os.path.join(outpath, "K" + str(K) + "_rep" +
+                                    str(rep_num) + ".log"), "w")
+        if not sign in out:
+            print("Writing logfile for K" + str(K) + ", replicate " +
+                  str(rep_num) + ". Please wait...")
+        logfile.write(out)
+        logfile.close()
+
+    return worker_status
 
 
 def structure_threader(Ks, replicates, threads):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
-    pool = Pool(threads)
+
     jobs = list(itertools.product(Ks, replicates))
 
-    pool.map(runprogram, jobs)
-    pool.close()
-    pool.join()
-    print("All jobs finished.")
+    # This will automatically create the Pool object, run the jobs and deadlock
+    # the function while the children processed are being executed. This will
+    # also allow to iterate over the values return by all workers and to sort
+    # them out to see if there were any errors
+    pool = Pool(threads).map(runprogram, jobs)
+
+    # Check for worker status. This will search the worker outputs and if
+    # one or more workers had an error exit status, the error_list will be
+    # populated with the cli commands that generated the errors
+    error_list = [x[1] for x in pool if x[0] == -1]
+
+    print("\n==============================\n")
+    if error_list:
+        print("%s Structure runs exited with errors. Check the log files of "
+              "the following output files:" % len(error_list))
+        for out in error_list:
+            print(out)
+    else:
+        print("All %s jobs finished successfully." % len(pool))
 
 
 if __name__ == "__main__":
