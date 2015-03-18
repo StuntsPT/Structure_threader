@@ -97,6 +97,7 @@ def structure_threader(Ks, replicates, threads):
 
 if __name__ == "__main__":
     import argparse
+    import os
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
                                      prog="Structure_threader",
@@ -142,5 +143,9 @@ if __name__ == "__main__":
     replicates = range(1, arg.replicates + 1)
     infile = arg.infile
     outpath = arg.outpath
+
+    # Check for output directory, create if it doesn't exist
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
 
     structure_threader(Ks, replicates, arg.threads)
