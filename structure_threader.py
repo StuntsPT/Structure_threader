@@ -97,7 +97,6 @@ def structure_threader(Ks, replicates, threads):
 
 if __name__ == "__main__":
     import argparse
-    import os
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
                                      prog="Structure_threader",
