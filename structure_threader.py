@@ -21,9 +21,23 @@
 
 
 import os
+import sys
+import signal
 import subprocess
 import itertools
 from multiprocessing import Pool
+
+
+def gracious_exit(*args):
+    # Cleans output directory
+    try:
+        os.rmdir(outpath)
+    except FileNotFoundError:
+        pass
+    # Clean exit
+    print("\rExiting graciously, murdering child processes and cleaning output"
+          " directory", end="")
+    sys.exit(0)
 
 
 def runprogram(iterations):
@@ -150,5 +164,7 @@ if __name__ == "__main__":
         except FileExistsError:
             print("ERROR: Output directory already exists.")
             raise SystemExit
+
+    signal.signal(signal.SIGINT, gracious_exit)
 
     structure_threader(Ks, replicates, arg.threads)
