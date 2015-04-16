@@ -156,7 +156,11 @@ if __name__ == "__main__":
         threads = arg.threads
 
     # Check for output directory, create if it doesn't exist
-    if not os.path.exists(outpath):
-        os.makedirs(outpath)
+    if not os.path.exists(outpath) or not os.path.isdir(outpath):
+        try:
+            os.makedirs(outpath)
+        except FileExistsError:
+            print("ERROR: Output directory already exists.")
+            raise SystemExit
 
     structure_threader(Ks, replicates, arg.threads)
