@@ -143,12 +143,20 @@ if __name__ == "__main__":
     infile = arg.infile
     outpath = arg.outpath
 
+    # Make cpu usage check to prevent excessive usage of threads
+    try:
+        if int(arg.threads) > os.cpu_count():
+            print("WARNING: Number of specified threads is higher than the"
+                  " available ones. Adjusting number of threads to %s" %
+                  os.cpu_count())
+            threads = os.cpu_count()
+        else:
+            threads = arg.threads
+    except:
+        threads = arg.threads
+
     # Check for output directory, create if it doesn't exist
-    if not os.path.exists(outpath) or not os.path.isdir(outpath):
-        try:
-            os.makedirs(outpath)
-        except FileExistsError:
-            print("ERROR: Output directory already exists.")
-            raise SystemExit
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
 
     structure_threader(Ks, replicates, arg.threads)
