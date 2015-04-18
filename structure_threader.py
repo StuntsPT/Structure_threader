@@ -29,12 +29,7 @@ from multiprocessing import Pool
 
 
 def gracious_exit(*args):
-    # Cleans output directory
-    try:
-        os.rmdir(outpath)
-    except FileNotFoundError:
-        pass
-    # Clean exit
+    """Graciously exit the program."""
     print("\rExiting graciously, murdering child processes and cleaning output"
           " directory", end="")
     sys.exit(0)
