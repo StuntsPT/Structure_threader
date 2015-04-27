@@ -56,9 +56,8 @@ def runprogram(iterations):
 
     out, err = map(lambda x: x.decode("utf-8"), program.communicate())
 
-    # Check for errors using STRUCTURE's signature string
-    sign = "Exiting the program due to error(s) listed above."
-    if sign in out:
+    # Check for errors in the program's exit code
+    if program.returncode != 0:
         arg.log = True
         worker_status = (-1, output_file)
     else:
@@ -69,9 +68,8 @@ def runprogram(iterations):
 
         logfile = open(os.path.join(outpath, "K" + str(K) + "_rep" +
                                     str(rep_num) + ".log"), "w")
-        if not sign in out:
-            print("Writing logfile for K" + str(K) + ", replicate " +
-                  str(rep_num) + ". Please wait...")
+        print("Writing logfile for K" + str(K) + ", replicate " +
+              str(rep_num) + ". Please wait...")
         logfile.write(out)
         logfile.close()
 
