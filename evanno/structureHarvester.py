@@ -166,7 +166,7 @@ def failHandler(message):
   sys.exit(1)
 
 
-def main(outdir, resultsdir):
+def main(resultsdir, outdir):
   data = hc.Data()
   harvestFiles(data, resultsdir)
   hc.calculateMeansAndSds(data)
@@ -174,6 +174,6 @@ def main(outdir, resultsdir):
   hc.writeRawOutputToFile(os.path.join(outdir, 'summary.txt'), data)
 
 if __name__ == '__main__':
-  #Usage: python3 structureHarvester.py outdir resultsdir
+  #Usage: python3 structureHarvester.py resultsdir outdir
   from sys import argv
   main(argv[1], argv[2])
