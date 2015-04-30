@@ -103,11 +103,12 @@ def structure_threader(Ks, replicates, threads):
         print("All %s jobs finished successfully." % len(pool))
 
 
-def structureHarvester(outdir):
+def structureHarvester(resultsdir):
     """Run structureHarvester to perform the Evanno test on the results"""
-    resultsdir = outdir + "/evanno"
-    os.mkdir(resultsdir)
-    sh.main(outdir, resultsdir)
+    outdir = resultsdir + "/evanno"
+    if not os.path.exists(outdir): 
+        os.mkdir(outdir)
+    sh.main(resultsdir, outdir)
 
 
 if __name__ == "__main__":
