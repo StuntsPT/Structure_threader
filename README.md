@@ -22,7 +22,7 @@ The program takes a few arguments:
 * Output dir
 * Number of threads
 * Structure location
-* Logging (usefull for debugging)
+* Logging (optional - usefull when problems arise)
 
 Example: 
 
