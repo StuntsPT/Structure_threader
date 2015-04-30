@@ -25,6 +25,7 @@ import sys
 import signal
 import subprocess
 import itertools
+import evanno.structureHarvester as sh
 from multiprocessing import Pool
 
 
@@ -102,6 +103,14 @@ def structure_threader(Ks, replicates, threads):
         print("All %s jobs finished successfully." % len(pool))
 
 
+def structureHarvester(resultsdir):
+    """Run structureHarvester to perform the Evanno test on the results"""
+    outdir = resultsdir + "/evanno"
+    if not os.path.exists(outdir): 
+        os.mkdir(outdir)
+    sh.main(resultsdir, outdir)
+
+
 if __name__ == "__main__":
     import argparse
     # Argument list
@@ -173,3 +182,5 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, gracious_exit)
 
     structure_threader(Ks, replicates, arg.threads)
+    
+    structureHarvester(arg.outpath)

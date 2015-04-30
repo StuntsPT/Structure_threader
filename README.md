@@ -16,13 +16,14 @@ Just place the script "structure_threader.py" on any location on your $PATH.
 ##Running
 The program takes a few arguments:
 
-* K
-* Replicates
-* Input file
-* Output dir
-* Number of threads
-* Structure location
-* Logging (optional - usefull when problems arise)
+* K (-K)
+* Replicates (-R)
+* Input file (-i)
+* Output dir (-o)
+* Number of threads (-t)
+* Structure location (-p)
+* Logging (optional - usefull when problems arise; --log)
+* Minnimum K (optional use as a start value for "K" - by default thi value is 1; --min_K)
 
 Example: 
 
@@ -59,6 +60,15 @@ The results directory is ready to be zipped and used in [Structure Harvester](ht
 
 The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
 You can find documentation about it inside the directory itself.
+
+##Citation
+
+If you use Structure_threader, please cite (reference to show up here soon).
+If you used the evanno test module, please cite:
+
+*  Earl, Dent A. and vonHoldt, Bridgett M. (2012) STRUCTURE HARVESTER: a website
+ and program for visualizing STRUCTURE output and implementing the Evanno 
+ method. Conservation Genetics Resources vol. 4 (2) pp. 359-361. doi: 10.1007/s12686-011-9548-7 http://www.springerlink.com/content/jnn011511h415358/
 
 ##License
 GPLv3
