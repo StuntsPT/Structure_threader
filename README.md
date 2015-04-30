@@ -63,7 +63,10 @@ You can find documentation about it inside the directory itself.
 
 ##Citation
 
-If you use Structure_threader, please cite (reference to show up here soon).
+If you use Structure_threader, please cite 
+
+* Comming soon (hopefully)!
+
 If you used the evanno test module, please cite:
 
 *  Earl, Dent A. and vonHoldt, Bridgett M. (2012) STRUCTURE HARVESTER: a website
