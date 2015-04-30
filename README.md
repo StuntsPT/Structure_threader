@@ -16,13 +16,14 @@ Just place the script "structure_threader.py" on any location on your $PATH.
 ##Running
 The program takes a few arguments:
 
-* K
-* Replicates
-* Input file
-* Output dir
-* Number of threads
-* Structure location
-* Logging (optional - usefull when problems arise)
+* K (-K)
+* Replicates (-R)
+* Input file (-i)
+* Output dir (-o)
+* Number of threads (-t)
+* Structure location (-p)
+* Logging (optional - usefull when problems arise; --log)
+* Minnimum K (optional use as a start value for "K" - by default thi value is 1; --min_K)
 
 Example: 
 
