@@ -59,6 +59,7 @@ import math
 import os
 import re
 import time
+import sys
 
 __version__ = 'vA.2 July 2014' # alpha.number convention for core
 EPSILON = 0.0000001 # for determining if a stdev ~ 0
