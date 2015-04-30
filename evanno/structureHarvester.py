@@ -55,9 +55,8 @@ THE SOFTWARE.
 
 """
 import glob
-import harvesterCore as hc
+import evanno.harvesterCore as hc
 import os
-import re
 import sys
 import time
 
