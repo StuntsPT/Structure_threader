@@ -32,13 +32,17 @@ def dataminer(indfile_name):
 
 def plotter(Qvalues):
     """Plots the Qvalues histogram"""
+    
+    colors = ('#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c',
+              '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a', '#ffff99', '#b15928')
+    
     numinds = Qvalues.shape[0]
     for i in range(Qvalues.shape[1]):
         if i == 0:
-            plt.bar(range(numinds), Qvalues[:, i])
+            plt.bar(range(numinds), Qvalues[:, i], facecolor=colors[i], edgecolor="none", width=1)
             formerQ = Qvalues[:, i]
         else:
-            plt.bar(range(numinds), Qvalues[:, i], bottom=formerQ, facecolor="green")
+            plt.bar(range(numinds), Qvalues[:, i], bottom=formerQ, facecolor=colors[i], edgecolor="none", width=1)
             formerQ = formerQ + Qvalues[:, i]
     
     plt.show()
