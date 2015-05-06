@@ -116,13 +116,20 @@ def plotter(qvalues, poplist, outfile):
     ax = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
 
     for i in range(qvalues.shape[1]):
+        # Get bar color. If K exceeds the 12 colors in colors, generate random
+        # color
+        try:
+            clr = colors[i]
+        except IndexError:
+            clr = np.random.rand(3, 1)
+
         if i == 0:
-            ax.bar(range(numinds), qvalues[:, i], facecolor=colors[i],
+            ax.bar(range(numinds), qvalues[:, i], facecolor=clr,
                     edgecolor="none", width=1)
             formerQ = qvalues[:, i]
         else:
             ax.bar(range(numinds), qvalues[:, i], bottom=formerQ,
-                    facecolor=colors[i], edgecolor="none", width=1)
+                    facecolor=clr, edgecolor="none", width=1)
             formerQ = formerQ + qvalues[:, i]
 
     # Annotate population info
