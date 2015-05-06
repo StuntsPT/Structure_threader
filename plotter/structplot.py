@@ -20,6 +20,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import Counter
+import os
 
 
 def dataminer(indfile_name, fmt, popfile=None):
@@ -33,17 +34,17 @@ def dataminer(indfile_name, fmt, popfile=None):
     :param popfile: string. path to file with population list
     """
 
+    poplist = []
+
     # Parse popfile if provided
     if popfile:
         # Assuming popfile has 2 columns with pop name in 1st column and number
         # of samples in the 2nd column
-        poparray = np.genfromtxt(popfile)
+        poparray = np.genfromtxt(popfile, dtype=None)
         # Final pop list
-        poplist = [(x, y) for x, y in zip(np.cumsum([x[1] for x in poparray]),
-                                          [x[0] for x in poparray])]
-
-    else:
-        poplist = []
+        poplist = [(x, y.decode("utf-8")) for x, y in
+                   zip(np.cumsum([x[1] for x in poparray]),
+                       [x[0] for x in poparray])]
 
     # Parse structure/faststructure output file
     if fmt == "faststructure":
@@ -89,7 +90,7 @@ def dataminer(indfile_name, fmt, popfile=None):
     return qvalues, poplist
 
 
-def plotter(qvalues, poplist):
+def plotter(qvalues, poplist, outfile):
     """
     Plot the qvalues histogram.
 
@@ -109,29 +110,57 @@ def plotter(qvalues, poplist):
     numinds = qvalues.shape[0]
 
     # Update plot width according to the number of samples
-    plt.rcParams["figure.figsize"] = (8 * numinds * .05, 6)
+    plt.rcParams["figure.figsize"] = (8 * numinds * .01, 2.64)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
 
     for i in range(qvalues.shape[1]):
         if i == 0:
-            plt.bar(range(numinds), qvalues[:, i], facecolor=colors[i],
+            ax.bar(range(numinds), qvalues[:, i], facecolor=colors[i],
                     edgecolor="none", width=1)
             formerQ = qvalues[:, i]
         else:
-            plt.bar(range(numinds), qvalues[:, i], bottom=formerQ,
+            ax.bar(range(numinds), qvalues[:, i], bottom=formerQ,
                     facecolor=colors[i], edgecolor="none", width=1)
             formerQ = formerQ + qvalues[:, i]
 
-    # Set lines delimiting populations
-    for i in poplist:
-        plt.axvline(x=i[0], linewidth=1.5, color='black')
+    # Annotate population info
+    if poplist:
+        c = 1
+        for p, vals in enumerate(poplist):
+            # Add population delimiting lines
+            plt.axvline(x=vals[0], linewidth=1.5, color='black')
+            # Add population labels
+            # Determine x pos
+            xpos = vals[0] - ((vals[0] - poplist[p - 1][0]) / 2) if p > 0 \
+                else vals[0] / 2
+            # Draw text
+            ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(c),
+                    rotation=45, va="top", ha="right", fontsize=14,
+                    weight="bold")
+            c += 1
 
-    plt.ylim(0, 1)
-    plt.xlim(0, numinds)
+    for axis in ["top", "bottom", "left", "right"]:
+        ax.spines[axis].set_linewidth(2)
+        ax.spines[axis].set_color("black")
 
     plt.yticks([])
+    plt.xticks([])
 
-    plt.show()
+    plt.savefig("{}.svg".format(outfile), bbox_inches="tight")
 
-if __name__ == "__main__":
-    data, pops = dataminer("/home/diogo/Diogo/Science/Scripts/packages/Structure_threader/TestData/Test/K3_rep1_f", "structure")
-    plotter(data, pops)
+
+def main(result_files, fmt, outdir, popfile=None):
+    """
+    Wrapper function that generates one plot for each K value
+    :return:
+    """
+
+    for f in result_files:
+        data, pops = dataminer(f, fmt, popfile)
+        # Get output file name from input file name
+        outfile = os.path.join(outdir, f.split(os.sep)[-1])
+        # Create plots
+        plotter(data, pops, outfile)
+

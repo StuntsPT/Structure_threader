@@ -26,6 +26,7 @@ import signal
 import subprocess
 import itertools
 import evanno.structureHarvester as sh
+import plotter.structplot as sp
 from multiprocessing import Pool
 
 
@@ -105,11 +106,23 @@ def structure_threader(Ks, replicates, threads):
 
 def structureHarvester(resultsdir):
     """Run structureHarvester to perform the Evanno test on the results"""
-    outdir = resultsdir + "/evanno"
+    outdir = os.path.join(resultsdir, "evanno")
     if not os.path.exists(outdir): 
         os.mkdir(outdir)
     sh.main(resultsdir, outdir)
 
+
+def create_plts(resultsdir):
+    """
+    Create plots from result dir.
+    :param resultsdir: path to results directory
+    """
+    outdir = os.path.join(resultsdir, "evanno")
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+    # Get only relevant output files [ON HOLD]
+    plt_files = []
+    sp.main(plt_files, outdir)
 
 if __name__ == "__main__":
     import argparse
