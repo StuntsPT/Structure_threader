@@ -137,7 +137,7 @@ if __name__ == "__main__":
                            metavar="faststructure_bin",
                            help="Location of the fastStructure binary in your "
                                 "environment (default:'%(default)s' - use "
-                                "structure from your $PATH)")
+                                "faststructure from your $PATH)")
 
     run_opts.add_argument("-K", dest="Ks", type=int, required=True,
                         help="Number of Ks to run\n", metavar="int")
