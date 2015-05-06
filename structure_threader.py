@@ -114,39 +114,56 @@ def structureHarvester(resultsdir):
 if __name__ == "__main__":
     import argparse
     # Argument list
-    parser = argparse.ArgumentParser(description="A simple program to paralelize the runs of the Structure software.",
-                                     prog="Structure_threader",
-                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description="A simple program to "
+                                                 "paralelize the runs of the "
+                                                 "Structure software.",
+                                prog="Structure_threader",
+                                formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument("-K", dest="Ks", type=int, required=True,
-                        help="Number of Ks to run\n",
-                        metavar="int")
+    io_opts = parser.add_argument_group("Input/Output options")
+    main_exec = parser.add_argument_group("Program execution options")
+    run_opts = parser.add_argument_group("Structure run options")
+    misc_opts = parser.add_argument_group("Miscellaneous options")
 
-    parser.add_argument("--min_K", dest="minK", type=int, required=False,
-                        help="Minimum value of \"K\" to test (default:1)\n",
-                        metavar="int", default=1)
+    main_exec.add_argument("-st", dest="structure_bin", type=str,
+                           required=False,
+                           help="Location of the structure binary in your "
+                                "environment (default:'%(default)s' - use "
+                                "structure from your $PATH)",
+                           metavar="structure_bin",
+                           default="structure")
+    main_exec.add_argument("-fs", dest="faststructure_bin", type=str,
+                           required=False, default="structure.py",
+                           metavar="faststructure_bin",
+                           help="Location of the fastStructure binary in your "
+                                "environment (default:'%(default)s' - use "
+                                "structure from your $PATH)")
 
-    parser.add_argument("-R", dest="replicates", type=int, required=True,
-                        help="Number of replicate runs for each value of K (default:20)\n",
+    run_opts.add_argument("-K", dest="Ks", type=int, required=True,
+                        help="Number of Ks to run\n", metavar="int")
+
+    run_opts.add_argument("--min_K", dest="minK", type=int, required=False,
+                        help="Minimum value of \"K\" to test "
+                             "(default:%(default)s)\n", metavar="int",
+                        default=1)
+
+    run_opts.add_argument("-R", dest="replicates", type=int, required=True,
+                        help="Number of replicate runs for each value of K "
+                             "(default:%(default)s)\n",
                         metavar="int", default=20)
 
-    parser.add_argument("-i", dest="infile", type=str, required=True,
+    io_opts.add_argument("-i", dest="infile", type=str, required=True,
                         help="Input file \n", metavar="infile")
 
-    parser.add_argument("-o", dest="outpath", type=str, required=True,
+    io_opts.add_argument("-o", dest="outpath", type=str, required=True,
                         help="Directory where the results will be stored in\n",
                         metavar="output_directory")
 
-    parser.add_argument("-t", dest="threads", type=int, required=True,
-                        help="Number of threads to use (default:4)\n",
+    misc_opts.add_argument("-t", dest="threads", type=int, required=True,
+                        help="Number of threads to use (default:%(default)s)\n",
                         metavar="int", default=4)
 
-    parser.add_argument("-p", dest="structure_bin", type=str, required=False,
-                        help="Location of the structure binary in your environment (default:structure - use structure from your $PATH)\n",
-                        metavar="structure_bin",
-                        default="structure")
-
-    parser.add_argument("--log", dest="log", type=bool, required=False,
+    misc_opts.add_argument("--log", dest="log", type=bool, required=False,
                         help="Choose this option if you want to enable logging",
                         metavar="bool", default=False)
 
