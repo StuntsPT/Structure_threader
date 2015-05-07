@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-# Usage: python3 structure_threader.py -K Ks -reps replicates -i infile -o outpath -t num_of_threads -p path_to_structure
-# Where "-K" is the number of "Ks" to test, "-reps" is the number of replicates,
-# "-t"  is the number of threads and "-p" is the path to structure binary in the personal environment.
-
 
 import os
 import sys
@@ -38,12 +34,13 @@ def gracious_exit(*args):
 
 
 def runprogram(iterations):
-    """Run each structure job."""
+    """Run each structure job. Return the worker status.
+    This attribute will be populated with the worker exit code and output file
+    and returned. The first element is the exit code itself (0 if normal exit
+    and -1 in case of errors). The second element contains the output file
+    that identifies the worker.
+    """
 
-    # This attribute will be populated with the worker exit code and output file
-    #  and  returned. First element is the exit code itself (0 if all normal,
-    # -1 if  error), Second element will contain the output file to identify
-    # the worker
     worker_status = (None, None)
 
     K, rep_num = iterations
@@ -105,18 +102,17 @@ def structure_threader(Ks, replicates, threads):
 
 
 def structureHarvester(resultsdir):
-    """Run structureHarvester to perform the Evanno test on the results"""
+    """Run structureHarvester to perform the Evanno test on the results."""
     outdir = os.path.join(resultsdir, "evanno")
-    if not os.path.exists(outdir): 
+    if not os.path.exists(outdir):
         os.mkdir(outdir)
     sh.main(resultsdir, outdir)
 
 
 def create_plts(resultsdir):
-    """
-    Create plots from result dir.
-    :param resultsdir: path to results directory
-    """
+    """Create plots from result dir.
+    :param resultsdir: path to results directory"""
+
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
@@ -130,7 +126,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
                                                  "Structure software.",
-                                prog="Structure_threader",
+                                     prog="Structure_threader",
                                 formatter_class=argparse.RawTextHelpFormatter)
 
     io_opts = parser.add_argument_group("Input/Output options")
@@ -153,32 +149,35 @@ if __name__ == "__main__":
                                 "faststructure from your $PATH)")
 
     run_opts.add_argument("-K", dest="Ks", type=int, required=True,
-                        help="Number of Ks to run\n", metavar="int")
+                          help="Number of Ks to run\n", metavar="int")
 
     run_opts.add_argument("--min_K", dest="minK", type=int, required=False,
-                        help="Minimum value of \"K\" to test "
-                             "(default:%(default)s)\n", metavar="int",
-                        default=1)
+                          help="Minimum value of \"K\" to test "
+                               "(default:%(default)s)\n",
+                          metavar="int", default=1)
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=True,
-                        help="Number of replicate runs for each value of K "
-                             "(default:%(default)s)\n",
-                        metavar="int", default=20)
+                          help="Number of replicate runs for each value of K "
+                               "(default:%(default)s)\n",
+                          metavar="int", default=20)
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
-                        help="Input file \n", metavar="infile")
+                         help="Input file \n", metavar="infile")
 
     io_opts.add_argument("-o", dest="outpath", type=str, required=True,
-                        help="Directory where the results will be stored in\n",
-                        metavar="output_directory")
+                         help="Directory where the results will be stored "
+                              "in\n",
+                         metavar="output_directory")
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
-                        help="Number of threads to use (default:%(default)s)\n",
-                        metavar="int", default=4)
+                           help="Number of threads to use "
+                                "(default:%(default)s)\n",
+                           metavar="int", default=4)
 
     misc_opts.add_argument("--log", dest="log", type=bool, required=False,
-                        help="Choose this option if you want to enable logging",
-                        metavar="bool", default=False)
+                           help="Choose this option if you want to enable "
+                                "logging",
+                           metavar="bool", default=False)
 
     arg = parser.parse_args()
 
@@ -212,5 +211,5 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, gracious_exit)
 
     structure_threader(Ks, replicates, arg.threads)
-    
+
     structureHarvester(arg.outpath)
