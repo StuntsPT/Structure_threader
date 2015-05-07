@@ -125,11 +125,11 @@ def plotter(qvalues, poplist, outfile):
 
         if i == 0:
             ax.bar(range(numinds), qvalues[:, i], facecolor=clr,
-                    edgecolor="none", width=1)
+                   edgecolor="none", width=1)
             formerQ = qvalues[:, i]
         else:
             ax.bar(range(numinds), qvalues[:, i], bottom=formerQ,
-                    facecolor=clr, edgecolor="none", width=1)
+                   facecolor=clr, edgecolor="none", width=1)
             formerQ = formerQ + qvalues[:, i]
 
     # Annotate population info
@@ -160,7 +160,7 @@ def plotter(qvalues, poplist, outfile):
 
 def main(result_files, fmt, outdir, popfile=None):
     """
-    Wrapper function that generates one plot for each K value
+    Wrapper function that generates one plot for each K value.
     :return:
     """
 
@@ -170,4 +170,3 @@ def main(result_files, fmt, outdir, popfile=None):
         outfile = os.path.join(outdir, f.split(os.sep)[-1])
         # Create plots
         plotter(data, pops, outfile)
-
