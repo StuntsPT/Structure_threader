@@ -112,12 +112,12 @@ def structureHarvester(resultsdir):
 def create_plts(resultsdir):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
-
+    # This is only for Structure - it must be changed for fastStructure too.
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
-    # Get only relevant output files [ON HOLD]
-    plt_files = []
+    # Get only relevant output files
+    plt_files = ["K" + i + "_rep_1_f" for i in arg.Ks] # TODO: use random rep
     sp.main(plt_files, outdir)
 
 if __name__ == "__main__":
@@ -213,3 +213,5 @@ if __name__ == "__main__":
     structure_threader(Ks, replicates, arg.threads)
 
     structureHarvester(arg.outpath)
+    
+    create_plts(arg.outpath)
