@@ -78,7 +78,7 @@ def unexpectedValue(filename, valuename, value, data):
                    'Generally these problems can be resolved by discarding the '
                    'file and re-running STRUCTURE for this value of K.\n'
                    % (filename, valuename, value))
-  sys.exit(1)
+  quit()
 
 
 def harvestFiles(data, resultsdir):
@@ -86,7 +86,7 @@ def harvestFiles(data, resultsdir):
   if len(files) < 1:
     sys.stderr.write('Error, unable to locate any _f files in '
              'the results directory %s' % resultsdir)
-    sys.exit(1)
+    quit()
   data.records = {} # key is K, value is an array
   for f in files:
     try:
@@ -98,7 +98,7 @@ def harvestFiles(data, resultsdir):
     else:
       sys.stderr.write('Error, unable to extract results from file %s.\n' % f)
       sys.stderr.write('%s\n' % errorString)
-      sys.exit(1)
+      quit()
   data.sortedKs = list(data.records.keys())
   data.sortedKs.sort()
 
@@ -109,7 +109,7 @@ def evannoMethod(data, outdir):
     sys.stderr.write('Unable to perform Evanno method for '
                      'the following reason(s):\n')
     sys.stderr.write(value)
-    sys.exit(1)
+    quit()
   hc.calculatePrimesDoublePrimesDeltaK(data)
   writeEvannoTableToFile(data, outdir)
 
@@ -163,7 +163,7 @@ def writeEvannoTableToFile(data, outdir):
 
 def failHandler(message):
   sys.stderr.write(message)
-  sys.exit(1)
+  quit()
 
 
 def main(resultsdir, outdir):
