@@ -2,15 +2,16 @@
 A simple program to paralelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
 
 ##Requirements
-Python3. Only uses modules from the standard library.
+Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots.
 
-It also work with python2, however, Ctrl+c will not kill the process graciously.
+It also work with python2, however, this is not as tested as the python3 version.
 
-Running in python3 also yelds ~11% speed gains relatively to python2(altough this testing was limited).
+Running in python3 also yelds ~11% speed gains relatively to python2 (altough this testing was limited).
 
 
 ##Installation
-Just place the script "structure_threader.py" on any location on your $PATH.
+Just clone the repository, and place the contents, respecting the directory
+structure your $PATH.
 
 
 ##Running
@@ -21,14 +22,16 @@ The program takes a few arguments:
 * Input file (-i)
 * Output dir (-o)
 * Number of threads (-t)
-* Structure location (-p)
+* Program location - you have to pass one and only of the following arguments:
+    * Structure location (if you want to run "Structure"; -st)
+    * fastStructure location (if you want to run "fastStructure"; -fs) **WARNING** This is not yet implemented.
 * Logging (optional - usefull when problems arise; --log)
 * Minnimum K (optional use as a start value for "K" - by default thi value is 1; --min_K)
 
 Example: 
 
 ```
-structure_threader.py -K Ks -R replicates -i infile -o outpath -t num_of_threads -p path_to_structure
+structure_threader.py -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
 ```
 
 Where -K is the number of "Ks" to run, -R is the number of replicate runs for
@@ -36,7 +39,7 @@ each value of "K", -i is the input file for STRUCTURE, -o is the directory where
 -t is the number of threads to use and -p the path for the STRUCTURE binary.
 
 The program should be run in the same directory as the files "mainparams" and
-"extraparams" from STRUCTURE are placed.
+"extraparams" for your STRUCTURE run are placed.
 
 ##Output
 The program will inform the user of what run is currently being processed by
@@ -51,6 +54,8 @@ the *Output dir* argument.
 
 When all tasks are performed the program will exit with the message:
 "All jobs finished."
+After these jobs are run, the program will use [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) to infer the optimal value of "K".
+After this, the program will create plots with the inferred clustering, one for each "K".
 
 ##Downstream
 
