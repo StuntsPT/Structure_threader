@@ -1,10 +1,11 @@
 # Structure_threader
 A simple program to paralelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
 
+
 ##Requirements
 Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots.
 
-It also work with python2, however, this is not as tested as the python3 version.
+It *might* also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all).
 
 Running in python3 also yelds ~11% speed gains relatively to python2 (altough this testing was limited).
 
