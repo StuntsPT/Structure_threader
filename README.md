@@ -12,7 +12,7 @@ Running in python3 also yelds ~11% speed gains relatively to python2 (altough th
 
 ##Installation
 Just clone the repository, and place the contents, respecting the directory
-structure your $PATH.
+structure in your $PATH.
 
 
 ##Running
