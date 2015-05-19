@@ -31,16 +31,15 @@ def cpu_checker(asked_threads):
             threads = asked_threads
     except:
         threads = asked_threads
-    
     return threads
 
 
-    # Check for output directory, create if it doesn't exist
+def output_checker(outpath):
+    """Verify the existence of requested output directory and create inexistent.
+    Aborts execution if the outpath is a file."""
     if not os.path.exists(outpath) or not os.path.isdir(outpath):
         try:
             os.makedirs(outpath)
         except FileExistsError:
             print("ERROR: Output directory already exists.")
             raise SystemExit
-            
-cpu_checker(arg.threads)
