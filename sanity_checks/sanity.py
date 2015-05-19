@@ -41,5 +41,6 @@ def output_checker(outpath):
         try:
             os.makedirs(outpath)
         except FileExistsError:
-            print("ERROR: Output directory already exists.")
+            print("ERROR: Output directory is pointing to a file. Please check "
+                  "your arguments and/or your filesystem.")
             raise SystemExit
