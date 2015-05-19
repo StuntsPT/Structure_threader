@@ -14,3 +14,33 @@
 
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
+
+import os
+
+
+def cpu_checker(asked_threads):
+    """Make cpu usage check to prevent excessive usage of threads.
+    Returns the "ideal" number of threads to use."""
+    try:
+        if int(asked_threads) > os.cpu_count():
+            print("WARNING: Number of specified threads is higher than the"
+                  " available ones. Adjusting number of threads to %s" %
+                  os.cpu_count())
+            threads = os.cpu_count()
+        else:
+            threads = asked_threads
+    except:
+        threads = asked_threads
+    
+    return threads
+
+
+    # Check for output directory, create if it doesn't exist
+    if not os.path.exists(outpath) or not os.path.isdir(outpath):
+        try:
+            os.makedirs(outpath)
+        except FileExistsError:
+            print("ERROR: Output directory already exists.")
+            raise SystemExit
+            
+cpu_checker(arg.threads)
