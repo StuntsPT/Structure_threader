@@ -118,7 +118,7 @@ def create_plts(resultsdir):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
     # Get only relevant output files
-    plt_files = [resultsdir + "/K" + str(i) + "_rep1_f" for i in range(arg.minK, arg.Ks)] # TODO: use random rep
+    plt_files = [os.path.join(resultsdir + "K") + str(i) + "_rep1_f" for i in range(arg.minK, arg.Ks)] # TODO: use random rep
     sp.main(plt_files, "structure", outdir) # TODO: Use correct format depending on program
 
 if __name__ == "__main__":
