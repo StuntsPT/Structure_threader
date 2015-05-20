@@ -23,8 +23,10 @@ def cpu_checker(asked_threads):
     Returns the "ideal" number of threads to use."""
     try:
         if int(asked_threads) > os.cpu_count():
-            print("WARNING: Number of specified threads is higher than the"
-                  " available ones. Adjusting number of threads to %s" %
+            print("WARNING: Number of specified threads is higher than the "
+                  "available ones. Adjusting number of threads to %s, "
+                  "which is the total number of CPUs (physical and logical) on "
+                  "this machine." %
                   os.cpu_count())
             threads = os.cpu_count()
         else:
