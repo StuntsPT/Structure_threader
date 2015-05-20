@@ -57,36 +57,29 @@ THE SOFTWARE.
 import glob
 import evanno.harvesterCore as hc
 import os
-import sys
+
 import time
 
 __version__ = 'v0.6.94 July 2014'
 EPSILON = 0.0000001 # for determining if a stdev ~ 0
 
 
-try:
-  eval("enumerate([1, 2, 3], 1)")
-except TypeError:
-  raise ImportError('This script requires Python version 2.5 <= v < 3.0. '
-                    'This version %d.%d'
-                    % (sys.version_info[0], sys.version_info[1]))
-
+class Exception(Exception):
+    pass
 
 def unexpectedValue(filename, valuename, value, data):
-  sys.stderr.write('Error: %s contains an unexpected value:\n'
+  raise Exception('Error: %s contains an unexpected value:\n'
                    '    %s = %s\n'
                    'Generally these problems can be resolved by discarding the '
                    'file and re-running STRUCTURE for this value of K.\n'
                    % (filename, valuename, value))
-  quit()
 
 
 def harvestFiles(data, resultsdir):
   files = glob.glob(os.path.join(resultsdir, '*_f'))
   if len(files) < 1:
-    sys.stderr.write('Error, unable to locate any _f files in '
-             'the results directory %s' % resultsdir)
-    quit()
+    raise Exception('Error, unable to locate any _f files in '
+                    'the results directory %s' % resultsdir)
   data.records = {} # key is K, value is an array
   for f in files:
     try:
@@ -96,9 +89,8 @@ def harvestFiles(data, resultsdir):
     if run is not None:
       data.records.setdefault(run.k, []).append(run)
     else:
-      sys.stderr.write('Error, unable to extract results from file %s.\n' % f)
-      sys.stderr.write('%s\n' % errorString)
-      quit()
+      raise Exception('Error, unable to extract results from file %s.\n%s\n'
+                      % (f, errorString))
   data.sortedKs = list(data.records.keys())
   data.sortedKs.sort()
 
@@ -106,10 +98,8 @@ def harvestFiles(data, resultsdir):
 def evannoMethod(data, outdir):
   value = hc.evannoTests(data)
   if value is not None:
-    sys.stderr.write('Unable to perform Evanno method for '
-                     'the following reason(s):\n')
-    sys.stderr.write(value)
-    quit()
+    raise Exception('Unable to perform Evanno method for '
+                     'the following reason(s):\n' + value)
   hc.calculatePrimesDoublePrimesDeltaK(data)
   writeEvannoTableToFile(data, outdir)
 
@@ -162,8 +152,7 @@ def writeEvannoTableToFile(data, outdir):
 
 
 def failHandler(message):
-  sys.stderr.write(message)
-  quit()
+  raise Exception(message)
 
 
 def main(resultsdir, outdir):
