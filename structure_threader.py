@@ -25,6 +25,7 @@ import evanno.structureHarvester as sh
 import plotter.structplot as sp
 import sanity_checks.sanity as sanity
 from multiprocessing import Pool
+from random import randrange
 
 
 def gracious_exit(*args):
@@ -117,9 +118,11 @@ def create_plts(resultsdir):
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
-    # Get only relevant output files
-
-    plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep1_f" for i in range(arg.minK, arg.Ks)] # TODO: use random rep
+    
+    # Get only relevant output files, choosen randomly from the replictes.
+    plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
+                 str(randrange(arg.replicates)) + "_f"
+                 for i in range(arg.minK, arg.Ks)]
     sp.main(plt_files, "structure", outdir) # TODO: Use correct format depending on program
 
 if __name__ == "__main__":
