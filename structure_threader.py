@@ -118,7 +118,7 @@ def create_plts(resultsdir):
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
-    
+
     # Get only relevant output files, choosen randomly from the replictes.
     plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                  str(randrange(arg.replicates)) + "_f"
@@ -200,11 +200,11 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, gracious_exit)
 
     structure_threader(Ks, replicates, threads)
-    
+
     try:
         structureHarvester(arg.outpath)
     except sh.Exception as ex:
         sys.stderr.write(str(ex))
-    
+
 
     create_plts(arg.outpath)
