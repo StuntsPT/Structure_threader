@@ -1,5 +1,5 @@
 # Structure_threader
-A simple program to paralelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
+A simple program to parallelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
 
 
 ##Requirements
@@ -7,7 +7,7 @@ Python3. Only uses modules from the standard library. Requires matplotlib to dra
 
 It *might* also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all).
 
-Running in python3 also yelds ~11% speed gains relatively to python2 (altough this testing was limited).
+Running in python3 also yields ~11% speed gains relatively to python2 (altough this testing was limited).
 
 
 ##Installation
@@ -26,10 +26,10 @@ The program takes a few arguments:
 * Program location - you have to pass one and only of the following arguments:
     * Structure location (if you want to run "Structure"; -st)
     * fastStructure location (if you want to run "fastStructure"; -fs) **WARNING** This is not yet implemented.
-* Logging (optional - usefull when problems arise; --log)
-* Minnimum K (optional use as a start value for "K" - by default thi value is 1; --min_K)
+* Logging (optional - useful when problems arise; --log)
+* Minimum K (optional use as a start value for "K" - by default the value is 1; --min_K)
 
-Example: 
+Example:
 
 ```
 structure_threader.py -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
@@ -50,7 +50,7 @@ outputting the command it is running to STDOUT, such as this:
 Running: /opt/structure/bin/structure -K 1 -i input_file.structure -o results_admix/K1_rep10
 ```
 
-After each run, the corresponding ouput file is saved to the location choosen in
+After each run, the corresponding output file is saved to the location chosen in
 the *Output dir* argument.
 
 When all tasks are performed the program will exit with the message:
@@ -69,14 +69,14 @@ You can find documentation about it inside the directory itself.
 
 ##Citation
 
-If you use Structure_threader, please cite 
+If you use Structure_threader, please cite
 
 * Comming soon (hopefully)!
 
 If you used the evanno test module, please cite:
 
 *  Earl, Dent A. and vonHoldt, Bridgett M. (2012) STRUCTURE HARVESTER: a website
- and program for visualizing STRUCTURE output and implementing the Evanno 
+ and program for visualizing STRUCTURE output and implementing the Evanno
  method. Conservation Genetics Resources vol. 4 (2) pp. 359-361. doi: 10.1007/s12686-011-9548-7 http://www.springerlink.com/content/jnn011511h415358/
 
 ##License
