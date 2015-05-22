@@ -25,7 +25,8 @@ The program takes a few arguments:
 * Number of threads (-t)
 * Program location - you have to pass one and only of the following arguments:
     * Structure location (if you want to run "Structure"; -st)
-    * fastStructure location (if you want to run "fastStructure"; -fs) **WARNING** This is not yet implemented.
+    * fastStructure location (if you want to run "fastStructure"; -fs) -
+     **WARNING** - This is not yet implemented.
 * Logging (optional - useful when problems arise; --log)
 * Minimum K (optional use as a start value for "K" - by default the value is 1; --min_K)
 
