@@ -57,7 +57,6 @@ THE SOFTWARE.
 import glob
 import evanno.harvesterCore as hc
 import os
-
 import time
 
 __version__ = 'v0.6.94 July 2014'
@@ -65,7 +64,7 @@ EPSILON = 0.0000001 # for determining if a stdev ~ 0
 
 
 class Exception(Exception):
-    pass
+  pass
 
 def unexpectedValue(filename, valuename, value, data):
   raise Exception('Error: %s contains an unexpected value:\n'
