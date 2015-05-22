@@ -123,7 +123,7 @@ def create_plts(resultsdir):
     plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                  str(randrange(arg.replicates)) + "_f"
                  for i in range(arg.minK, arg.Ks)]
-    sp.main(plt_files, "structure", outdir) # TODO: Use correct format depending on program
+    sp.main(plt_files, "structure", outdir)  # TODO: Use correct format depending on program
 
 if __name__ == "__main__":
     import argparse
@@ -205,6 +205,5 @@ if __name__ == "__main__":
         structureHarvester(arg.outpath)
     except sh.Exception as ex:
         sys.stderr.write(str(ex))
-
 
     create_plts(arg.outpath)
