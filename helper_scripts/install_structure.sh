@@ -17,8 +17,9 @@
 
 set -e
 
-# Define Installation location:
+# Define and create installation location:
 install_dir=~/Software/structure
+mkdir -p ${install_dir}
 
 # Define temp dir
 tempdir=/tmp
