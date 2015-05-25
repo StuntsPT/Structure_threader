@@ -18,7 +18,7 @@
 set -e
 
 # Define and create installation location:
-install_dir=~/Software/structure
+install_dir=~/Software/faststructure
 mkdir -p ${install_dir}
 
 # Define temp dir
@@ -42,19 +42,19 @@ wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-
 cd ${tempdir}
 unzip Cython-0.22.zip
 cd Cython-0.22
-python setup.py install --user
+python2 setup.py install --user
 
 # numpy
 cd ${tempdir}
 tar xvfz numpy.tar.gz
 cd numpy-1.9.2
-python setup.py install --user
+python2 setup.py install --user
 
 # scipy
 cd ${tempdir}
 tar xvfz scipy.tar.gz
 cd scipy-0.16.0b2
-python setup.py install --user
+python2 setup.py install --user
 
 # GNU scientific library
 cd ${tempdir}
@@ -69,11 +69,11 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${install_dir}/lib
 export CFLAGS="-I${install_dir}/include"
 export LDFLAGS="-L${install_dir}/lib"
 cd ${tempdir}
-tar xvfz faststructure-1.0.tar.gz
-cd  faststructure-1.0
+tar xvfz fasttructure-1.0.tar.gz
+cd  fastStructure-1.0
 cd vars
 python setup.py build_ext --inplace
 cd ..
 python setup.py build_ext --inplace
 cd ..
-mv faststructure-1.0 ${install_dir}
+mv fastStructure-1.0 ${install_dir}
