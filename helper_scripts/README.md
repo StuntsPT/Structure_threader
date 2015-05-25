@@ -18,7 +18,15 @@ In Ubuntu, all you should need is the package "build-essential" (if it is not al
 
 ##install_faststructure.sh
 
-Not yet done
+This script will download and install faststructure and its dependencies.
+
+Faststructure depends on a few software packages:
+* cython
+* numpy
+* scipy
+* GNU scientific library
+
+If these are already installed in your system, feel free to comment the script section that will install them. Otherwise it will install a new local copy of these programs.
 
 
 ##License
