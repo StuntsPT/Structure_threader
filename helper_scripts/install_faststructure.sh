@@ -24,9 +24,13 @@ mkdir -p ${install_dir}
 # Define temp dir
 tempdir=/tmp
 
+# Get LDFAGS
+_OLD_LDFLAGS=$LDFLAGS
+
+
 # Download faststructure and deps. sources into temp dir
 # faststructure
-wget -c https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/faststructure-1.0.tar.gz
+wget -c https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/fastStructure-1.0.tar.gz
 # numpy
 wget -c https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy.tar.gz
 # scipy
@@ -66,6 +70,7 @@ python2 setup.py install --user
 cd ${tempdir}
 tar xvzf gsl-latest.tar.gz
 cd gsl-1.16
+export LDFLAGS=${_OLD_LDFLAGS}
 ./configure --prefix=${install_dir}
 make
 make install
@@ -75,7 +80,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${install_dir}/lib
 export CFLAGS="-I${install_dir}/include"
 export LDFLAGS="-L${install_dir}/lib"
 cd ${tempdir}
-tar xvfz fasttructure-1.0.tar.gz
+tar xvfz fastStructure-1.0.tar.gz
 cd  fastStructure-1.0
 cd vars
 python2 setup.py build_ext --inplace
