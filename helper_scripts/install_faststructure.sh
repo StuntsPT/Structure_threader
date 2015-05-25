@@ -52,6 +52,8 @@ sed -e "s|#![ ]*/usr/bin/python$|#!/usr/bin/python2|" \
     -e "s|#![ ]*/usr/bin/env python$|#!/usr/bin/env python2|" \
     -e "s|#![ ]*/bin/env python$|#!/usr/bin/env python2|" \
     -i $(find . -name '*.py')
+export ATLAS=None
+export LDFLAGS="$LDFLAGS -shared"
 python2 setup.py install --user
 
 # scipy
