@@ -72,8 +72,8 @@ cd ${tempdir}
 tar xvfz fasttructure-1.0.tar.gz
 cd  fastStructure-1.0
 cd vars
-python setup.py build_ext --inplace
+python2 setup.py build_ext --inplace
 cd ..
-python setup.py build_ext --inplace
+python2 setup.py build_ext --inplace
 cd ..
 mv fastStructure-1.0 ${install_dir}
