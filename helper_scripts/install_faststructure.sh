@@ -31,6 +31,8 @@ _OLD_LDFLAGS=$LDFLAGS
 # Download faststructure and deps. sources into temp dir
 # faststructure
 wget -c https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/fastStructure-1.0.tar.gz
+# python-nose
+wget -c http://pypi.python.org/packages/source/n/nose/nose-1.3.6.tar.gz -O ${tempdir}/nose-1.3.6.tar.gz
 # numpy
 wget -c https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy.tar.gz
 # scipy
@@ -46,6 +48,12 @@ wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-
 cd ${tempdir}
 unzip Cython-0.22.zip
 cd Cython-0.22
+python2 setup.py install --user
+
+# python-nose
+cd ${tempdir}
+tar xvfz nose-1.3.6.tar.gz
+cd nose-1.3.6
 python2 setup.py install --user
 
 # numpy
