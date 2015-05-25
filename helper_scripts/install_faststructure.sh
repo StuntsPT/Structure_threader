@@ -18,7 +18,7 @@
 set -e
 
 # Define and create installation location:
-install_dir=~/Software/faststructure
+install_dir=${HOME}/Software/faststructure
 mkdir -p ${install_dir}
 
 # Define temp dir
