@@ -10,7 +10,7 @@ This script will download and install structure.
 
 ###Requirements:
 
-* a C compiler, such as GCC.
+* a C compiler, such as GCC, with fortran support.
 
 In every HPC this should be available.
 
