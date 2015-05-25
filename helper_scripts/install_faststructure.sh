@@ -26,18 +26,24 @@ tempdir=/tmp
 
 # Download faststructure and deps. sources into temp dir
 # faststructure
-wget https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/faststructure-1.0.tar.gz
+wget -c https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/faststructure-1.0.tar.gz
 # numpy
-wget https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy.tar.gz
+wget -c https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy.tar.gz
 # scipy
-wget https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz -O ${tempdir}/scipy.tar.gz
+wget -c https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz -O ${tempdir}/scipy.tar.gz
 # cython
-wget http://cython.org/release/Cython-0.22.zip -O ${tempdir}/Cython-0.22.zip
+wget -c http://cython.org/release/Cython-0.22.zip -O ${tempdir}/Cython-0.22.zip
 # GNU scientific library
-wget http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-latest.tar.gz
+wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-latest.tar.gz
 
 
 # Install dependencies
+# cython
+cd ${tempdir}
+unzip Cython-0.22.zip
+cd Cython-0.22
+python setup.py install --user
+
 # numpy
 cd ${tempdir}
 tar xvfz numpy.tar.gz
@@ -48,12 +54,6 @@ python setup.py install --user
 cd ${tempdir}
 tar xvfz scipy.tar.gz
 cd scipy-0.16.0b2
-python setup.py install --user
-
-# cython
-cd ${tempdir}
-unzip Cython-0.22.zip
-cd Cython-0.22
 python setup.py install --user
 
 # GNU scientific library
