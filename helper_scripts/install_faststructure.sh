@@ -54,8 +54,8 @@ cd build-lapack
 cmake ../lapack-3.5.0
 make
 mkdir -p ${install_dir}/{bin,lib}
-mv ../lapack-3.5.0/bin/* ${install_dir}/bin
-mv ../lapack-3.5.0/lib/* ${install_dir}/lib
+mv bin/* ${install_dir}/bin
+mv lib/* ${install_dir}/lib
 
 # cython
 cd ${tempdir}
