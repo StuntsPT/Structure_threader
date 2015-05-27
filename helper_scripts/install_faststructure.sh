@@ -49,7 +49,7 @@ wget -c http://www.netlib.org/lapack/lapack-3.5.0.tgz -O ${tempdir}/lapack-3.5.0
 # LAPACK
 cd ${tempdir}
 tar xvfz lapack-3.5.0.tgz
-mkdir build-lapack
+mkdir -p build-lapack
 cd build-lapack
 cmake ../lapack-3.5.0
 make
