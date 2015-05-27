@@ -41,9 +41,22 @@ wget -c https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz -O ${tempdir}/sc
 wget -c http://cython.org/release/Cython-0.22.zip -O ${tempdir}/Cython-0.22.zip
 # GNU scientific library
 wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-latest.tar.gz
+# LAPACK (required for scipy)
+wget -c http://www.netlib.org/lapack/lapack-3.50.tgz -O ${tempdir}/lapack-3.50.tgz
 
 
 # Install dependencies
+# LAPACK
+cd ${tempdir}
+tar xvfz lapack-3.50.tgz
+mkdir build-lapack
+cd build-lapack
+cmake ../lapack-3.50
+make
+mkdir -p ${install_dir}/{bin,lib}
+mv ../lapack-3.50/bin/* ${install_dir}/bin
+mv ../lapack-3.50/lib/* ${install_dir}/lib
+
 # cython
 cd ${tempdir}
 unzip Cython-0.22.zip
