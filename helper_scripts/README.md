@@ -11,6 +11,7 @@ This script will download and install structure.
 ###Requirements:
 
 * a C compiler, such as GCC, with fortran support.
+* Cmake is required to build LAPACK
 
 In every HPC this should be available.
 
