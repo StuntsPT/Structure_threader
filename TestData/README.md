@@ -36,13 +36,6 @@ This file is similar to the one above, but it is from [chromossome 22](ftp://ftp
 
 The file processing was done in the same way as for Chr1.
 
-
-###benchmark.sh
-
-This is a [Zsh](http://www.zsh.org/) script to run STRUCTURE sequentially for 16 jobs, 4 jobs for each value of "K" (from 1 to 4).
-It does not log the runs, nor the results (everything is written into the same file).
-It was used with the Unix [time](http://linux.die.net/man/1/time) program to log the time it took to run.
-
 ###extraparams and mainparams
 
 The STRUCTURE paramater files that were used in the benchmarking process.
