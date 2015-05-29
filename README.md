@@ -68,6 +68,10 @@ The results directory is ready to be zipped and used in [Structure Harvester](ht
 The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
 You can find documentation about it inside the directory itself.
 
+##Benchmarking processed
+
+You can find some of the scripts used for the benchmarking process inside the *benchmark* directory. Further documentation on this topic can be found inside the directory itself.
+
 ##Citation
 
 If you use Structure_threader, please cite
