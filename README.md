@@ -59,10 +59,6 @@ When all tasks are performed the program will exit with the message:
 After these jobs are run, the program will use [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) to infer the optimal value of "K".
 After this, the program will create plots with the inferred clustering, one for each "K".
 
-##Downstream
-
-The results directory is ready to be zipped and used in [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) or [CLUMPAK](http://clumpak.tau.ac.il/).
-
 ##Test data
 
 The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
