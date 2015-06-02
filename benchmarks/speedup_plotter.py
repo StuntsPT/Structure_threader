@@ -19,11 +19,11 @@ import matplotlib.pyplot as plt
 import numpy
 
 def data_harverster(datafile_name):
-    """Gather speedup data from a csv file and return a np array with it.."""
-    timearray = numpy.genfromtxt(datafile_name, delimiter = ";", autostrip=True, 
+    """Gather speedup data from a csv file and return a np array with it."""
+    timearray = numpy.genfromtxt(datafile_name, delimiter = ";", autostrip=True,
                                  dtype=float, skip_header=True,
                                  filling_values=False)
-    
+
     return timearray
 
 
@@ -46,9 +46,9 @@ def draw_plot(timearray):
              ms=7, label="E5520")
     plt.plot([1, 2, 4, 6, 8], e5, 'kx-', fillstyle="full", ms=7,
              label="E5-2609")
-    
+
     plt.plot(range(16), range(16), 'k-.', label="Linear scaling")
-    
+
     plt.grid(True)
     plt.xlabel("Number of threads")
     plt.ylabel("Speed increase")
