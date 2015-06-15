@@ -17,6 +17,9 @@
 
 # Usage: python3 structplot.py infile outfile
 
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import Counter
