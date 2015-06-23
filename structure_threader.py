@@ -121,7 +121,7 @@ def create_plts(resultsdir):
 
     # Get only relevant output files, choosen randomly from the replictes.
     plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
-                 str(randrange(arg.replicates)) + "_f"
+                 str(randrange(arg.minK, arg.replicates)) + "_f"
                  for i in range(arg.minK, arg.Ks)]
     sp.main(plt_files, "structure", outdir)  # TODO: Use correct format depending on program
 
