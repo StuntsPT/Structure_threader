@@ -14,6 +14,8 @@ Running in python3 also yields ~11% speed gains relatively to python2 (altough t
 Just clone the repository, and place the contents, respecting the directory
 structure in your $PATH.
 
+You can go the the "helper_scripts" directory where you will find some scripts to help you install both *Structure* and *fastStructure*.
+
 
 ##Running
 The program takes a few arguments:
