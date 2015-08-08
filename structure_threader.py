@@ -49,7 +49,15 @@ def runprogram(iterations):
     # Keeps correct directory separator across OS's
     output_file = os.path.join(outpath, "K" + str(K) + "_rep" + str(rep_num))
 
-    cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
+    if arg.faststructure_bin != None:
+        from os import symlink
+        try:
+            symlink(infile, infile+".str")
+        except FileExistsError:
+            pass
+        cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input", infile, "--output", output_file, "--format=str"]
+    elif arg.structure_bin != None:
+        cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
@@ -84,7 +92,7 @@ def structure_threader(Ks, replicates, threads):
 
     # This will automatically create the Pool object, run the jobs and deadlock
     # the function while the children processed are being executed. This will
-    # also allow to iterate over the values return by all workers and to sort
+    # also allow to iterate over the values returned by all workers and to sort
     # them out to see if there were any errors
     pool = Pool(threads).map(runprogram, jobs)
 
@@ -139,49 +147,48 @@ if __name__ == "__main__":
     run_opts = parser.add_argument_group("Structure run options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
 
-    main_exec.add_argument("-st", dest="structure_bin", type=str,
-                           required=False,
-                           help="Location of the structure binary in your "
-                                "environment (default:'%(default)s' - use "
-                                "structure from your $PATH)",
-                           metavar="structure_bin",
-                           default="structure")
-    main_exec.add_argument("-fs", dest="faststructure_bin", type=str,
-                           required=False, default="structure.py",
-                           metavar="faststructure_bin",
-                           help="Location of the fastStructure binary in your "
-                                "environment (default:'%(default)s' - use "
-                                "faststructure from your $PATH)")
+    main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
+
+    main_exec_ex.add_argument("-st", dest="structure_bin", type=str,
+                           default=None,
+                           metavar="filepath",
+                           help="Location of the structure executable in your "
+                                "environment.")
+    main_exec_ex.add_argument("-fs", dest="faststructure_bin", type=str,
+                           default=None,
+                           metavar="filepath",
+                           help="Location of the fastStructure executable "
+                           "(structure.py) in your environment.")
 
     run_opts.add_argument("-K", dest="Ks", type=int, required=True,
-                          help="Number of Ks to run\n", metavar="int")
+                          help="Number of Ks to run.\n", metavar="int")
 
     run_opts.add_argument("--min_K", dest="minK", type=int, required=False,
                           help="Minimum value of \"K\" to test "
-                               "(default:%(default)s)\n",
+                               "(default:%(default)s).\n",
                           metavar="int", default=1)
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=True,
                           help="Number of replicate runs for each value of K "
-                               "(default:%(default)s)\n",
+                               "(default:%(default)s).\n",
                           metavar="int", default=20)
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
-                         help="Input file \n", metavar="infile")
+                         help="Input file.\n", metavar="infile")
 
     io_opts.add_argument("-o", dest="outpath", type=str, required=True,
                          help="Directory where the results will be stored "
-                              "in\n",
+                              "in.\n",
                          metavar="output_directory")
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
                            help="Number of threads to use "
-                                "(default:%(default)s)\n",
+                                "(default:%(default)s).\n",
                            metavar="int", default=4)
 
     misc_opts.add_argument("--log", dest="log", type=bool, required=False,
                            help="Choose this option if you want to enable "
-                                "logging",
+                                "logging.",
                            metavar="bool", default=False)
 
     arg = parser.parse_args()
@@ -201,9 +208,9 @@ if __name__ == "__main__":
 
     structure_threader(Ks, replicates, threads)
 
-    try:
-        structureHarvester(arg.outpath)
-    except sh.Exception as ex:
-        sys.stderr.write(str(ex))
+    # try:
+    #     structureHarvester(arg.outpath)
+    # except sh.Exception as ex:
+    #     sys.stderr.write(str(ex))
 
-    create_plts(arg.outpath)
+    #create_plts(arg.outpath)
