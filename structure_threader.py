@@ -76,7 +76,7 @@ def runprogram(iterations):
     if arg.log is True:
 
         logfile = open(os.path.join(outpath, "K" + str(K) + "_rep" +
-                                    str(rep_num) + ".log"), "w")
+                                    str(rep_num) + ".stlog"), "w")
         print("Writing logfile for K" + str(K) + ", replicate " +
               str(rep_num) + ". Please wait...")
         logfile.write(out)
