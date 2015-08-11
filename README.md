@@ -45,6 +45,19 @@ each value of "K", -i is the input file for STRUCTURE, -o is the directory where
 The program should be run in the same directory as the files "mainparams" and
 "extraparams" for your STRUCTURE run are placed.
 
+###fastStrucutre Warning:
+If running fastStructure, keep in mind that this program requires your input
+file to have each individual represented in two rows (one for each allele), and
+six "bogus" columns before the actual data. Here is a short example:
+
+```
+Ind1    col1  col2  col3  col4  col5 1    3   1   4
+Ind1    col1  col2  col3  col4  col5 1    3   2   4
+Ind2    col1  col2  col3  col4  col5 1    2   1   4
+Ind2    col1  col2  col3  col4  col5 1    2   1   3
+
+```
+
 ##Output
 The program will inform the user of what run is currently being processed by
 outputting the command it is running to STDOUT, such as this:
