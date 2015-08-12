@@ -1,8 +1,10 @@
 # Structure_threader
+
 A simple program to parallelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
 
 
-##Requirements
+## Requirements
+
 Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots and numpy to run "fastChooseK.py".
 
 It *might* also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all).
@@ -10,14 +12,16 @@ It *might* also work with python2, however, this is not as tested as the python3
 Running in python3 also yields ~11% speed gains relatively to python2 (altough this testing was limited).
 
 
-##Installation
+## Installation
+
 Just clone the repository, and place the contents, respecting the directory
 structure in your $PATH.
 
 You can go the the "helper_scripts" directory where you will find some scripts to help you install both *Structure* and *fastStructure*.
 
 
-##Running
+## Running
+
 The program takes a few arguments:
 
 * K (-K)
@@ -45,7 +49,8 @@ each value of "K", -i is the input file for STRUCTURE, -o is the directory where
 The program should be run in the same directory as the files "mainparams" and
 "extraparams" for your STRUCTURE run are placed.
 
-###fastStrucutre Warning:
+### fastStrucutre Warning:
+
 If running fastStructure, keep in mind that this program requires your input
 file to have each individual represented in two rows (one for each allele), and
 six "bogus" columns before the actual data. Here is a short example:
@@ -58,7 +63,8 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ```
 
-##Output
+## Output
+
 The program will inform the user of what run is currently being processed by
 outputting the command it is running to STDOUT, such as this:
 
@@ -74,16 +80,22 @@ When all tasks are performed the program will exit with the message:
 After these jobs are run, the program will use [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) to infer the optimal value of "K".
 After this, the program will create plots with the inferred clustering, one for each "K".
 
-##Test data
+## Test data
 
 The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
 You can find documentation about it inside the directory itself.
 
-##Benchmarking processed
+## Benchmarking processed
 
 You can find some of the scripts used for the benchmarking process inside the *benchmark* directory. Further documentation on this topic can be found inside the directory itself.
 
-##Citation
+## Other workers
+
+The script "fastChooseK.py" was taken from [the original fastStructure repository](https://github.com/rajanil/fastStructure), ported to python 3, largely modified to work as a module for the main script and relicensed as GPLv3.
+
+The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the original structureHarverster repository](https://github.com/dentearl/structureHarvester), ported to python 3, and slightly modified to work as a module for the main script.
+
+## Citation
 
 If you use Structure_threader, please cite
 
