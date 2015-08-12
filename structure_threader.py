@@ -21,7 +21,6 @@ import sys
 import signal
 import subprocess
 import itertools
-import evanno.structureHarvester as sh
 import plotter.structplot as sp
 import sanity_checks.sanity as sanity
 from multiprocessing import Pool
@@ -47,17 +46,19 @@ def runprogram(iterations):
 
     K, rep_num = iterations
     # Keeps correct directory separator across OS's
-    output_file = os.path.join(outpath, "K" + str(K) + "_rep" + str(rep_num))
-
-    if arg.faststructure_bin != None:
+    if wrapped_prog == "structure":
+        output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
+                      str(rep_num))
+        cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
+    else:
+        output_file = os.path.join(outpath, "fS_run_K")
         from os import symlink
         try:
             symlink(infile, infile+".str")
         except FileExistsError:
             pass
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input", infile, "--output", output_file, "--format=str"]
-    elif arg.structure_bin != None:
-        cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
+
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
                                stdout=subprocess.PIPE,
@@ -88,6 +89,9 @@ def runprogram(iterations):
 def structure_threader(Ks, replicates, threads):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
 
+    if wrapped_prog == "fastStructure":
+        replicates = [1]
+
     jobs = list(itertools.product(Ks, replicates))
 
     # This will automatically create the Pool object, run the jobs and deadlock
@@ -112,10 +116,12 @@ def structure_threader(Ks, replicates, threads):
 
 
 def structureHarvester(resultsdir):
-    """Run structureHarvester to perform the Evanno test on the results."""
-    outdir = os.path.join(resultsdir, "evanno")
+    """Run structureHarvester or fastChooseK to perform the Evanno test or the
+    likelihood testing on the results."""
+    outdir = os.path.join(resultsdir, "bestK")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
+
     sh.main(resultsdir, outdir)
 
 
@@ -168,9 +174,10 @@ if __name__ == "__main__":
                                "(default:%(default)s).\n",
                           metavar="int", default=1)
 
-    run_opts.add_argument("-R", dest="replicates", type=int, required=True,
+    run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value of K "
-                               "(default:%(default)s).\n",
+                               "(default:%(default)s).\n"
+                               "Ignored for fastStructure",
                           metavar="int", default=20)
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
@@ -193,10 +200,20 @@ if __name__ == "__main__":
 
     arg = parser.parse_args()
 
-    # Number of K
+    # Figure out which program we are wrapping
+    if arg.faststructure_bin != None:
+        wrapped_prog = "fastStructure"
+        import evanno.fastChooseK as sh
+    else:
+        wrapped_prog = "structure"
+        import evanno.structureHarvester as sh
+
+    # Number of Ks
     Ks = range(arg.minK, arg.Ks + 1)
+
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
+
     infile = arg.infile
     outpath = arg.outpath
 
@@ -208,9 +225,10 @@ if __name__ == "__main__":
 
     structure_threader(Ks, replicates, threads)
 
-    # try:
-    #     structureHarvester(arg.outpath)
-    # except sh.Exception as ex:
-    #     sys.stderr.write(str(ex))
+    try:
+        structureHarvester(arg.outpath)
+    except sh.Exception as ex:
+        sys.stderr.write(str(ex))
 
-    #create_plts(arg.outpath)
+
+    create_plts(arg.outpath)
