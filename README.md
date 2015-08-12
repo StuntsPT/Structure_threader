@@ -107,5 +107,6 @@ If you used the evanno test module, please cite:
  and program for visualizing STRUCTURE output and implementing the Evanno
  method. Conservation Genetics Resources vol. 4 (2) pp. 359-361. doi: 10.1007/s12686-011-9548-7 http://www.springerlink.com/content/jnn011511h415358/
 
-##License
+## License
+
 GPLv3
