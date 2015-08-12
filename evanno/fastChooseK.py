@@ -46,7 +46,7 @@ insum = lambda x,axes: np.apply_over_axes(np.sum,x,axes)
 
 
 class Exception(Exception):
-  pass
+    pass
 
 
 def parse_logs(files):
