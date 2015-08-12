@@ -2,6 +2,7 @@
 """ structureHarvester
 2007-2014
 dent earl, dearl (a) soe ucsc edu
+2015 Francisco Pina Martins <f.pinamartins@gmail.com>
 
 
 http://www.structureharvester.com/
@@ -34,6 +35,7 @@ LICENSE
 
 Copyright (C) 2007-2014 by
 Dent Earl (dearl (a) soe ucsc edu, dentearl (a) gmail com)
+Copyright (C) 2015 by Francisco Pina Martins <f.pinamartins@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
