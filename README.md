@@ -49,6 +49,7 @@ each value of "K", -i is the input file for STRUCTURE, -o is the directory where
 The program should be run in the same directory as the files "mainparams" and
 "extraparams" for your STRUCTURE run are placed.
 
+
 ### fastStrucutre Warning:
 
 If running fastStructure, keep in mind that this program requires your input
@@ -62,6 +63,7 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   4
 Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ```
+
 
 ## Output
 
@@ -80,20 +82,24 @@ When all tasks are performed the program will exit with the message:
 After these jobs are run, the program will use [Structure Harvester](http://taylor0.biology.ucla.edu/struct_harvest/) to infer the optimal value of "K".
 After this, the program will create plots with the inferred clustering, one for each "K".
 
+
 ## Test data
 
 The directory "TestData" in the repository contains some test data that was used in the benchmarking of *Structure_threader*.
 You can find documentation about it inside the directory itself.
 
+
 ## Benchmarking processed
 
 You can find some of the scripts used for the benchmarking process inside the *benchmark* directory. Further documentation on this topic can be found inside the directory itself.
+
 
 ## Other workers
 
 The script "fastChooseK.py" was taken from [the original fastStructure repository](https://github.com/rajanil/fastStructure), ported to python 3, largely modified to work as a module for the main script and relicensed as GPLv3.
 
 The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the original structureHarverster repository](https://github.com/dentearl/structureHarvester), ported to python 3, and slightly modified to work as a module for the main script.
+
 
 ## Citation
 
@@ -106,6 +112,7 @@ If you used the evanno test module, please cite:
 *  Earl, Dent A. and vonHoldt, Bridgett M. (2012) STRUCTURE HARVESTER: a website
  and program for visualizing STRUCTURE output and implementing the Evanno
  method. Conservation Genetics Resources vol. 4 (2) pp. 359-361. doi: 10.1007/s12686-011-9548-7 http://www.springerlink.com/content/jnn011511h415358/
+
 
 ## License
 
