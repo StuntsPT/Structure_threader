@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    #structure_threader(Ks, replicates, threads)
+    structure_threader(Ks, replicates, threads)
 
     try:
         structureHarvester(arg.outpath)
