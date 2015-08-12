@@ -3,7 +3,7 @@ A simple program to parallelize the runs of the [Structure](http://pritchardlab.
 
 
 ##Requirements
-Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots.
+Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots and numpy to run "fastChooseK.py".
 
 It *might* also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all).
 
@@ -28,7 +28,7 @@ The program takes a few arguments:
 * Program location - you have to pass one and only of the following arguments:
     * Structure location (if you want to run "Structure"; -st)
     * fastStructure location (if you want to run "fastStructure"; -fs) -
-     **WARNING** - This is not yet implemented.
+     ~~**WARNING** - This is not yet implemented.~~
 * Logging (optional - useful when problems arise; --log)
 * Minimum K (optional use as a start value for "K" - by default the value is 1; --min_K)
 
