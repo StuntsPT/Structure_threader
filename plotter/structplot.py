@@ -50,7 +50,7 @@ def dataminer(indfile_name, fmt, popfile=None):
                        [x[0] for x in poparray])]
 
     # Parse structure/faststructure output file
-    if fmt == "faststructure":
+    if fmt == "fastStructure":
         qvalues = np.genfromtxt(indfile_name)
 
     else:
@@ -85,7 +85,7 @@ def dataminer(indfile_name, fmt, popfile=None):
                             poplist.append(int(fields[3]))
 
         if not popfile:
-            # Transform poplist in convenient format,in which each element
+            # Transform poplist in convenient format, in which each element
             # is the boundary of a population in the x-axis
             poplist = Counter(poplist)
             poplist = [(x, None) for x in np.cumsum(list(poplist.values()))]
