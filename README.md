@@ -99,7 +99,7 @@ The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the 
 
 If you use Structure_threader, please cite
 
-* Comming soon (hopefully)!
+* Coming soon (hopefully)!
 
 If you used the evanno test module, please cite:
 
