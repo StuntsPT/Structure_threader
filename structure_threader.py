@@ -140,7 +140,7 @@ def create_plts(resultsdir):
                      for i in range(arg.minK, arg.Ks + 1)]
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
-                     for i in range(arg.minK, arg.Ks + 1)]
+                     for i in range(max(arg.minK, 2), arg.Ks + 1)]
 
     sp.main(plt_files, wrapped_prog, outdir)
 
@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    structure_threader(Ks, replicates, threads)
+    #structure_threader(Ks, replicates, threads)
 
     try:
         structureHarvester(arg.outpath)

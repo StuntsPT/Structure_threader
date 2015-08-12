@@ -90,6 +90,7 @@ def dataminer(indfile_name, fmt, popfile=None):
             poplist = Counter(poplist)
             poplist = [(x, None) for x in np.cumsum(list(poplist.values()))]
 
+
     return qvalues, poplist
 
 
