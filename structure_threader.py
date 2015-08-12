@@ -133,11 +133,16 @@ def create_plts(resultsdir):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
-    # Get only relevant output files, choosen randomly from the replictes.
-    plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
-                 str(randrange(arg.minK, arg.replicates)) + "_f"
-                 for i in range(arg.minK, arg.Ks + 1)]
-    sp.main(plt_files, "structure", outdir)  # TODO: Use correct format depending on program
+    if wrapped_prog == "structure":
+        # Get only relevant output files, choosen randomly from the replictes.
+        plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
+                     str(randrange(arg.minK, arg.replicates)) + "_f"
+                     for i in range(arg.minK, arg.Ks + 1)]
+    else:
+        plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
+                     for i in range(arg.minK, arg.Ks + 1)]
+
+    sp.main(plt_files, wrapped_prog, outdir)
 
 if __name__ == "__main__":
     import argparse
