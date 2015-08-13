@@ -45,18 +45,22 @@ def runprogram(iterations):
     worker_status = (None, None)
 
     K, rep_num = iterations
-    # Keeps correct directory separator across OS's
+
     if wrapped_prog == "structure":
+        # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
                       str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
     else:
+        # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "fS_run_K")
         from os import symlink
         try:
             symlink(infile, infile+".str")
-        except FileExistsError:
-            pass
+        except OSError as err:
+            if err.errno != 17:
+                raise
+
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input", infile, "--output", output_file, "--format=str"]
 
     print("Running: " + " ".join(cli))
