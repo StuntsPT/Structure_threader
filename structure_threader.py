@@ -213,6 +213,14 @@ if __name__ == "__main__":
                                 "logging.",
                            metavar="bool", default=False)
 
+    misc_opts.add_argument("--no-tests", dest="notests", type=bool,
+                           required=False, help="Disable best K tests.",
+                           metavar="bool", default=False)
+
+    misc_opts.add_argument("--no-plots", dest="noplot", type=bool,
+                           required=False, help="Disable plot drawing.",
+                           metavar="bool", default=False)
+
     arg = parser.parse_args()
 
     # Where are we?
@@ -247,10 +255,11 @@ if __name__ == "__main__":
 
     structure_threader(Ks, replicates, threads)
 
-    try:
-        structureHarvester(arg.outpath)
-    except sh.Exception as ex:
-        sys.stderr.write(str(ex))
+    if notests == False:
+        try:
+            structureHarvester(arg.outpath)
+        except sh.Exception as ex:
+            sys.stderr.write(str(ex))
 
-
-    create_plts(arg.outpath)
+    if noplot == False:
+        create_plts(arg.outpath)
