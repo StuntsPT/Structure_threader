@@ -255,11 +255,11 @@ if __name__ == "__main__":
 
     structure_threader(Ks, replicates, threads)
 
-    if notests == False:
+    if arg.notests == False:
         try:
             structureHarvester(arg.outpath)
         except sh.Exception as ex:
             sys.stderr.write(str(ex))
 
-    if noplot == False:
+    if arg.noplot == False:
         create_plts(arg.outpath)
