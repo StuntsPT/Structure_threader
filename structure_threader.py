@@ -31,6 +31,7 @@ def gracious_exit(*args):
     """Graciously exit the program."""
     print("\rExiting graciously, murdering child processes and cleaning output"
           " directory", end="")
+    os.chdir(cwd)
     sys.exit(0)
 
 
@@ -96,7 +97,6 @@ def structure_threader(Ks, replicates, threads):
     if wrapped_prog == "fastStructure":
         replicates = [1]
     else:
-        cwd = os.getcwd()
         os.chdir(os.path.dirname(infile))
 
 
@@ -214,6 +214,9 @@ if __name__ == "__main__":
                            metavar="bool", default=False)
 
     arg = parser.parse_args()
+
+    # Where are we?
+    cwd = os.getcwd()
 
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
