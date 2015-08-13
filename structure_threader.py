@@ -235,8 +235,8 @@ if __name__ == "__main__":
         import evanno.structureHarvester as sh
 
     # Switch relative to absolute paths
-    infile = os.path.abspath(infile)
-    outpath = os.path.abspath(outpath)
+    arg.infile = os.path.abspath(arg.infile)
+    arg.outpath = os.path.abspath(arg.outpath)
 
     # Number of Ks
     Ks = range(arg.minK, arg.Ks + 1)
