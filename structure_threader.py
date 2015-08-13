@@ -95,6 +95,10 @@ def structure_threader(Ks, replicates, threads):
 
     if wrapped_prog == "fastStructure":
         replicates = [1]
+    else:
+        cwd = os.getcwd()
+        os.chdir(os.path.dirname(infile))
+
 
     jobs = list(itertools.product(Ks, replicates))
 
@@ -117,6 +121,8 @@ def structure_threader(Ks, replicates, threads):
             print(out)
     else:
         print("All %s jobs finished successfully." % len(pool))
+
+    os.chdir(cwd)
 
 
 def structureHarvester(resultsdir):
@@ -216,6 +222,10 @@ if __name__ == "__main__":
     else:
         wrapped_prog = "structure"
         import evanno.structureHarvester as sh
+
+    # Switch relative to absolute paths
+    infile = os.path.abspath(infile)
+    outpath = os.path.abspath(outpath)
 
     # Number of Ks
     Ks = range(arg.minK, arg.Ks + 1)
