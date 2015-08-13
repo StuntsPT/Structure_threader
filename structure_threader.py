@@ -100,7 +100,7 @@ def structure_threader(Ks, replicates, threads):
         os.chdir(os.path.dirname(infile))
 
 
-    jobs = list(itertools.product(Ks, replicates))
+    jobs = list(itertools.product(Ks, replicates))[::-1]
 
     # This will automatically create the Pool object, run the jobs and deadlock
     # the function while the children processed are being executed. This will
