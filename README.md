@@ -34,7 +34,9 @@ The program takes a few arguments:
     * fastStructure location (if you want to run "fastStructure"; -fs) -
      ~~**WARNING** - This is not yet implemented.~~
 * Logging (optional - useful when problems arise; --log)
-* Minimum K (optional use as a start value for "K" - by default the value is 1; --min_K)
+* Minimum K (optional - use as a start value for "K" - by default the value is 1; --min_K)
+* No-tests (optional - use this if you do not want to run the BestK tests; --no-tests)
+* No-plots (optional - use this if you do not want to draw plots; --no-plots)
 
 Example:
 
