@@ -7,5 +7,5 @@ datafile=BigTestData
 for i in ${ks}
 do
   echo "Currently running K=${i}."
-  python2 ~/Software/fastStructure/structure.py -K $i --input=../TestData/${datafile} --output=../TestData/${datafile}_out --format=str
+  /usr/bin/time -f %E python2 ~/Software/fastStructure/structure.py -K $i --input=../TestData/${datafile} --output=../TestData/${datafile}_out --format=str
 done
