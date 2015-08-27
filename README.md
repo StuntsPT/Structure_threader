@@ -1,6 +1,6 @@
 # Structure_threader
 
-A simple program to parallelize the runs of the [Structure](http://pritchardlab.stanford.edu/structure.html) software.
+A simple program to parallelize the runs of [Structure](http://pritchardlab.stanford.edu/structure.html) and [fastStructure](https://rajanil.github.io/fastStructure/) software.
 
 
 ## Requirements
