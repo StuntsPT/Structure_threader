@@ -13,7 +13,7 @@ for i in {1..4}
   do
       for j in {1..4}
         do
-  ./structure_kernel_src/structure -i Reduced_dataset.structure -o output -K \$i >> \$LOG_FILE 2>&1
+  ./structure_kernel_src/structure -i Reduced_dataset.structure -o output_K\${i}_R\${j} -K \${i} >> \$LOG_FILE 2>&1
         done
   done
 
