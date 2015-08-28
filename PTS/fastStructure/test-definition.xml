@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--Phoronix Test Suite v5.8.0-->
+<PhoronixTestSuite>
+  <TestInformation>
+    <Title>Timed 16 fastStructure runs</Title>
+    <AppVersion>1.0</AppVersion>
+    <Description>Single threaded bayesian calculation of population attribution. Will calculate clusterings for 4 values of "K" with 4 replciates for each value of "K".</Description>
+    <ResultScale>Seconds</ResultScale>
+    <Proportion>LIB</Proportion>
+    <SubTitle>1000 genomes Chr23 clustering</SubTitle>
+    <TimesToRun>3</TimesToRun>
+  </TestInformation>
+  <TestProfile>
+    <Version>0.1</Version>
+    <SupportedPlatforms>Linux, Solaris, MacOSX, BSD</SupportedPlatforms>
+    <SoftwareType>Scientific</SoftwareType>
+    <TestType>Processor</TestType>
+    <License>Free</License>
+    <Status>Verified</Status>
+    <ExternalDependencies>build-essential</ExternalDependencies>
+    <EnvironmentSize>1.0</EnvironmentSize>
+    <ProjectURL>https://rajanil.github.io/fastStructure</ProjectURL>
+    <Maintainer>Francisco Pina-Martins</Maintainer>
+  </TestProfile>
+</PhoronixTestSuite>
