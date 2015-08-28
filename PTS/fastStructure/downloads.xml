@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--Phoronix Test Suite v3.8.0m1 (Bygland)-->
+<PhoronixTestSuite>
+  <Downloads>
+
+    <Package>
+      <URL>https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz</URL>
+      <MD5>5cbb76e7d49e27a57046ab641b666f97</MD5>
+      <FileName>v1.0.tar.gz</FileName>
+    </Package>
+
+    <Package>
+      <URL>https://github.com/StuntsPT/Structure_threader/raw/master/PTS/data/BigTestData.str.tar.xz</URL>
+      <MD5>1115759c154152b264a4ff5f87c34c1d</MD5>
+      <FileName>BigTestData.str.tar.xz</FileName>
+    </Package>
+
+  </Downloads>
+</PhoronixTestSuite>
