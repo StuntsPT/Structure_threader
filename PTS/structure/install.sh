@@ -4,7 +4,6 @@ tar -zxvf structure_kernel_source.tar.gz
 
 cd structure_kernel_src
 make
-echo $? > ~/install-exit-status
 cd ..
 
 echo "#!/bin/bash
@@ -17,5 +16,5 @@ for i in {1..4}
         done
   done
 
-echo \$? > ~/test-exit-status" > structure
+" > structure
 chmod +x structure
