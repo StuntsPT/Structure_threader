@@ -8,7 +8,7 @@
     <ResultScale>Seconds</ResultScale>
     <Proportion>LIB</Proportion>
     <SubTitle>Cork Oak clustering</SubTitle>
-    <TimesToRun>2</TimesToRun>
+    <TimesToRun>3</TimesToRun>
   </TestInformation>
   <TestProfile>
     <Version>1.0</Version>
