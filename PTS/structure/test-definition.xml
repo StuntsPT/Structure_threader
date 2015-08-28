@@ -11,7 +11,7 @@
     <TimesToRun>2</TimesToRun>
   </TestInformation>
   <TestProfile>
-    <Version>0.1</Version>
+    <Version>1.0</Version>
     <SupportedPlatforms>Linux, Solaris, MacOSX, BSD</SupportedPlatforms>
     <SoftwareType>Scientific</SoftwareType>
     <TestType>Processor</TestType>
