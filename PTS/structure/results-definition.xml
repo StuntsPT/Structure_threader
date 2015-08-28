@@ -2,6 +2,7 @@
 <!--Phoronix Test Suite v5.8.0-->
 <PhoronixTestSuite>
   <ResultsParser>
-    <OutputTemplate>Calculations took: 86 seconds (#_RESULT_# seconds)</OutputTemplate>
-  </ResultsParser>
+      <SystemMonitor>
+        <Sensor>sys.time</Sensor>
+      </SystemMonitor>
 </PhoronixTestSuite>
