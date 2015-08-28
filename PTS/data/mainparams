@@ -5,16 +5,16 @@ FILE extraparams.
 
 
 "(int)" means that this takes an integer value.
-"(B)"   means that this variable is Boolean 
+"(B)"   means that this variable is Boolean
         (ie insert 1 for True, and 0 for False)
-"(str)" means that this is a string (but not enclosed in quotes!) 
+"(str)" means that this is a string (but not enclosed in quotes!)
 
 
 Basic Program Parameters
 
 #define MAXPOPS   KKK      // (int) number of populations assumed
-#define BURNIN    50000   // (int) length of burnin period
-#define NUMREPS   300000   // (int) number of MCMC reps after burnin
+#define BURNIN    5000   // (int) length of burnin period
+#define NUMREPS   100000   // (int) number of MCMC reps after burnin
 
 Input/Output files
 
@@ -32,18 +32,18 @@ Data file format
 
 #define LABEL     1     // (B) Input file contains individual labels
 #define POPDATA   1     // (B) Input file contains a population identifier
-#define POPFLAG   0     // (B) Input file contains a flag which says 
+#define POPFLAG   0     // (B) Input file contains a flag which says
                               whether to use popinfo when USEPOPINFO==1
 #define LOCDATA   0     // (B) Input file contains a location identifier
 
 #define PHENOTYPE 0     // (B) Input file contains phenotype information
-#define EXTRACOLS 0     // (int) Number of additional columns of data 
+#define EXTRACOLS 0     // (int) Number of additional columns of data
                              before the genotype data start.
 
 #define MARKERNAMES      1  // (B) data file contains row of marker names
 #define RECESSIVEALLELES 0  // (B) data file contains dominant markers (eg AFLPs)
                             // and a row to indicate which alleles are recessive
-#define MAPDISTANCES     0  // (B) data file contains row of map distances 
+#define MAPDISTANCES     0  // (B) data file contains row of map distances
                             // between loci
 
 
@@ -62,12 +62,9 @@ Command line options:
 -m mainparams
 -e extraparams
 -s stratparams
--K MAXPOPS 
+-K MAXPOPS
 -L NUMLOCI
 -N NUMINDS
 -i input file
 -o output file
 -D SEED
-
-
-
