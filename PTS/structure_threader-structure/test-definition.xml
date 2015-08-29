@@ -18,7 +18,7 @@
     <License>Free</License>
     <Status>Verified</Status>
     <ExternalDependencies>build-essential</ExternalDependencies>
-    <EnvironmentSize>1.0</EnvironmentSize>
+    <EnvironmentSize>341</EnvironmentSize>
     <ProjectURL>https://github.com/StuntsPT/Structure_threader</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
   </TestProfile>
