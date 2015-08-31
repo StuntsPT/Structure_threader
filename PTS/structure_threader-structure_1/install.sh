@@ -24,5 +24,5 @@ echo "#!/bin/bash
 workdir=`pwd`
 cd Structure_threader-0.1-rc3/
 python3 structure_threader.py \$@ -st \${workdir}/structure_kernel_src/structure > \$LOG_FILE 2>&1
-" > structure_threader-structure
-chmod +x structure_threader-structure
+" > structure_threader-structure_1
+chmod +x structure_threader-structure_1
