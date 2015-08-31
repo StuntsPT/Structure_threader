@@ -1,6 +1,7 @@
 #!/bin/sh
 
 tar -zxvf v1.0.tar.gz
+tar -xvfJ BigTestData.str.tar.xz
 
 cd fastStructure-1.0/vars
 python2 setup.py build-ext --inplace

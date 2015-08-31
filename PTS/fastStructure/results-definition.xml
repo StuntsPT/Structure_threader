@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
-<!--Phoronix Test Suite v3.8.0m1 (Bygland)-->
+<!--Phoronix Test Suite v5.8.0-->
 <PhoronixTestSuite>
-  <ResultsParser>
-    <OutputTemplate>Rendering took: 86 seconds (#_RESULT_# milliseconds)</OutputTemplate>
-    <DivideResultBy>1000</DivideResultBy>
-  </ResultsParser>
+  <SystemMonitor>
+    <Sensor>sys.time</Sensor>
+  </SystemMonitor>
 </PhoronixTestSuite>

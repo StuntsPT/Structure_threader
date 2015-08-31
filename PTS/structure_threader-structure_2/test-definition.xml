@@ -19,7 +19,7 @@
     <Status>Verified</Status>
     <ExternalDependencies>build-essential</ExternalDependencies>
     <EnvironmentSize>2</EnvironmentSize>
-    <ProjectURL>https://github.com/StuntsPT/Structure_threader</ProjectURL>
+    <ProjectURL>http://github.com/StuntsPT/Structure_threader</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
   </TestProfile>
   <TestSettings>

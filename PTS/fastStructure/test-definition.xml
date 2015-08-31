@@ -17,7 +17,7 @@
     <TestType>Processor</TestType>
     <License>Free</License>
     <Status>Verified</Status>
-    <ExternalDependencies>build-essential</ExternalDependencies>
+    <ExternalDependencies>python-numpy, cython, GSL, python-scipy</ExternalDependencies>
     <EnvironmentSize>1.0</EnvironmentSize>
     <ProjectURL>https://rajanil.github.io/fastStructure</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
