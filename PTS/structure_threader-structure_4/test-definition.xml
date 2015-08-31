@@ -2,7 +2,7 @@
 <!--Phoronix Test Suite v5.8.0 (Belev)-->
 <PhoronixTestSuite>
   <TestInformation>
-    <Title>Timed 16 Structure runs on 2 threads</Title>
+    <Title>Timed 16 Structure runs on 4 threads</Title>
     <AppVersion>0.1-rc3</AppVersion>
     <Description>Multi threaded bayesian calculation of population attribution, using the "Structure" algorithm. Will calculate clusterings for 4 values of "K" with 4 replciates for each value of "K".</Description>
     <ResultScale>Seconds</ResultScale>
