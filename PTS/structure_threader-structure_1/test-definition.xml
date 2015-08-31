@@ -18,8 +18,13 @@
     <License>Free</License>
     <Status>Verified</Status>
     <ExternalDependencies>build-essential</ExternalDependencies>
-    <EnvironmentSize>341</EnvironmentSize>
+    <EnvironmentSize>2</EnvironmentSize>
     <ProjectURL>https://github.com/StuntsPT/Structure_threader</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
   </TestProfile>
+  <TestSettings>
+    <Default>
+      <Arguments>-i ../Reduced_dataset.structure -o ../ -K 4 -R 4 -t 1 -st \${workdir}/structure_kernel_src/structure --no-plots 1 --no-tests 1</Arguments>
+    </Default>
+</TestSettings>
 </PhoronixTestSuite>
