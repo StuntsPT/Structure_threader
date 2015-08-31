@@ -27,46 +27,5 @@
     <MD5>c4f5fe55b6a496b8c55a0538fcc173d7</MD5>
     <FileSize>6257</FileSize>
   </Package>
-  <Package>
-    <URL>https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz</URL>
-    <MD5>5cbb76e7d49e27a57046ab641b666f97</MD5>
-    <FileName>v1.0.tar.gz</FileName>
-</Package>
-<Package>
-  <URL>http://pypi.python.org/packages/source/n/nose/nose-1.3.6.tar.gz</URL>
-  <MD5>0ca546d81ca8309080fc80cb389e7a16</MD5>
-  <FileName>nose-1.3.6.tar.gz</FileName>
-  <FileSize>276273</FileSize>
-</Package>
-<Package>
-  <URL>https://github.com/numpy/numpy/archive/v1.9.2.tar.gz</URL>
-  <MD5>90f7434759088acccfddf5ba61b1f908</MD5>
-  <FileName>v1.9.2.tar.gz</FileName>
-  <FileSize>4230459</FileSize>
-</Package>
-<Package>
-  <URL>https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz</URL>
-  <MD5>c2e7cf084b0242275ee54df1cf2e9c92</MD5>
-  <FileName>v0.16.0b2.tar.gz</FileName>
-  <FileSize>11608327</FileSize>
-</Package>
-<Package>
-  <URL>http://cython.org/release/Cython-0.22.zip</URL>
-  <MD5>b22af7b964903ceff57167dc7d5b9b51</MD5>
-  <FileName>Cython-0.22.zip</FileName>
-  <FileSize>2095055</FileSize>
-</Package>
-<Package>
-  <URL>http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz</URL>
-  <MD5>e49a664db13d81c968415cd53f62bc8b</MD5>
-  <FileName>gsl-latest.tar.gz</FileName>
-  <FileSize>3534080</FileSize>
-</Package>
-<Package>
-  <URL>http://www.netlib.org/lapack/lapack-3.5.0.tgz</URL>
-  <MD5>b1d3e3e425b2e44a06760ff173104bdf</MD5>
-  <FileName>lapack-3.5.0.tgz</FileName>
-  <FileSize>6313139</FileSize>
-</Package>
   </Downloads>
 </PhoronixTestSuite>
