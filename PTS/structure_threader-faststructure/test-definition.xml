@@ -2,9 +2,9 @@
 <!--Phoronix Test Suite v5.8.0 (Belev)-->
 <PhoronixTestSuite>
   <TestInformation>
-    <Title>Timed 16 Structure runs</Title>
+    <Title>Timed 16 fastStructure runs</Title>
     <AppVersion>0.1-rc3</AppVersion>
-    <Description>Multi threaded bayesian calculation of population attribution, using the "Structure" algorithm. Will calculate clusterings for 4 values of "K" with 4 replciates for each value of "K".</Description>
+    <Description>Multi threaded bayesian calculation of population attribution, using the "fastStructure" algorithm. Will calculate clusterings for 16 values of "K".</Description>
     <ResultScale>Seconds</ResultScale>
     <Proportion>LIB</Proportion>
     <SubTitle>Cork Oak clustering</SubTitle>
@@ -19,7 +19,12 @@
     <Status>Verified</Status>
     <ExternalDependencies>build-essential</ExternalDependencies>
     <EnvironmentSize>341</EnvironmentSize>
-    <ProjectURL>https://github.com/StuntsPT/Structure_threader</ProjectURL>
+    <ProjectURL>http://github.com/StuntsPT/Structure_threader</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
   </TestProfile>
+  <TestSettings>
+    <Default>
+      <Arguments>-i ../BigTestData -o ../ -K 16 -t 1 --no-plots 1 --no-tests 1</Arguments>
+    </Default>
+  </TestSettings>
 </PhoronixTestSuite>

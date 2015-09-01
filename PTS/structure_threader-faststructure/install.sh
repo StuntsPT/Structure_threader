@@ -73,11 +73,9 @@ python2 setup.py build_ext --inplace
 cd ..
 python2 setup.py build_ext --inplace
 
-# Structure
+# Dataset
 cd ${testdir}
-tar -zxvf structure_kernel_source.tar.gz
-cd structure_kernel_src
-make
+tar xvfJ BigTestData.str.tar.xz
 
 # Structure_threader
 cd ${testdir}
@@ -88,6 +86,6 @@ tar xfvz v0.1-rc3.tar.gz
 echo "#!/bin/bash
 workdir=`pwd`
 cd Structure_threader-0.1-rc3/
-python3 structure_threader.py -i ../Reduced_dataset.structure -o ../ -K 4 -R 4 -t \$NUM_CPU_CORES -st \${workdir}/structure_kernel_src/structure --no-plots 1 --no-tests 1 > \$LOG_FILE 2>&1
-" > structure_threader-structure
-chmod +x structure_threader-structure
+python3 structure_threader.py \$@ -fs \${workdir}/fastStructure-1.0/structure.py > \$LOG_FILE 2>&1
+" > structure_threader-faststructure
+chmod +x structure_threader-faststructure
