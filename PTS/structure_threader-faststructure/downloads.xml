@@ -8,9 +8,9 @@
       <FileName>v0.1-rc3.tar.gz</FileName>
   </Package>
   <Package>
-    <URL>https://raw.githubusercontent.com/StuntsPT/Structure_threader/master/PTS/data/Reduced_dataset.structure</URL>
-    <MD5>1665111727e05d4ba3eea253a986c374</MD5>
-    <FileSize>5317</FileSize>
+    <URL>https://raw.githubusercontent.com/StuntsPT/Structure_threader/master/PTS/data/BigTestData.str.tar.xz</URL>
+    <MD5>1115759c154152b264a4ff5f87c34c1d</MD5>
+    <FileSize>71044</FileSize>
   </Package>
   <Package>
     <URL>https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz</URL>

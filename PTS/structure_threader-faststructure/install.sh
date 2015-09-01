@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Define test dir
 testdir=`pwd`
 
@@ -66,7 +68,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${envdir}/lib
 export CFLAGS="-I${envdir}/include"
 export LDFLAGS="-L${envdir}/lib"
 cd ${testdir}
-tar xvfz fastStructure-1.0.tar.gz
+tar xvfz v1.0.tar.gz
 cd  fastStructure-1.0
 cd vars
 python2 setup.py build_ext --inplace
