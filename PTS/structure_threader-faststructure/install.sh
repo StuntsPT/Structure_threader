@@ -19,9 +19,9 @@ mkdir -p build-lapack
 cd build-lapack
 cmake ../lapack-3.5.0
 make
-mkdir -p ${envdir}/{bin,lib}
-mv bin/* ${envdir}/bin
-mv lib/* ${envdir}/lib
+#mkdir -p ${envdir}/{bin,lib}
+mv bin ${envdir}
+mv lib ${envdir}
 
 # cython
 cd ${testdir}
