@@ -27,7 +27,7 @@ mv lib ${envdir}
 cd ${testdir}
 unzip Cython-0.22.zip
 cd Cython-0.22
-PYTHONPATH=$PYTHONPATH:${envdir}
+export PYTHONPATH=$PYTHONPATH:${envdir}
 python2 setup.py install --prefix=${envdir}
 
 # python-nose
