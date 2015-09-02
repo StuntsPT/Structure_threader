@@ -27,13 +27,13 @@ mv lib ${envdir}
 cd ${testdir}
 unzip Cython-0.22.zip
 cd Cython-0.22
-python2 setup.py install -b ${envdir}
+python2 setup.py install --prefix=${envdir}
 
 # python-nose
 cd ${testdir}
 tar xvfz nose-1.3.6.tar.gz
 cd nose-1.3.6
-python2 setup.py install -b ${envdir}
+python2 setup.py install --prefix=${envdir}
 
 # numpy
 cd ${testdir}
@@ -45,13 +45,13 @@ sed -e "s|#![ ]*/usr/bin/python$|#!/usr/bin/python2|" \
     -i $(find . -name '*.py')
 export ATLAS=None
 export LDFLAGS="$LDFLAGS -shared"
-python2 setup.py install -b ${envdir}
+python2 setup.py install --prefix=${envdir}
 
 # scipy
 cd ${testdir}
 tar xvfz scipy.tar.gz
 cd scipy-0.16.0b2
-python2 setup.py install -b ${envdir}
+python2 setup.py install --prefix=${envdir}
 
 # GNU scientific library
 cd ${testdir}
