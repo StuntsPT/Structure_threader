@@ -28,7 +28,7 @@ cd ${testdir}
 unzip Cython-0.22.zip
 cd Cython-0.22
 export PYTHONPATH=$PYTHONPATH:${envdir}
-python2 setup.py install --prefix=${envdir}
+python2 setup.py install --prefix=${envdir}/lib/python2.7/site-packages/
 
 # python-nose
 cd ${testdir}
@@ -49,7 +49,6 @@ export LDFLAGS="$LDFLAGS -shared"
 python2 setup.py install --prefix=${envdir}
 
 # scipy
-export PYTHONPATH=$PYTHONPATH:${envdir}/lib/python2.7
 cd ${testdir}
 tar xvfz v0.16.0b2.tar.gz
 cd scipy-0.16.0b2
