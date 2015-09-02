@@ -37,7 +37,7 @@ python2 setup.py install --prefix=${envdir}
 
 # numpy
 cd ${testdir}
-tar xvfz numpy.tar.gz
+tar xvfz v1.9.2.tar.gz
 cd numpy-1.9.2
 sed -e "s|#![ ]*/usr/bin/python$|#!/usr/bin/python2|" \
     -e "s|#![ ]*/usr/bin/env python$|#!/usr/bin/env python2|" \
