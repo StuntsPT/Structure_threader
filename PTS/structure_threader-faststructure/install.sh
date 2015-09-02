@@ -49,6 +49,7 @@ export LDFLAGS="$LDFLAGS -shared"
 python2 setup.py install --prefix=${envdir}
 
 # scipy
+export PYTHONPATH=$PYTHONPATH:${envdir}/lib/python2.7
 cd ${testdir}
 tar xvfz v0.16.0b2.tar.gz
 cd scipy-0.16.0b2
