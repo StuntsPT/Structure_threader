@@ -50,7 +50,7 @@ python2 setup.py install --prefix=${envdir}
 
 # scipy
 cd ${testdir}
-tar xvfz scipy.tar.gz
+tar xvfz v0.16.0b2.tar.gz
 cd scipy-0.16.0b2
 python2 setup.py install --prefix=${envdir}
 
