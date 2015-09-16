@@ -30,6 +30,7 @@
       <DisplayName>Number of threads to use</DisplayName>
       <Identifier>Number_of_threads</Identifier>
       <ArgumentPrefix>-t </ArgumentPrefix>
+      <DefaultEntry>0</DefaultEntry>
       <Menu>
         <Entry>
           <Name>Single thread</Name>
