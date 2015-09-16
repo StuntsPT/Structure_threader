@@ -2,7 +2,7 @@
 <!--Phoronix Test Suite v5.8.0 (Belev)-->
 <PhoronixTestSuite>
   <TestInformation>
-    <Title>Timed Structure_threader wrapped fastStructure 16 K's</Title>
+    <Title>Timed wrapped fastStructure runs for 16 Ks</Title>
     <AppVersion>0.1-rc3</AppVersion>
     <Description>Multi threaded bayesian calculation of population attribution, using the "fastStructure" algorithm. Will calculate clusterings for 16 values of "K".</Description>
     <ResultScale>Seconds</ResultScale>
@@ -11,13 +11,13 @@
     <TimesToRun>3</TimesToRun>
   </TestInformation>
   <TestProfile>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <SupportedPlatforms>Linux, Solaris, MacOSX, BSD</SupportedPlatforms>
     <SoftwareType>Scientific</SoftwareType>
     <TestType>Processor</TestType>
     <License>Free</License>
     <Status>Verified</Status>
-    <ExternalDependencies>build-essential</ExternalDependencies>
+    <ExternalDependencies>build-utils, python</ExternalDependencies>
     <EnvironmentSize>341</EnvironmentSize>
     <ProjectURL>http://github.com/StuntsPT/Structure_threader</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
@@ -66,14 +66,6 @@
         <Entry>
           <Name>16 threads</Name>
           <Value>16</Value>
-        </Entry>
-        <Entry>
-          <Name>24 threads</Name>
-          <Value>24</Value>
-        </Entry>
-        <Entry>
-          <Name>32 threads</Name>
-          <Value>32</Value>
         </Entry>
       </Menu>
     </Option>
