@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--Phoronix Test Suite v5.8.0 (Belev)-->
+<PhoronixTestSuite>
+  <Downloads>
+    <Package>
+      <URL>https://github.com/StuntsPT/Structure_threader/archive/v0.1-rc3.tar.gz</URL>
+      <MD5>ca5c134d8fc24760fd47d730adfde892</MD5>
+      <FileSize>235897</FileSize>
+      <FileName>v0.1-rc3.tar.gz</FileName>
+  </Package>
+  <Package>
+    <URL>http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz</URL>
+    <MD5>4e0591678cdbfe79347d272b5dceeda1</MD5>
+    <FileSize>66375</FileSize>
+  </Package>
+  <Package>
+    <URL>https://raw.githubusercontent.com/StuntsPT/Structure_threader/master/PTS/data/Reduced_dataset.structure</URL>
+    <MD5>1665111727e05d4ba3eea253a986c374</MD5>
+    <FileSize>5317</FileSize>
+  </Package>
+  <Package>
+    <URL>https://raw.githubusercontent.com/StuntsPT/Structure_threader/master/PTS/data/mainparams</URL>
+    <MD5>4e41f743c66c3dcd926463a831ab1cda</MD5>
+    <FileSize>2596</FileSize>
+  </Package>
+  <Package>
+    <URL>https://raw.githubusercontent.com/StuntsPT/Structure_threader/master/PTS/data/extraparams</URL>
+    <MD5>c4f5fe55b6a496b8c55a0538fcc173d7</MD5>
+    <FileSize>6257</FileSize>
+  </Package>
+  </Downloads>
+</PhoronixTestSuite>
