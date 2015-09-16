@@ -33,7 +33,7 @@
       <DefaultEntry>0</DefaultEntry>
       <Menu>
         <Entry>
-          <Name>Single thread</Name>
+          <Name>1 thread</Name>
           <Value>1</Value>
         </Entry>
         <Entry>
