@@ -2,7 +2,7 @@
 <!--Phoronix Test Suite v5.8.0 (Belev)-->
 <PhoronixTestSuite>
   <TestInformation>
-    <Title>Timed 16 fastStructure runs</Title>
+    <Title>Timed Structure_threader wrapped fastStructure 16 K's</Title>
     <AppVersion>0.1-rc3</AppVersion>
     <Description>Multi threaded bayesian calculation of population attribution, using the "fastStructure" algorithm. Will calculate clusterings for 16 values of "K".</Description>
     <ResultScale>Seconds</ResultScale>
@@ -24,7 +24,58 @@
   </TestProfile>
   <TestSettings>
     <Default>
-      <Arguments>-i ../BigTestData -o ../ -K 16 -t 1 --no-plots 1 --no-tests 1</Arguments>
+      <Arguments>-i ../BigTestData -o ../ -K 16 --no-plots 1 --no-tests 1</Arguments>
     </Default>
+    <Option>
+      <DisplayName>Number of threads to use</DisplayName>
+      <Identifier>Number_of_threads</Identifier>
+      <ArgumentPrefix>-t </ArgumentPrefix>
+      <Menu>
+        <Entry>
+          <Name>Single thread</Name>
+          <Value>1</Value>
+        </Entry>
+        <Entry>
+          <Name>2 threads</Name>
+          <Value>2</Value>
+        </Entry>
+        <Entry>
+          <Name>4 threads</Name>
+          <Value>4</Value>
+        </Entry>
+        <Entry>
+          <Name>6 threads</Name>
+          <Value>6</Value>
+        </Entry>
+        <Entry>
+          <Name>8 threads</Name>
+          <Value>8</Value>
+        </Entry>
+        <Entry>
+          <Name>10 threads</Name>
+          <Value>10</Value>
+        </Entry>
+        <Entry>
+          <Name>12 threads</Name>
+          <Value>12</Value>
+        </Entry>
+        <Entry>
+          <Name>14 threads</Name>
+          <Value>14</Value>
+        </Entry>
+        <Entry>
+          <Name>16 threads</Name>
+          <Value>16</Value>
+        </Entry>
+        <Entry>
+          <Name>24 threads</Name>
+          <Value>24</Value>
+        </Entry>
+        <Entry>
+          <Name>32 threads</Name>
+          <Value>32</Value>
+        </Entry>
+      </Menu>
+    </Option>
   </TestSettings>
 </PhoronixTestSuite>
