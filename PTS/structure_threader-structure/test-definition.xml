@@ -24,7 +24,7 @@
   </TestProfile>
   <TestSettings>
     <Default>
-      <Arguments>-i ../Reduced_dataset.structure -o ../ -K 4 -R 4 -st \${workdir}/structure_kernel_src/structure --no-plots 1 --no-tests 1</Arguments>
+      <Arguments>-i ../Reduced_dataset.structure -o ../ -K 4 -R 4 --no-plots 1 --no-tests 1</Arguments>
     </Default>
     <Option>
       <DisplayName>Number of threads to use</DisplayName>
