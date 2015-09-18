@@ -57,21 +57,21 @@ def dataminer(indfile_name, fmt, popfile=None):
         qvalues = np.array([])
 
         # Start file parsing
-        r = False
+        parse = False
         with open(indfile_name) as file_handle:
             for line in file_handle:
                 if line.strip().lower().startswith("inferred ancestry of "
                                                    "individuals:"):
                     # Enter parse mode ON
-                    r = True
+                    parse = True
                     # Skip subheader
                     next(file_handle)
                 elif line.strip().lower().startswith("estimated allele "
                                                      "frequencies in each "
                                                      "cluster"):
                     # parse mode OFF
-                    r = False
-                elif r:
+                    parse = False
+                elif parse:
                     if line.strip() != "":
                         fields = line.strip().split()
                         # Get cluster values
@@ -130,27 +130,27 @@ def plotter(qvalues, poplist, outfile):
         if i == 0:
             ax.bar(range(numinds), qvalues[:, i], facecolor=clr,
                    edgecolor="none", width=1)
-            formerQ = qvalues[:, i]
+            former_q = qvalues[:, i]
         else:
-            ax.bar(range(numinds), qvalues[:, i], bottom=formerQ,
+            ax.bar(range(numinds), qvalues[:, i], bottom=former_q,
                    facecolor=clr, edgecolor="none", width=1)
-            formerQ = formerQ + qvalues[:, i]
+            former_q = former_q + qvalues[:, i]
 
     # Annotate population info
     if poplist:
-        c = 1
-        for p, vals in enumerate(poplist):
+        count = 1
+        for ppl, vals in enumerate(poplist):
             # Add population delimiting lines
             plt.axvline(x=vals[0], linewidth=1.5, color='black')
             # Add population labels
             # Determine x pos
-            xpos = vals[0] - ((vals[0] - poplist[p - 1][0]) / 2) if p > 0 \
+            xpos = vals[0] - ((vals[0] - poplist[ppl - 1][0]) / 2) if ppl > 0 \
                 else vals[0] / 2
             # Draw text
-            ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(c),
+            ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
                     rotation=45, va="top", ha="right", fontsize=14,
                     weight="bold")
-            c += 1
+            count += 1
 
     for axis in ["top", "bottom", "left", "right"]:
         ax.spines[axis].set_linewidth(2)
@@ -168,9 +168,9 @@ def main(result_files, fmt, outdir, popfile=None):
     :return:
     """
 
-    for f in result_files:
-        data, pops = dataminer(f, fmt, popfile)
+    for files in result_files:
+        data, pops = dataminer(files, fmt, popfile)
         # Get output file name from input file name
-        outfile = os.path.join(outdir, f.split(os.sep)[-1])
+        outfile = os.path.join(outdir, files.split(os.sep)[-1])
         # Create plots
         plotter(data, pops, outfile)
