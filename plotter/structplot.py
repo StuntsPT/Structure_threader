@@ -174,3 +174,10 @@ def main(result_files, fmt, outdir, popfile=None):
         outfile = os.path.join(outdir, files.split(os.sep)[-1])
         # Create plots
         plotter(data, pops, outfile)
+
+if __name__ == "__main__":
+    from sys import argv
+    # Usage: structplot.py results_files format outdir
+    datafile = []
+    datafile.append(argv[1])
+    main(datafile, argv[2], argv[3])
