@@ -177,7 +177,7 @@ def main(result_files, fmt, outdir, popfile=None):
 
 if __name__ == "__main__":
     from sys import argv
-    # Usage: structplot.py results_files format outdir
+    # Usage: structplot.py results_file format outdir
     datafile = []
     datafile.append(argv[1])
     main(datafile, argv[2], argv[3])
