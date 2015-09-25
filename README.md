@@ -56,7 +56,7 @@ The program should be run in the same directory as the files "mainparams" and
 
 If running fastStructure, keep in mind that this program requires your input
 file to have each individual represented in two rows (one for each allele), and
-six "bogus" columns before the actual data. Here is a short example:
+six "bogus" columns before the actual data. **No Header is allowed**. Here is a short example:
 
 ```
 Ind1    col1  col2  col3  col4  col5 1    3   1   4
