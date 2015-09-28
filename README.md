@@ -37,6 +37,7 @@ The program takes a few arguments:
 * Minimum K (optional - use as a start value for "K" - by default the value is 1; --min_K)
 * No-tests (optional - use this if you do not want to run the BestK tests; --no-tests)
 * No-plots (optional - use this if you do not want to draw plots; --no-plots)
+* Popfile (optional - use this if you want to name your populations in the plot. Should be a text file with 2 columns, one for the population name, and another for number of individuals represented in that population.)
 
 Example:
 
