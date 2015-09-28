@@ -180,4 +180,4 @@ if __name__ == "__main__":
     # Usage: structplot.py results_file format outdir
     datafile = []
     datafile.append(argv[1])
-    main(datafile, argv[2], argv[3])
+    main(datafile, argv[2], argv[3], argv[4])

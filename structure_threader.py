@@ -138,7 +138,7 @@ def structureHarvester(resultsdir):
 def create_plts(resultsdir):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
-    # This is only for Structure - it must be changed for fastStructure too.
+
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
@@ -152,7 +152,7 @@ def create_plts(resultsdir):
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
                      for i in range(max(arg.minK, 2), arg.Ks + 1)]
 
-    sp.main(plt_files, wrapped_prog, outdir)
+    sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
 
 if __name__ == "__main__":
     import argparse
@@ -202,6 +202,10 @@ if __name__ == "__main__":
                          help="Directory where the results will be stored "
                               "in.\n",
                          metavar="output_directory")
+
+    io_opts.add_argument("--pop", dest="popfile", type=str, required=False,
+                         help="File wth population information.",
+                         metavar="popfile", default=None)
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
                            help="Number of threads to use "
