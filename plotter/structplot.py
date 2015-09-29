@@ -41,13 +41,16 @@ def dataminer(indfile_name, fmt, popfile=None):
 
     # Parse popfile if provided
     if popfile:
-        # Assuming popfile has 2 columns with pop name in 1st column and number
-        # of samples in the 2nd column
-        poparray = np.genfromtxt(popfile, dtype=None)
+        # Assuming popfile has 3 columns with pop name in 1st column, number
+        # of samples in the 2nd column and input file order number in the 3rd.
+        datatype = np.dtype([("popname", "|U20"), ("num_indiv", int),
+                             ("original_order", int)])
+        poparray = np.genfromtxt(popfile, dtype=datatype)
         # Final pop list
-        poplist = [(x, y.decode("utf-8")) for x, y in
-                   zip(np.cumsum([x[1] for x in poparray]),
-                       [x[0] for x in poparray])]
+        poplist = [([x]*y, z) for x, y, z in
+                   zip([x[0] for x in poparray],
+                       [x[1] for x in poparray],
+                       [x[2] for x in poparray])]
 
     # Parse structure/faststructure output file
     if fmt == "fastStructure":
@@ -89,9 +92,50 @@ def dataminer(indfile_name, fmt, popfile=None):
             # is the boundary of a population in the x-axis
             poplist = Counter(poplist)
             poplist = [(x, None) for x in np.cumsum(list(poplist.values()))]
+            print("oh")
 
+
+    if popfile:
+        # Re-order the qvalues to match what is specified in the popfile.
+        qvalues = re_order(qvalues, poplist)
 
     return qvalues, poplist
+
+
+def re_order(qvalues, poplist):
+    """
+    Recieves a list of q-values, re-orders them according to the order
+    specified in the popfile and returns that list.
+    """
+    qvalues = qvalues.tolist()
+    locations_dict = {pos:(index, len(loc)) for index, (loc, pos) in
+                      enumerate(poplist)}
+
+    offsets = [None] * len(poplist)
+
+
+    def compute_offset(pos):
+        """
+        Recursively compute the offset values.
+        """
+        # compute new offset from offset and length of previous position. End of
+        # recursion at position 1: we’re at the beginning of the list
+        offset = sum(compute_offset(pos-1)) if pos > 1 else 0
+        # get index at where to store current offset + length of current location
+        index, length = locations_dict[pos]
+        offsets[index] = (offset, length)
+
+        return offsets[index]
+
+
+    compute_offset(len(poplist))
+
+    qvalues = [value for offset, length in offsets for value in
+               qvalues[offset:offset + length]]
+
+    qvalues = np.array(qvalues)
+
+    return qvalues
 
 
 def plotter(qvalues, poplist, outfile):
@@ -120,8 +164,7 @@ def plotter(qvalues, poplist, outfile):
     ax = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
 
     for i in range(qvalues.shape[1]):
-        # Get bar color. If K exceeds the 12 colors in colors, generate random
-        # color
+        # Get bar color. If K exceeds the 12 colors, generate random color
         try:
             clr = colors[i]
         except IndexError:
@@ -138,13 +181,15 @@ def plotter(qvalues, poplist, outfile):
 
     # Annotate population info
     if poplist:
+        orderings = [(x, y[0][0]) for x, y in zip(np.cumsum([len(x[0]) for x in
+                                                  poplist]), poplist)]
         count = 1
-        for ppl, vals in enumerate(poplist):
+        for ppl, vals in enumerate(orderings):
             # Add population delimiting lines
             plt.axvline(x=vals[0], linewidth=1.5, color='black')
             # Add population labels
             # Determine x pos
-            xpos = vals[0] - ((vals[0] - poplist[ppl - 1][0]) / 2) if ppl > 0 \
+            xpos = vals[0] - ((vals[0] - orderings[ppl - 1][0]) / 2) if ppl > 0 \
                 else vals[0] / 2
             # Draw text
             ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
