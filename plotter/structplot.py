@@ -181,8 +181,8 @@ def plotter(qvalues, poplist, outfile):
 
     # Annotate population info
     if poplist:
-        orderings = [(x, y[0][0]) for x, y in zip(np.cumsum([len(x[0]) for x in
-                                                  poplist]), poplist)]
+        orderings = [(x, y[0][0]) for x, y in
+                     zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
         count = 1
         for ppl, vals in enumerate(orderings):
             # Add population delimiting lines
