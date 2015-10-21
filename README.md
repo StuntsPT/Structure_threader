@@ -14,8 +14,8 @@ Running in python3 also yields ~11% speed gains relatively to python2 (altough t
 
 ## Installation
 
-Just clone the repository, and place the contents, respecting the directory
-structure in your $PATH.
+Just clone the repository (or download one of the releases), and place the contents, respecting the directory structure in your $PATH.
+Alternatively, you can also place the program somewhere, and call it from your current dir using the full path.
 
 You can go the the "helper_scripts" directory where you will find some scripts to help you install both *Structure* and *fastStructure*.
 
@@ -92,7 +92,7 @@ The directory "TestData" in the repository contains some test data that was used
 You can find documentation about it inside the directory itself.
 
 
-## Benchmarking processed
+## Benchmarking process
 
 You can find some of the scripts used for the benchmarking process inside the *benchmark* directory. Further documentation on this topic can be found inside the directory itself.
 
@@ -106,7 +106,7 @@ The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the 
 
 ## Citation
 
-If you use Structure_threader, please cite
+If you use *Structure_threader*, please cite
 
 * Coming soon (hopefully)!
 
