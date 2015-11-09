@@ -25,7 +25,7 @@ The used command was:
     --maf 0.05 --thin 2000 --min-alleles 2 --max-alleles 2 --non-ref-ac 2 \
     --recode --chr 22 --out Chr22
 
-This was the criteria that was used on the *admixture* [analysis of the 1000 genomes project](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/admixture_files/README.admixture_20141217).
+This was the criteria that was used on the *admixture* [analysis of the 1000 genomes project](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/admixture_files/README.admixture_20141217).
 
 The file was then converted to structure format with [PGDSpider](http://www.cmpg.unibe.ch/software/PGDSpider/).
 To further reduce the dataset (for faster benchmarking), the file was then processed with `cut` and `head` and finally compressed with xz.
