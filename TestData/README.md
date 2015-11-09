@@ -12,7 +12,7 @@ In this directory you will find the data that was used to benchmark *Structure_t
 
 ### BigTestData.str.tar.xz
 
-This file is a fastStructure formatted input file which was used to benchmark fastStructure. This is a large SNP file (604 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools with the following criteria:
+This file is a fastStructure formatted input file which was used to benchmark fastStructure. This is a large SNP file (604 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools with the following criteria:
 
 * only biallelic, non-singleton SNV sites
 * SNvs must be at lest 2KB apart from each other
