@@ -40,7 +40,7 @@ wget -c https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz -O ${tempdir}/sc
 # cython
 wget -c http://cython.org/release/Cython-0.22.zip -O ${tempdir}/Cython-0.22.zip
 # GNU scientific library
-wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz -O  ${tempdir}/gsl-latest.tar.gz
+wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-1.16.tar.gz -O  ${tempdir}/gsl-1.16.tar.gz
 # LAPACK (required for scipy)
 wget -c http://www.netlib.org/lapack/lapack-3.5.0.tgz -O ${tempdir}/lapack-3.5.0.tgz
 
@@ -89,7 +89,7 @@ python2 setup.py install --user
 
 # GNU scientific library
 cd ${tempdir}
-tar xvzf gsl-latest.tar.gz
+tar xvzf gsl-1.16.tar.gz
 cd gsl-1.16
 export LDFLAGS=${_OLD_LDFLAGS}
 ./configure --prefix=${install_dir}
