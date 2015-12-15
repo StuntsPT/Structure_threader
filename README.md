@@ -52,6 +52,28 @@ each value of "K", -i is the input file for STRUCTURE, -o is the directory where
 The program should be run in the same directory as the files "mainparams" and
 "extraparams" for your STRUCTURE run are placed.
 
+### Using a "popfile"
+
+`structure_threader` can build your structure plots with labels and in a specified order. For that you have to provide a "popfile" (--pop option). This file consists of the following 3 columns: "Population name", "Number of individuals in the population", "Order of the population in the input file".
+Here is an example:
+
+```
+Location_1  20  1
+Location_2  21  2
+Location_3  11  3
+```
+
+This example file contains 3 populations, with 20, 21 and 11 individuals. The numbers "1", "2" and "3" are the order of the populations in the input file.
+If you want to draw the plot in a different order than what was provided on the input file, you have to reorder the lines. For the sake of the example, let's say that you wish to plot Locations 1, 3 and 2 in this order instead. The input file would look like this:
+
+```
+Location_1  20  1
+Location_3  11  3
+Location_2  21  2
+```
+
+You can use any order you like using this scheme. Also note that the "split bars" that split the populations in your plot will correspond to the number provided in column 2.
+
 
 ### fastStrucutre Warning:
 
