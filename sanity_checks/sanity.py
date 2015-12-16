@@ -46,3 +46,5 @@ def output_checker(outpath):
             print("ERROR: Output directory is pointing to a file. Please check "
                   "your arguments and/or your filesystem.")
             raise SystemExit
+
+# TODO: Check if structure and faststructure executables exist!!
