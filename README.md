@@ -5,7 +5,7 @@ A simple program to parallelize the runs of [Structure](http://pritchardlab.stan
 
 ## Requirements
 
-Python3. Only uses modules from the standard library. Requires matplotlib to draw the plots and numpy to run "fastChooseK.py".
+Python3. Only uses modules from the standard library. Requires matplotlib >= 1.4 to draw the plots and numpy to run "fastChooseK.py".
 
 It *might* also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all).
 
