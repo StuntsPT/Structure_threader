@@ -22,7 +22,7 @@ install_dir=${HOME}/Software/faststructure
 mkdir -p ${install_dir}
 
 # Define temp dir
-tempdir=/tmp
+tempdir=/tmp/$USER
 
 # Get LDFAGS
 _OLD_LDFLAGS=$LDFLAGS
