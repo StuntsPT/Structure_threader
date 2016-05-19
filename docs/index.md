@@ -23,6 +23,7 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 * [Test Data](test_data.md)
 * [Benchmarking](benckmark.md)
 * [Citation](citation.md)
+* [Future Plans](future.md)
 * [FAQ](faq.md)
 
 
