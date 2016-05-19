@@ -1,8 +1,8 @@
 # Installation
-Just clone the repository (or download one of the releases), and place the contents, respecting the directory structure in your $PATH.
-Alternatively, you can also place the program somewhere, and call it from your current dir using the full path.
+In order to install *Structure_threader* just clone the repository (or download one of the releases), and place the contents, respecting the directory structure in your $PATH.
+Alternatively, you can also place the entire program root directory somewhere, and call it from your current dir using the full path.
 
-You can go the the "helper_scripts" directory where you will find some scripts to help you install both *Structure* and *fastStructure*.
+You can go the the ["helper_scripts" directory](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts) where you will find some scripts to help you install both *Structure* and *fastStructure*.
 
 
 ## Structure_threader helper scripts
