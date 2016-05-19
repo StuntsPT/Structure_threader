@@ -3,7 +3,7 @@ A program to parallelize the runs of [Structure](http://pritchardlab.stanford.ed
 
 
 # Documentation
-[![Documentation Status](https://readthedocs.io/projects/Structure_threader/badge/?version=latest)](http://structure-threader.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](http://structure-threader.readthedocs.io/en/latest/?badge=latest)
 
 The complete manual can be found on [readthedocs.org](http://structure-threader.readthedocs.io/en/latest/).
 
