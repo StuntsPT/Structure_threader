@@ -23,6 +23,7 @@ mkdir -p ${install_dir}
 
 # Define temp dir
 tempdir=/tmp/$USER
+mkdir -p $tempdir
 
 # Download structure sources into temp dir
 wget http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz -O ${tempdir}/structure_kernel_source.tar.gz

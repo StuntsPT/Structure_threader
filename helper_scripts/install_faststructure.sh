@@ -23,6 +23,7 @@ mkdir -p ${install_dir}
 
 # Define temp dir
 tempdir=/tmp/$USER
+mkdir -p $tempdir
 
 # Get LDFAGS
 _OLD_LDFLAGS=$LDFLAGS
@@ -38,7 +39,7 @@ wget -c https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy
 # scipy
 wget -c https://github.com/scipy/scipy/archive/v0.16.0b2.tar.gz -O ${tempdir}/scipy.tar.gz
 # cython
-wget -c http://cython.org/release/Cython-0.22.zip -O ${tempdir}/Cython-0.22.zip
+wget -c https://pypi.python.org/packages/f8/25/80f9ca7e31e2b68cc942ff1d6136588f33a7aef5e2d6abe3f2183cb9fad5/cython-0.22.tar.gz -O ${tempdir}/Cython-0.22.tar.gz
 # GNU scientific library
 wget -c http://gnu.mirror.vexxhost.com/gsl/gsl-1.16.tar.gz -O  ${tempdir}/gsl-1.16.tar.gz
 # LAPACK (required for scipy)
@@ -59,7 +60,7 @@ mv lib/* ${install_dir}/lib
 
 # cython
 cd ${tempdir}
-unzip Cython-0.22.zip
+tar xvfz Cython-0.22.zip
 cd Cython-0.22
 python2 setup.py install --user
 
