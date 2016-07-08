@@ -111,4 +111,13 @@ python2 setup.py build_ext --inplace
 cd ..
 mv fastStructure-1.0 ${install_dir}
 
-echo "\nInstall succesfull. fastStructure is now ready to use.\n"
+echo ""
+echo "Install succesfull. fastStructure is now ready to use."
+echo ""
+echo "In order to use the locally installed libraries, please add"
+echo "the following to the end of your ~/.bashrc:"
+echo ""
+echo "######"
+echo "LD_LIBRARY_PATH=${install_dir}/lib"
+echo "export LD_LIBRARY_PATH"
+echo "#####"
