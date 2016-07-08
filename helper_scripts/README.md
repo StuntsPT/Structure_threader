@@ -29,6 +29,18 @@ Faststructure depends on a few software packages:
 
 If these are already installed in your system, feel free to comment the script section that will install them. Otherwise it will install a new local copy of these programs.
 
+###Important note:
+
+If you are relying on the GNU Scientific Library that was locally installed, you will need to make your system aware of where these libraries are.
+for that, add the following to your `~/.bashrc`:
+
+```bash
+LD_LIBRARY_PATH=$install_dir/lib
+export LD_LIBRARY_PATH
+```
+
+Where `$install_dir` is the directory defined in `install_faststructure`.
 
 ##License
+
 GPL V3
