@@ -9,9 +9,9 @@ The complete manual can be found on [readthedocs.org](http://structure-threader.
 
 
 ## Citation
-If you use *Structure_threader*, please cite
+If you use *Structure_threader*, please cite our DOI:
 
-* Coming soon (hopefully)!
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.57262.svg)](http://dx.doi.org/10.5281/zenodo.57262)
 
 
 ## License
