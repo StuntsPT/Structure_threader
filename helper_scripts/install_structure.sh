@@ -34,3 +34,5 @@ tar xvfz structure_kernel_source.tar.gz
 cd  structure_kernel_src/
 make
 mv structure ${install_dir}
+
+echo "\nInstall succesfull. STRUCTURE is now ready to use.\n"

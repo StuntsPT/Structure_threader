@@ -110,3 +110,5 @@ cd ..
 python2 setup.py build_ext --inplace
 cd ..
 mv fastStructure-1.0 ${install_dir}
+
+echo "\nInstall succesfull. fastStructure is now ready to use.\n"
