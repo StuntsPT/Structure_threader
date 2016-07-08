@@ -2,7 +2,7 @@
 
 If you use *Structure_threader*, please cite
 
-* Coming soon (hopefully)!
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.57262.svg)](http://dx.doi.org/10.5281/zenodo.57262)
 
 If you used structure, please cite
 
