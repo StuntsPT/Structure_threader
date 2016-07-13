@@ -60,7 +60,7 @@ mv lib/* ${install_dir}/lib
 
 # cython
 cd ${tempdir}
-tar xvfz Cython-0.22.zip
+tar xvfz Cython-0.22.tar.gz
 cd Cython-0.22
 python2 setup.py install --user
 
