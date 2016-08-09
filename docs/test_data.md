@@ -7,7 +7,7 @@ In [this directory](https://github.com/StuntsPT/Structure_threader/tree/master/T
 * extraparams
 * joblist.txt
 * mainparams
-* TestData.structure
+* SmallTestData.structure.tar.xz
 
 
 ### BigTestData.str.tar.xz
@@ -43,8 +43,13 @@ The STRUCTURE paramater files that were used in the benchmarking process.
 ### joblist.txt
 The joblist used to benchmark *ParallelStructure*. Consists of 16 jobs, 4 values of "K" with 4 replicates each.
 
-### TestData.structure
-This is the datafile that was used in the benchmarking process.
-It contains 83 individuals, divided in 17 populations, represented for 29 SNP loci.
-There is approximately 13% missing data in the file.
-This dataset was created based on some real data from GBS sequencing.
+### SmallTestData.structure.tar.xz
+
+This file is a Structure formatted input file which was used to benchmark Structure. This is a medium sized SNP file (302 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
+
+
+The used commands were:
+
+    cut -d " " -f 1-302 SmallData.structure > SmallData302SNPs.structure
+    head -n 501 SmallData302SNPs.structure > SmallTestData.structure
+    tar cvfJ SmallTestData.structure.tar.xz SmallTestData.structure
