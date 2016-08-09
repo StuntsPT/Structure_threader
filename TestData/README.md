@@ -8,7 +8,7 @@ In this directory you will find the data that was used to benchmark *Structure_t
 * extraparams
 * joblist.txt
 * mainparams
-* TestData.structure
+* SmallData.structure.tar.xz
 
 ### BigTestData.str.tar.xz
 
@@ -29,12 +29,11 @@ This was the criteria that was used on the *admixture* [analysis of the 1000 gen
 
 The file was then converted to structure format with [PGDSpider](http://www.cmpg.unibe.ch/software/PGDSpider/).
 To further reduce the dataset (for faster benchmarking), the file was then processed with `cut` and `head` and finally compressed with xz.
+However, in order to produce a smaller file than BigTestData.str, the following commands were used for file reduction:
 
-The used commands were:
-
-    cut -d " " -f 1-604 BigData.str > BigData604SNPs.str
-    head -n 1002 BigData604SNPs.str > BigTestData.str
-    tar cvfJ BigTestData.str.tar.xz BigTestData.str
+    cut -d " " -f 1-302 SmallData.structure > SmallData302SNPs.structure
+    head -n 501 SmallData302SNPs.structure > SmallTestData.structure
+    tar cvfJ SmallTestData.structure.tar.xz SmallTestData.structure
 
 
 ### extraparams and mainparams
@@ -45,8 +44,13 @@ The STRUCTURE paramater files that were used in the benchmarking process.
 
 The joblist used to benchmark *ParallelStructure*. Consists of 16 jobs, 4 values of "K" with 4 replicates each.
 
-### TestData.structure
+### SmallData.structure.tar.xz
 
-This is the datafile itself  that was used in the benchmarking process.
-It contains 83 individuals, divided in 17 populations, represented for 29 SNP loci.
-There is approximately 13% missing data in the file.
+This file is a Structure formatted input file which was used to benchmark Structure. This is a medium sized SNP file (302 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
+
+
+The used commands were:
+
+    cut -d " " -f 1-604 BigData.str > BigData604SNPs.str
+    head -n 1002 BigData604SNPs.str > BigTestData.str
+    tar cvfJ BigTestData.str.tar.xz BigTestData.str
