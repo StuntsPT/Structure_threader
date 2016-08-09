@@ -31,9 +31,9 @@ The file was then converted to structure format with [PGDSpider](http://www.cmpg
 To further reduce the dataset (for faster benchmarking), the file was then processed with `cut` and `head` and finally compressed with xz.
 However, in order to produce a smaller file than BigTestData.str, the following commands were used for file reduction:
 
-    cut -d " " -f 1-302 SmallData.structure > SmallData302SNPs.structure
-    head -n 501 SmallData302SNPs.structure > SmallTestData.structure
-    tar cvfJ SmallTestData.structure.tar.xz SmallTestData.structure
+    cut -d " " -f 1-604 BigData.str > BigData604SNPs.str
+    head -n 1002 BigData604SNPs.str > BigTestData.str
+    tar cvfJ BigTestData.str.tar.xz BigTestData.str
 
 
 ### extraparams and mainparams
@@ -51,6 +51,6 @@ This file is a Structure formatted input file which was used to benchmark Struct
 
 The used commands were:
 
-    cut -d " " -f 1-604 BigData.str > BigData604SNPs.str
-    head -n 1002 BigData604SNPs.str > BigTestData.str
-    tar cvfJ BigTestData.str.tar.xz BigTestData.str
+    cut -d " " -f 1-302 SmallData.structure > SmallData302SNPs.structure
+    head -n 501 SmallData302SNPs.structure > SmallTestData.structure
+    tar cvfJ SmallTestData.structure.tar.xz SmallTestData.structure
