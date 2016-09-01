@@ -23,7 +23,7 @@ To further reduce the dataset (for faster benchmarking), the file was then proce
 
 The used commands were:
 
-    cut -d " " -f 1-1000 Chr22.recode.str |head -n 2000 >  BigTestData.str
+    cut -d " " -f 1-1000 Chr22.recode.str | head -n 2000 > BigTestData.str
     tar cvfJ BigTestData.str.tar.xz BigTestData.str
 
 
