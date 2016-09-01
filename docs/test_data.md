@@ -3,7 +3,7 @@ In [this directory](https://github.com/StuntsPT/Structure_threader/tree/master/T
 
 
 ## BigTestData.str.tar.xz
-This file is a fastStructure formatted input file which was used to benchmark fastStructure. This is a large SNP file (604 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftoolshttps://github.com/vcftools/vcftools) with the following criteria:
+This file is a fastStructure formatted input file which was used to benchmark fastStructure. This is a large SNP file (1000 SNPs across 1000 individuals) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftoolshttps://github.com/vcftools/vcftools) with the following criteria:
 
 * only biallelic, non-singleton SNV sites
 * SNvs must be at lest 2KB apart from each other
@@ -23,8 +23,7 @@ To further reduce the dataset (for faster benchmarking), the file was then proce
 
 The used commands were:
 
-    cut -d " " -f 1-604 BigData.str > BigData604SNPs.str
-    head -n 1002 BigData604SNPs.str > BigTestData.str
+    cut -d " " -f 1-1000 Chr22.recode.str |head -n 2000 >  BigTestData.str
     tar cvfJ BigTestData.str.tar.xz BigTestData.str
 
 
