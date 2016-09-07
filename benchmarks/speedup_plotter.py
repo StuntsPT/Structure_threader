@@ -31,20 +31,20 @@ def draw_plot(timearray):
     """Draw a line plot based on the speedup data."""
     i7 = list(timearray[:, 1][:-4])
     i7.insert(0, 1)
-    amd = list(timearray[:, 2][:-4])
-    amd.insert(0, 1)
-    e5 = list(timearray[:, 3][:-4])
+    e5 = list(timearray[:, 2][:-4])
     e5.insert(0, 1)
-    oldxeon = list(timearray[:, 4])
+    oldxeon = list(timearray[:, 3])
     oldxeon.insert(0, 1)
+    i5 = list(timearray[:, 4][:-6])
+    i5.insert(0, 1)
 
     plt.axis([0, 16, 0, 16])
-    plt.plot([1, 2, 4, 6, 8], i7, 'k-s', fillstyle="full", ms=7, label="i7")
-    plt.plot([1, 2, 4, 6, 8], amd, 'k-^', fillstyle="full", ms=7,
-             label="FX-8350")
-    plt.plot([1, 2, 4, 6, 8, 10, 12, 14, 16], oldxeon, 'k-o', fillstyle="full",
+    plt.plot([1, 2, 4, 6, 8], i7, 'k-v', fillstyle="full", ms=7,
+    label="i7-4700MQ")
+    plt.plot([1, 2, 4], i5, 'k-^', fillstyle="full", ms=7, label="i5-3350P")
+    plt.plot([1, 2, 4, 6, 8, 10, 12, 14, 16], oldxeon, 'k-x', fillstyle="full",
              ms=7, label="E5520")
-    plt.plot([1, 2, 4, 6, 8], e5, 'kx-', fillstyle="full", ms=7,
+    plt.plot([1, 2, 4, 6, 8], e5, 'k+-', fillstyle="full", ms=7,
              label="E5-2609")
 
     plt.plot(range(16), range(16), 'k-.', label="Linear scaling")
