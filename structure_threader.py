@@ -43,7 +43,6 @@ def runprogram(iterations):
     and -1 in case of errors). The second element contains the output file
     that identifies the worker.
     """
-
     worker_status = (None, None)
 
     K, rep_num = iterations
@@ -52,24 +51,23 @@ def runprogram(iterations):
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
-        cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
+        cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o", output_file]
     else: # Run fastStructure
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "fS_run_K")
-        if infile.endswith((".bed", ".fam", ".bim")):
+        if arg.infile.endswith((".bed", ".fam", ".bim")):
             file_format = "bed"
-            infile = infile[:-4]
+            infile = arg.infile[:-4]
         else:
             file_format = "str"  # Assume str format if plink is not specified
-            if infile.endswith(".str") is False: # Do we need a symlink?
+            if arg.infile.endswith(".str") is False: # Do we need a symlink?
                 from os import symlink
                 try:
-                    symlink(infile, infile+".str")
+                    symlink(arg.infile, arg.infile+".str")
                 except OSError as err:
                     if err.errno != 17:
                         raise
-            else:
-                infile = infile[:-4]
+            infile = arg.infile[:-4]
 
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
                infile, "--output", output_file, "--format", file_format]
