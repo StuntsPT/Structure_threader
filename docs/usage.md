@@ -54,9 +54,22 @@ You can use any order you like using this scheme. Also note that the "split bars
 
 
 ## fastStrucutre Warning:
-If running fastStructure, keep in mind that this program requires your input
-file to have each individual represented in two rows (one for each allele), and
-six "bogus" columns before the actual data. **No Header is allowed**. Here is a short example:
+Keep in mind that fastStructure can take input in two distinct file formats:
+[Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
+[structure](http://pritchardlab.stanford.edu/software/structure-data_v.2.3.1.html).
+In order to use the PLINK format, three files are required:
+
+* `file.bed`
+* `file.fam`
+* `file.bim`
+
+You can enter any of them (but just one oof them) as the input file and
+*Structure_threader* will assume the other two exist in the same path.
+If the input file specified by the *-i* switch in *Structure_threader* has an
+extension different from either of the three mentioned above, *Structure_threader* will assume th input is in the STRUCTURE format, which has some peculiarities:
+fastStructure requires your input file to have each individual represented in
+two rows (one for each allele), and six "bogus" columns before the actual data.
+**No Header is allowed**. Here is a short example:
 
 ```
 Ind1    col1  col2  col3  col4  col5 1    3   1   4
@@ -66,4 +79,4 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ```
 
-Don't forget to look at the [Outputs section](output.md) for information on how the data is presented after a successful (or not) run.
+Don't forget to look at the [Output section](output.md) for information on how the data is presented after a successful (or not) run.
