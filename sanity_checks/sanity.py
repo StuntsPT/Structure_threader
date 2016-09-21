@@ -47,4 +47,17 @@ def output_checker(outpath):
                   "your arguments and/or your filesystem.")
             raise SystemExit
 
+def file_checker(path, msg=None):
+    """
+    Verify the existance of a given path. Raise an error if not present.
+    :param path: string, path to file/directory
+    :param msg: string, optional custom error message
+    """
+    if not os.path.exists(path):
+        if not msg:
+            print("ERROR: Path {} does not exist".format(path))
+        else:
+            print("ERROR: {}".format(msg))
+        raise SystemExit
+
 # TODO: Check if structure and faststructure executables exist!!

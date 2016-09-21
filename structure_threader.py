@@ -238,6 +238,10 @@ if __name__ == "__main__":
     # Where are we?
     cwd = os.getcwd()
 
+    # Check if the provided popfile exists. Raise error if not.
+    sanity.file_checker(arg.popfile, "Path to Population file {} does not "
+                                                        "exist".format(arg.popfile))
+
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
         wrapped_prog = "fastStructure"
