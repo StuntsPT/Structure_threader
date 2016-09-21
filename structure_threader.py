@@ -21,11 +21,12 @@ import sys
 import signal
 import subprocess
 import itertools
-import plotter.structplot as sp
-import sanity_checks.sanity as sanity
+
 from multiprocessing import Pool
 from random import randrange
 
+import plotter.structplot as sp
+import sanity_checks.sanity as sanity
 
 def gracious_exit(*args):
     """Graciously exit the program."""
@@ -50,7 +51,7 @@ def runprogram(iterations):
     if wrapped_prog == "structure":
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
-                      str(rep_num))
+                                   str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
     else:
         # Keeps correct directory separator across OS's
@@ -62,7 +63,8 @@ def runprogram(iterations):
             if err.errno != 17:
                 raise
 
-        cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input", infile, "--output", output_file, "--format=str"]
+        cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
+               infile, "--output", output_file, "--format=str"]
 
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
@@ -161,7 +163,7 @@ if __name__ == "__main__":
                                                  "paralelize the runs of the "
                                                  "Structure software.",
                                      prog="Structure_threader",
-                                formatter_class=argparse.RawTextHelpFormatter)
+                                     formatter_class=argparse.RawTextHelpFormatter)
 
     io_opts = parser.add_argument_group("Input/Output options")
     main_exec = parser.add_argument_group("Program execution options")
@@ -171,15 +173,15 @@ if __name__ == "__main__":
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
 
     main_exec_ex.add_argument("-st", dest="structure_bin", type=str,
-                           default=None,
-                           metavar="filepath",
-                           help="Location of the structure executable in your "
-                                "environment.")
+                              default=None,
+                              metavar="filepath",
+                              help="Location of the structure executable in "
+                              " your environment.")
     main_exec_ex.add_argument("-fs", dest="faststructure_bin", type=str,
-                           default=None,
-                           metavar="filepath",
-                           help="Location of the fastStructure executable "
-                           "(structure.py) in your environment.")
+                              default=None,
+                              metavar="filepath",
+                              help="Location of the fastStructure executable "
+                              "(structure.py) in your environment.")
 
     run_opts.add_argument("-K", dest="Ks", type=int, required=True,
                           help="Number of Ks to run.\n", metavar="int")
