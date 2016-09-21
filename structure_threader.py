@@ -56,15 +56,23 @@ def runprogram(iterations):
     else: # Run fastStructure
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "fS_run_K")
-        from os import symlink
-        try:
-            symlink(infile, infile+".str")
-        except OSError as err:
-            if err.errno != 17:
-                raise
+        if infile.endswith((".bed", ".fam", ".bim")):
+            file_format = "bed"
+            infile = infile[:-4]
+        else:
+            file_format = "str"  # Assume str format if plink is not specified
+            if infile.endswith(".str") is False: # Do we need a symlink?
+                from os import symlink
+                try:
+                    symlink(infile, infile+".str")
+                except OSError as err:
+                    if err.errno != 17:
+                        raise
+            else:
+                infile = infile[:-4]
 
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
-               infile, "--output", output_file, "--format=str"]
+               infile, "--output", output_file, "--format", file_format]
 
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
