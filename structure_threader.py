@@ -48,12 +48,12 @@ def runprogram(iterations):
 
     K, rep_num = iterations
 
-    if wrapped_prog == "structure":
+    if wrapped_prog == "structure": # Run STRUCTURE
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", infile, "-o", output_file]
-    else:
+    else: # Run fastStructure
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "fS_run_K")
         from os import symlink
