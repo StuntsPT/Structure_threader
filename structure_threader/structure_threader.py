@@ -37,7 +37,7 @@ def gracious_exit(*args):
     """Graciously exit the program."""
     print("\rExiting graciously, murdering child processes and cleaning output"
           " directory", end="")
-    os.chdir(cwd)
+    os.chdir(CWD)
     sys.exit(0)
 
 
@@ -140,10 +140,10 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
     else:
         print("All %s jobs finished successfully." % len(pool))
 
-    os.chdir(cwd)
+    os.chdir(CWD)
 
 
-def structureHarvester(resultsdir, wrapped_prog):
+def structure_harvester(resultsdir, wrapped_prog):
     """Run structureHarvester or fastChooseK to perform the Evanno test or the
     likelihood testing on the results."""
     outdir = os.path.join(resultsdir, "bestK")
@@ -185,9 +185,11 @@ def create_plts(resultsdir, wrapped_prog):
 
 
 def main():
+    """Main function, where variables are set and other functions get called
+    from."""
     import argparse
     global arg
-    global cwd
+    global CWD
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
@@ -260,7 +262,7 @@ def main():
     arg = parser.parse_args()
 
     # Where are we?
-    cwd = os.getcwd()
+    CWD = os.getcwd()
 
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
@@ -288,10 +290,10 @@ def main():
 
     structure_threader(Ks, replicates, threads, wrapped_prog)
 
-    if arg.notests == False:
-        structureHarvester(arg.outpath, wrapped_prog)
+    if arg.notests is False:
+        structure_harvester(arg.outpath, wrapped_prog)
 
-    if arg.noplot == False:
+    if arg.noplot is False:
         create_plts(arg.outpath, wrapped_prog)
 
 if __name__ == "__main__":
