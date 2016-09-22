@@ -54,7 +54,7 @@ def runprogram(wrapped_prog, iterations):
 
     if wrapped_prog == "structure": # Run STRUCTURE
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
+        output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
@@ -95,7 +95,7 @@ def runprogram(wrapped_prog, iterations):
     # Handle logging for debugging purposes.
     if arg.log is True:
 
-        logfile = open(os.path.join(outpath, "K" + str(K) + "_rep" +
+        logfile = open(os.path.join(arg.outpath, "K" + str(K) + "_rep" +
                                     str(rep_num) + ".stlog"), "w")
         print("Writing logfile for K" + str(K) + ", replicate " +
               str(rep_num) + ". Please wait...")
@@ -105,7 +105,7 @@ def runprogram(wrapped_prog, iterations):
     return worker_status
 
 
-def structure_threader(Ks, replicates, threads, wrapped_prog, cwd):
+def structure_threader(Ks, replicates, threads, wrapped_prog):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
 
     if wrapped_prog == "fastStructure":
@@ -187,6 +187,7 @@ def create_plts(resultsdir, wrapped_prog):
 def main():
     import argparse
     global arg
+    global cwd
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
@@ -285,7 +286,7 @@ def main():
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    structure_threader(Ks, replicates, threads, wrapped_prog, cwd)
+    structure_threader(Ks, replicates, threads, wrapped_prog)
 
     if arg.notests == False:
         structureHarvester(arg.outpath, wrapped_prog)
