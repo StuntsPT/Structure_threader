@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 try:
     from setuptools import setup
 except ImportError:
@@ -17,7 +19,7 @@ setup(
         "numpy",
     ],
     description=("A program to parallelize runs of 'Structure' and "
-    "'fastStructure'."),
+                 "'fastStructure'."),
     url="https://github.com/StuntsPT/Structure_threader",
     author="Francisco Pina-Martins",
     author_email="f.pinamartins@gmail.com",
