@@ -9,8 +9,6 @@ Python 3. The main program only uses modules from the standard library.
 In order to draw the plots, matplotlib >= 1.4 is required.
 To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 
-*Structure_threader* **might** also work with python2, however, this is not as tested as the python3 version (actually its hardly tested at all). During our limited testing, running in python3 yields ~11% speed gains relatively to python2 (although this testing was limited).
-
 
 ## Where to get it
 * Source code - [Structure_threader on github](https://github.com/StuntsPT/Structure_threader)
