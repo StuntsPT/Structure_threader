@@ -36,15 +36,24 @@ def cpu_checker(asked_threads):
     return threads
 
 
-def output_checker(outpath):
-    """Verify the existence of requested output directory and create inexistent.
-    Aborts execution if the outpath is a file."""
-    if not os.path.exists(outpath) or not os.path.isdir(outpath):
-        try:
-            os.makedirs(outpath)
-        except FileExistsError:
-            print("ERROR: Output directory is pointing to a file. Please check "
-                  "your arguments and/or your filesystem.")
+def file_checker(path, msg=None, is_file=True):
+    """
+    Verify the existance of a given path. Raise an error if not present.
+    :param path: string, path to file/directory
+    :param msg: string, optional custom error message
+    :param if_file, True if path is a file, False if a dir
+    """
+    if is_file is False:
+        if not os.path.exists(path) or not os.path.isdir(path):
+            try:
+                os.makedirs(path)
+            except FileExistsError:
+                print("ERROR: {}".format(path))
+                raise SystemExit
+    else:
+        if not os.path.exists(path):
+            if not msg:
+                print("ERROR: Path '{}' does not exist".format(path))
+            else:
+                print("ERROR: {}".format(msg))
             raise SystemExit
-
-# TODO: Check if structure and faststructure executables exist!!
