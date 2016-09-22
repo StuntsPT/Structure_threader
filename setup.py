@@ -20,7 +20,7 @@ setup(
     "'fastStructure'."),
     url="https://github.com/StuntsPT/Structure_threader",
     author="Francisco Pina-Martins",
-    author_email="",
+    author_email="f.pinamartins@gmail.com",
     license="GPL3",
     classifiers=["Intended Audience :: Science/Research",
                  "License :: OSI Approved :: GNU General Public License v3 ("
