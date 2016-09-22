@@ -24,6 +24,7 @@ import itertools
 
 from multiprocessing import Pool
 from random import randrange
+from functools import partial
 
 try:
     import plotter.structplot as sp
@@ -40,7 +41,7 @@ def gracious_exit(*args):
     sys.exit(0)
 
 
-def runprogram(iterations):
+def runprogram(wrapped_prog, iterations):
     """Run each structure job. Return the worker status.
     This attribute will be populated with the worker exit code and output file
     and returned. The first element is the exit code itself (0 if normal exit
@@ -55,10 +56,11 @@ def runprogram(iterations):
         # Keeps correct directory separator across OS's
         output_file = os.path.join(outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
-        cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o", output_file]
+        cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
+               output_file]
     else: # Run fastStructure
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(outpath, "fS_run_K")
+        output_file = os.path.join(arg.outpath, "fS_run_K")
         if arg.infile.endswith((".bed", ".fam", ".bim")):
             file_format = "bed"
             infile = arg.infile[:-4]
@@ -103,22 +105,26 @@ def runprogram(iterations):
     return worker_status
 
 
-def structure_threader(Ks, replicates, threads):
+def structure_threader(Ks, replicates, threads, wrapped_prog, cwd):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
 
     if wrapped_prog == "fastStructure":
         replicates = [1]
     else:
-        os.chdir(os.path.dirname(infile))
+        os.chdir(os.path.dirname(arg.infile))
 
 
     jobs = list(itertools.product(Ks, replicates))[::-1]
+
+    # This allows us to pass partial arguments to a function so we can later
+    # use it with multiprocessing map().
+    temp = partial(runprogram, wrapped_prog)
 
     # This will automatically create the Pool object, run the jobs and deadlock
     # the function while the children processed are being executed. This will
     # also allow to iterate over the values returned by all workers and to sort
     # them out to see if there were any errors
-    pool = Pool(threads).map(runprogram, jobs)
+    pool = Pool(threads).map(temp, jobs)
 
     # Check for worker status. This will search the worker outputs and if
     # one or more workers had an error exit status, the error_list will be
@@ -137,17 +143,28 @@ def structure_threader(Ks, replicates, threads):
     os.chdir(cwd)
 
 
-def structureHarvester(resultsdir):
+def structureHarvester(resultsdir, wrapped_prog):
     """Run structureHarvester or fastChooseK to perform the Evanno test or the
     likelihood testing on the results."""
     outdir = os.path.join(resultsdir, "bestK")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
+    if wrapped_prog == "fastStructure":
+        try:
+            import evanno.fastChooseK as sh
+        except ImportError:
+            import structure_threader.evanno.fastChooseK as sh
+    else:
+        try:
+            import evanno.structureHarvester as sh
+        except ImportError:
+            import structure_threader.structureHarvester as sh
+
     sh.main(resultsdir, outdir)
 
 
-def create_plts(resultsdir):
+def create_plts(resultsdir, wrapped_prog):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
 
@@ -169,6 +186,7 @@ def create_plts(resultsdir):
 
 def main():
     import argparse
+    global arg
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
@@ -246,16 +264,8 @@ def main():
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
         wrapped_prog = "fastStructure"
-        try:
-            import evanno.fastChooseK as sh
-        except ImportError:
-            import structure_threader.evanno.fastChooseK as sh
     else:
         wrapped_prog = "structure"
-        try:
-            import evanno.structureHarvester as sh
-        except ImportError:
-            import structure_threader.structureHarvester as sh
 
     # Switch relative to absolute paths
     arg.infile = os.path.abspath(arg.infile)
@@ -267,7 +277,6 @@ def main():
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
 
-    infile = arg.infile
     outpath = arg.outpath
 
     threads = sanity.cpu_checker(arg.threads)
@@ -276,16 +285,13 @@ def main():
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    structure_threader(Ks, replicates, threads)
+    structure_threader(Ks, replicates, threads, wrapped_prog, cwd)
 
     if arg.notests == False:
-        try:
-            structureHarvester(arg.outpath)
-        except sh.Exception as ex:
-            sys.stderr.write(str(ex))
+        structureHarvester(arg.outpath, wrapped_prog)
 
     if arg.noplot == False:
-        create_plts(arg.outpath)
+        create_plts(arg.outpath, wrapped_prog)
 
 if __name__ == "__main__":
     main()
