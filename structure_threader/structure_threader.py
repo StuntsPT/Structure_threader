@@ -246,10 +246,16 @@ def main():
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
         wrapped_prog = "fastStructure"
-        import evanno.fastChooseK as sh
+        try:
+            import evanno.fastChooseK as sh
+        except ImportError:
+            import structure_threader.evanno.fastChooseK as sh
     else:
         wrapped_prog = "structure"
-        import evanno.structureHarvester as sh
+        try:
+            import evanno.structureHarvester as sh
+        except ImportError:
+            import structure_threader.structureHarvester as sh
 
     # Switch relative to absolute paths
     arg.infile = os.path.abspath(arg.infile)
