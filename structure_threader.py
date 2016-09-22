@@ -238,21 +238,34 @@ if __name__ == "__main__":
     # Where are we?
     cwd = os.getcwd()
 
-    # Check if the provided popfile exists. Raise error if not.
-    sanity.file_checker(arg.popfile, "Path to Population file {} does not "
-                                                        "exist".format(arg.popfile))
+    # Switch relative to absolute paths
+    arg.infile = os.path.abspath(arg.infile)
+    arg.outpath = os.path.abspath(arg.outpath)
 
     # Figure out which program we are wrapping
     if arg.faststructure_bin != None:
         wrapped_prog = "fastStructure"
+        external = arg.faststructure_bin
         import evanno.fastChooseK as sh
     else:
         wrapped_prog = "structure"
+        external = arg.structure_bin
         import evanno.structureHarvester as sh
 
-    # Switch relative to absolute paths
-    arg.infile = os.path.abspath(arg.infile)
-    arg.outpath = os.path.abspath(arg.outpath)
+    # Check the existance of several files:
+    # Popfile
+    if arg.popfile != None:
+        sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
+                                         "exist".format(arg.popfile))
+    # External program
+    sanity.file_checker(external, "Could not find your external program in the "
+                                  "specified path '{}'.".format(external))
+    # Output dir
+    sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
+                                 "existing file.\nThis argument requires a "
+                                 "directory.".format(arg.outpath), False)
+
+
 
     # Number of Ks
     Ks = range(arg.minK, arg.Ks + 1)
@@ -264,8 +277,6 @@ if __name__ == "__main__":
     outpath = arg.outpath
 
     threads = sanity.cpu_checker(arg.threads)
-
-    sanity.output_checker(outpath)
 
     signal.signal(signal.SIGINT, gracious_exit)
 
