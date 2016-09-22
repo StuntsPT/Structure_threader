@@ -306,8 +306,6 @@ def main():
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
 
-    outpath = arg.outpath
-
     threads = sanity.cpu_checker(arg.threads)
 
     signal.signal(signal.SIGINT, gracious_exit)
