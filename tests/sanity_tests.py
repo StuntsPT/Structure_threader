@@ -15,16 +15,32 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 import os
-import structure_threader.sanity_checks as sc
+import structure_threader.sanity_checks.sanity as sc
 
-def cpu_checker_tester():
+
+
+def test_cpu_checker():
     """
-    Tests if CPU checker routine works correctly.
+    Tests if cpu_checker() is working correctlly.
     """
-    cpus = os.cpu_count()
+    assert sc.cpu_checker(1) == 1
+    assert sc.cpu_checker(os.cpu_count() + 1) == os.cpu_count()
 
-    for cases in range(1, cpus):
-        assert sc.cpu_checker(cases, cpus) == cases
 
-    assert sc.cpu_checker(cpus + 1, cpus) == cpus
+def test_file_checker(tmpdir):
+    """
+    Tests if file_checker() is working correctlly.
+    """
+    testdir = tmpdir.mkdir("sub")
+    testfile = testdir.join("filetest.txt")
+    testfile.write("content")
+
+    # Correctly check for a file
+    assert sc.file_checker(str(testfile)) == None
+    # Correctlly check for a directory
+    assert sc.file_checker(str(testdir), is_file=False) == None
+    # Check for a file, but given a dir
+    with pytest.raises(SystemExit):
+        sc.file_checker(str(testdir), is_file=True)
