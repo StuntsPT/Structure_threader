@@ -42,7 +42,7 @@ def test_main():
     indir = "files/"
     text = str(['Model complexity that maximizes marginal likelihood = 2\n',
                 'Model components used to explain structure in data = 3\n'])
-    outdir = "files/"
+    outdir = "files"
     assert fc.main(indir, outdir) is None
     outfile = open(outdir + "chooseK.txt", "r")
     test_text = str(outfile.readlines())

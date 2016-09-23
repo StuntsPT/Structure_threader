@@ -7,4 +7,4 @@ install:
   - pip install .
 
 # Run tests
-script: py.test tests/*
+script: py.test tests/* -v
