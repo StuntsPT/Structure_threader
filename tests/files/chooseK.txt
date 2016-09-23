@@ -1,0 +1,2 @@
+Model complexity that maximizes marginal likelihood = 2
+Model components used to explain structure in data = 3
