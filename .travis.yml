@@ -1,0 +1,12 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install .
+  - pip install -r requirements.txt
+  - python setup.py install --user
+
+# Run tests
+script: py.test tests/*
