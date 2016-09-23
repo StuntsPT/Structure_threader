@@ -23,4 +23,4 @@ sys.path.append(os.path.join(os.getcwd(), '.'))
 sys.path.append(os.path.join(os.getcwd(), '..'))
 print(sys.path)
 
-os.chdir(os.getcwd + "/tests")
+os.chdir(os.getcwd() + "/tests")
