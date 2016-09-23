@@ -25,8 +25,10 @@ def test_parse_logs():
     Tests the result of parse_logs().
     """
     files = glob.glob("files/*.log")
-    assert sorted(fc.parse_logs(files)) == sorted([-0.9875020559, -0.978009636, -0.9721792877,
-                                    -0.9768312088, -0.9806135049, -0.9825775986])
+    assert sorted(fc.parse_logs(files)) == sorted([-0.9875020559, -0.978009636,
+                                                   -0.9721792877, -0.9768312088,
+                                                   -0.9806135049,
+                                                   -0.9825775986])
 
 def test_parse_varQs():
     """
