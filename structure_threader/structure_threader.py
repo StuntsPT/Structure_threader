@@ -21,6 +21,7 @@ import sys
 import signal
 import subprocess
 import itertools
+import argparse
 
 from multiprocessing import Pool
 from random import randrange
@@ -184,12 +185,7 @@ def create_plts(resultsdir, wrapped_prog):
     sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
 
 
-def main():
-    """Main function, where variables are set and other functions get called
-    from."""
-    import argparse
-    global arg
-    global CWD
+def argument_parser(args):
     # Argument list
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
@@ -259,7 +255,18 @@ def main():
                            required=False, help="Disable plot drawing.",
                            metavar="bool", default=False)
 
-    arg = parser.parse_args()
+    arguments = parser.parse_args(args)
+
+    return arguments
+
+
+def main():
+    """Main function, where variables are set and other functions get called
+    from."""
+    global arg
+    global CWD
+
+    arg = argument_parser(sys.argv[1:])
 
     # Where are we?
     CWD = os.getcwd()
@@ -300,8 +307,6 @@ def main():
     sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
                                      "existing file. This argument requires a "
                                      "directory.".format(arg.outpath), False)
-
-
 
     # Number of Ks
     Ks = range(arg.minK, arg.Ks + 1)
