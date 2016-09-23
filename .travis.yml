@@ -6,7 +6,7 @@ python:
 install:
   - pip install .
   - pip install -r requirements.txt
-  - python setup.py install --user
+ # - python setup.py install --user
 
 # Run tests
 script: py.test tests/*
