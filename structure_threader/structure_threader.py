@@ -289,10 +289,13 @@ def main():
     # Popfile
     if arg.popfile != None:
         sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
-                                         "exist".format(arg.popfile))
+                                         "exist.".format(arg.popfile))
     # External program
     sanity.file_checker(external, "Could not find your external program in the "
                                   "specified path '{}'.".format(external))
+    # Input file
+    sanity.file_checker(arg.infile, "The specified infile '{}' does not "
+                                    "exist.".format(arg.infile))
     # Output dir
     sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
                                      "existing file. This argument requires a "
