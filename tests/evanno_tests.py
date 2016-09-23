@@ -16,9 +16,7 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 
-import os
 import glob
-import pytest
 
 import structure_threader.evanno.fastChooseK as fc
 
