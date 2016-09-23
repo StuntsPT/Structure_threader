@@ -38,15 +38,15 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 
-import numpy as np
 import glob
+import numpy as np
 
 
-insum = lambda x,axes: np.apply_over_axes(np.sum,x,axes)
+insum = lambda x, axes: np.apply_over_axes(np.sum, x, axes)
 
 
-class Exception(Exception):
-    pass
+# class Exception(Exception):
+#     pass
 
 
 def parse_logs(files):
@@ -62,7 +62,7 @@ def parse_logs(files):
     """
     marginal_likelihood = []
     for file in files:
-        handle = open(file,'r')
+        handle = open(file, 'r')
         for line in handle:
             if 'Marginal Likelihood' in line:
                 m = float(line.strip().split('=')[1])
@@ -89,20 +89,22 @@ def parse_varQs(files):
     bestKs = []
 
     for file in files:
-        handle = open(file,'r')
-        Q = np.array([list(map(float,line.strip().split())) for line in handle])
-        Q = Q/insum(Q,[1])
+        handle = open(file, 'r')
+        Q = np.array([list(map(float, line.strip().split())) for line in handle])
+        Q = Q/insum(Q, [1])
         handle.close()
 
         N = Q.shape[0]
         C = np.cumsum(np.sort(Q.sum(0))[::-1])
-        bestKs.append(np.sum(C<N-1)+1)
+        bestKs.append(np.sum(C < N - 1) + 1)
 
     return bestKs
 
 def main(indir, outpath):
-    """Main function that runs everything in order."""
-    if indir.endswith("/") == False:
+    """
+    Main function that runs everything in order.
+    """
+    if indir.endswith("/") is False:
         indir = indir + "/"
 
     files = glob.glob('%s*.log'%indir)
@@ -124,7 +126,7 @@ def main(indir, outpath):
     outfile.close()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Usage: python3 fastChooseK.py /path/to/faststructure_outdir/common_sufix \
     # /path/to/dir/where/results_file/is_written
     from sys import argv
