@@ -55,8 +55,11 @@ def file_checker(path, msg=None, is_file=True):
                 raise SystemExit
     else:
         if os.path.isdir(path):
-            print("ERROR: '{}' should be the path to a file, not to a "
-                  "directory.'".format(path))
+            if not msg:
+                print("ERROR: '{}' should be the path to a file, not to a "
+                      "directory.'".format(path))
+            else:
+                print("ERROR: {}".format(msg))
             raise SystemExit
         elif not os.path.exists(path):
             if not msg:
