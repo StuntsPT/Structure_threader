@@ -43,4 +43,10 @@ def test_file_checker(tmpdir):
     assert sc.file_checker(str(testdir), is_file=False) == None
     # Check for a file, but given a dir
     with pytest.raises(SystemExit):
-        sc.file_checker(str(testdir), is_file=True)
+        sc.file_checker(str(testdir))
+    # Check for a dir, but given a file
+    with pytest.raises(SystemExit):
+        sc.file_checker(str(testfile), is_file=False)
+    # Chck for a file and provided with a wrong path
+    with pytest.raises(SystemExit):
+        sc.file_checker(str(testfile) + "a")
