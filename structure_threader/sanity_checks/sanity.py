@@ -47,10 +47,18 @@ def file_checker(path, msg=None, is_file=True):
             try:
                 os.makedirs(path)
             except FileExistsError:
-                print("ERROR: {}".format(path))
+                if not msg:
+                    print("ERROR: '{}' should be the path to a directory, not "
+                          "to a file.'".format(path))
+                else:
+                    print("ERROR: {}".format(msg))
                 raise SystemExit
     else:
-        if not os.path.exists(path):
+        if os.path.isdir(path):
+            print("ERROR: '{}' should be the path to a file, not to a "
+                  "directory.'".format(path))
+            raise SystemExit
+        elif not os.path.exists(path):
             if not msg:
                 print("ERROR: Path '{}' does not exist".format(path))
             else:

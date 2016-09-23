@@ -295,7 +295,7 @@ def main():
                                   "specified path '{}'.".format(external))
     # Output dir
     sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
-                                     "existing file.\nThis argument requires a "
+                                     "existing file. This argument requires a "
                                      "directory.".format(arg.outpath), False)
 
 
