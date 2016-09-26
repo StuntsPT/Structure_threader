@@ -30,6 +30,7 @@ setup(
                  "Natural Language :: English",
                  "Operating System:: POSIX:: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
+    data_files=[('bin', ['bins/fastStructure'])],
     entry_points={
         "console_scripts": [
             "structure_threader = structure_threader.structure_threader:main",
