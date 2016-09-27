@@ -26,24 +26,26 @@ def platform_detection(install_binaries=True):
     return {bin_dir: ["*"]}
 
 
+# Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
+VERSION = "0.1.7"
+URL = "https://github.com/StuntsPT/Structure_threader"
 
 print(DATA_FILES)
 
 setup(
     name="structure_threader",
-    version="0.1.7",
+    version=VERSION,
     packages=["structure_threader",
               "structure_threader.evanno",
               "structure_threader.plotter",
               "structure_threader.sanity_checks"],
-    install_requires=[
-        "matplotlib",
-        "numpy",
-    ],
+    install_requires=["matplotlib",
+                      "numpy",],
     description=("A program to parallelize runs of 'Structure' and "
                  "'fastStructure'."),
-    url="https://github.com/StuntsPT/Structure_threader",
+    url=URL,
+    download_url="{0}/archive/v{1}.tar.gz".format(URL, VERSION),
     author="Francisco Pina-Martins",
     author_email="f.pinamartins@gmail.com",
     license="GPL3",
