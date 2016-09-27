@@ -78,7 +78,8 @@ def runprogram(wrapped_prog, iterations):
 
 
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
-               infile, "--output", output_file, "--format", file_format]
+               infile, "--output", output_file, "--format", file_format,
+               arg.extra_options]
 
         # Are we using the python script or a binary?
         if arg.faststructure_bin.endswith(".py") is False:
@@ -231,6 +232,12 @@ def argument_parser(args):
                                "Ignored for fastStructure",
                           metavar="int", default=20)
 
+    run_opts.add_argument("--extra-options", dest="extra_options", type=str,
+                          required=False,
+                          help="Add extra arguments to pass to the extrenal "
+                          "program here.\nExample: prior=logistic seed=123",
+                          metavar="str", default="")
+
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
 
@@ -262,6 +269,12 @@ def argument_parser(args):
                            metavar="bool", default=False)
 
     arguments = parser.parse_args(args)
+
+    # Handle argparse limitations with "--" options.
+    if arguments.extra_options != "":
+        arguments.extra_options = "--{0}".format(arguments.extra_options)
+        arguments.extra_options = " --".join(arguments.extra_options.split())
+
 
     return arguments
 

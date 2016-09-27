@@ -23,9 +23,6 @@ def platform_detection(install_binaries=True):
     else:
         return None
 
-    structure_bin = bin_dir + "/structure"
-    faststructure_bin = bin_dir + "/fastStructure"
-
     return {bin_dir: ["*"]}
 
 
@@ -35,7 +32,7 @@ print(DATA_FILES)
 
 setup(
     name="structure_threader",
-    version="0.1.5",
+    version="0.1.7",
     packages=["structure_threader",
               "structure_threader.evanno",
               "structure_threader.plotter",
