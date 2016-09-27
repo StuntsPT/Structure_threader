@@ -3,11 +3,19 @@ Although you can run *Structure_threader* by simply cloning the repository (or
 downloading one of the releases), and placing the contents of the directory
 "structure_threader", $PATH, there is now a better, simpler way.   
 Since version 0.1.6 `setup.py` is implemented, and therefore all that is
-required is running `python3 setup.py install` from the root of the software.
+required is running `python3 setup.py install` (or even better,
+`pip install .`) from the distribution's root directory (where `setup.py` is
+located).
 Please note that while dependencies like numpy and matplotlib are handled by
-this method, STRUCTURE and fastStructure are not, and you still have to either
-install them manually, or rely on the ["helper_scripts"](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts)
-where you will find some scripts to help you install both *Structure* **and** *fastStructure*.
+this method, and if using the `pip` method for installing, binary distributions
+of STRUCTURE and fastStructure are also installed.
+Regardless, if you wish to compile your own binaries, you may wish to rely on
+our
+["helper_scripts"](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts)
+which contain commands to compile and install *Structure* **and**
+*fastStructure* (along with any required dependencies).
+
+**TODO**: Add *Structure_threader* to Pypi.
 
 
 ## Structure_threader helper scripts
