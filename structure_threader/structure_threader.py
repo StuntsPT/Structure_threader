@@ -66,7 +66,7 @@ def runprogram(wrapped_prog, iterations):
             file_format = "bed"
             infile = arg.infile[:-4]
         else:
-            file_format = "str"  # Assume str format if plink is not specified
+            file_format = "str"  # Assume 'STR' format if plink is not specified
             if arg.infile.endswith(".str") is False: # Do we need a symlink?
                 from os import symlink
                 try:
@@ -76,8 +76,14 @@ def runprogram(wrapped_prog, iterations):
                         raise
             infile = arg.infile[:-4]
 
+
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
                infile, "--output", output_file, "--format", file_format]
+
+        # Are we using the python script or a binary?
+        if arg.faststructure_bin.endswith(".py") is False:
+            cli = cli[1:]
+
 
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
