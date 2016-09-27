@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import platform
+import sys
 try:
     from setuptools import setup
 except ImportError:
@@ -8,13 +8,29 @@ except ImportError:
     ez_setup.use_setuptools()
     from setuptools import setup
 
-if platform.system() == "Linux":
-    BIN_DIR = "bins/linux"
-elif platform.system() == "Darwin":
-    BIN_DIR = "bins/osx"
 
-STRUCTURE_BIN = BIN_DIR + "/structure"
-FASTSTRUCTURE_BIN = BIN_DIR + "/fastStructure"
+def platform_detection(install_binaries=True):
+    """
+    Detect the platform and adapt the binaries location.
+    """
+    if install_binaries is True:
+        if sys.platform == "linux":
+            bin_dir = "bins/linux"
+        elif sys.platform == "darwin":
+            bin_dir = "bins/osx"
+        else:
+            return None
+    else:
+        return None
+
+    structure_bin = bin_dir + "/structure"
+    faststructure_bin = bin_dir + "/fastStructure"
+
+    return [('bin', [faststructure_bin, structure_bin])]
+
+
+DATA_FILES = platform_detection()
+
 
 setup(
     name="structure_threader",
@@ -39,7 +55,7 @@ setup(
                  "Natural Language :: English",
                  "Operating System:: POSIX:: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
-    data_files=[('bin', [FASTSTRUCTURE_BIN, STRUCTURE_BIN])],
+    data_files=DATA_FILES,
     entry_points={
         "console_scripts": [
             "structure_threader = structure_threader.structure_threader:main",
