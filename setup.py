@@ -53,7 +53,7 @@ setup(
                  "License :: OSI Approved :: GNU General Public License v3 ("
                  "GPLv3)",
                  "Natural Language :: English",
-                 "Operating System:: POSIX:: Linux",
+                 "Operating System :: POSIX :: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
     package_data=DATA_FILES,
     entry_points={
