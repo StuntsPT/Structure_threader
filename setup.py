@@ -1,11 +1,20 @@
 #!/usr/bin/python3
 
+import platform
 try:
     from setuptools import setup
 except ImportError:
     import ez_setup
     ez_setup.use_setuptools()
     from setuptools import setup
+
+if platform.system() == "Linux":
+    bin_dir = "bins/linux"
+elif platform.system() == "Darwin":
+    bin_dir = "bins/osx"
+
+structure_bin = bin_dir + "/structure"
+faststructure_bin = bin_dir + "/fastStructure"
 
 setup(
     name="structure_threader",
@@ -30,7 +39,7 @@ setup(
                  "Natural Language :: English",
                  "Operating System:: POSIX:: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
-    data_files=[('bin', ['bins/linux/fastStructure', 'bins/linux/structure'])],
+    data_files=[('bin', [faststructure_bin, structure_bin])],
     entry_points={
         "console_scripts": [
             "structure_threader = structure_threader.structure_threader:main",
