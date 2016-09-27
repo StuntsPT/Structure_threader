@@ -15,23 +15,27 @@ def platform_detection(install_binaries=True):
     """
     if install_binaries is True:
         if sys.platform == "linux":
-            bin_dir = "bins.linux"
+            bin_pkg = "bins.linux"
+            bin_dir = "structure_threader/bins/linux"
         elif sys.platform == "darwin":
-            bin_dir = "bins.osx"
+            bin_pkg = "bins.osx"
+            bin_dir = "structure_threader/bins/osx"
         else:
             return None
     else:
         return None
 
-    return {bin_dir: ["*"]}
+    structure_bin = bin_dir + "/structure"
+    faststructure_bin = bin_dir + "/fastStructure"
+
+    return [('bin', [faststructure_bin, structure_bin])], {bin_pkg: ["*"]}
 
 
 # Set some variables (PKGBUILD inspired)
-DATA_FILES = platform_detection()
-VERSION = "0.1.7"
+DATA_FILES, DATA_PACKAGE = platform_detection()
+VERSION = "0.1.7.1"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
-print(DATA_FILES)
 
 setup(
     name="structure_threader",
@@ -55,7 +59,8 @@ setup(
                  "Natural Language :: English",
                  "Operating System :: POSIX :: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
-    package_data=DATA_FILES,
+    data_files=DATA_FILES,
+    package_data=DATA_PACKAGE,
     entry_points={
         "console_scripts": [
             "structure_threader = structure_threader.structure_threader:main",
