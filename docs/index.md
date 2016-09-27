@@ -16,6 +16,7 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 
 ## Contents
 * [Installation & dependencies](install.md)
+    * [Binary building](binaries.md)
 * [Usage](usage.md)
 * [Output](output.md)
 * [Test Data](test_data.md)
