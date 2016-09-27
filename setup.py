@@ -15,9 +15,9 @@ def platform_detection(install_binaries=True):
     """
     if install_binaries is True:
         if sys.platform == "linux":
-            bin_dir = "bins/linux"
+            bin_dir = "bins.linux"
         elif sys.platform == "darwin":
-            bin_dir = "bins/osx"
+            bin_dir = "bins.osx"
         else:
             return None
     else:
@@ -26,11 +26,12 @@ def platform_detection(install_binaries=True):
     structure_bin = bin_dir + "/structure"
     faststructure_bin = bin_dir + "/fastStructure"
 
-    return [('bin', [faststructure_bin, structure_bin])]
+    return {bin_dir: ["*"]}
 
 
 DATA_FILES = platform_detection()
 
+print(DATA_FILES)
 
 setup(
     name="structure_threader",
@@ -55,7 +56,7 @@ setup(
                  "Natural Language :: English",
                  "Operating System:: POSIX:: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics"],
-    data_files=DATA_FILES,
+    package_data=DATA_FILES,
     entry_points={
         "console_scripts": [
             "structure_threader = structure_threader.structure_threader:main",
