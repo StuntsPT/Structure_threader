@@ -9,13 +9,19 @@ located).
 Please note that while dependencies like numpy and matplotlib are handled by
 this method, and if using the `pip` method for installing, binary distributions
 of STRUCTURE and fastStructure are also installed.
+These binaries are installed in the "standard" `setup.py`
+[locations](https://docs.python.org/2/install/), eg. `/usr/bin` is installed
+with `sudo` or `~/.local/bin` if installed with the option `--user`, etc...
 Regardless, if you wish to compile your own binaries, you may wish to rely on
 our
 ["helper_scripts"](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts)
 which contain commands to compile and install *Structure* **and**
 *fastStructure* (along with any required dependencies).
-
-**TODO**: Add *Structure_threader* to Pypi.
+Since v0.1.8 *Structure_threader* is available in
+[Pypi](https://pypi.python.org/pypi/structure_threader/0.1.8), which means that
+currently, installing *Structure_threader* is as simple as running
+`pip install structure_threader`. Don't forget the `--user` option if you can't
+or don't want to install the program as `root` user.
 
 
 ## Structure_threader helper scripts

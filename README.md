@@ -7,9 +7,10 @@ A program to parallelize the runs of [Structure](http://pritchardlab.stanford.ed
 ## Installation from Pypi
 *Structure_threader* is available on
 [Pypi](https://pypi.python.org/pypi/structure_threader/0.1.8). It can be
-installed by simply running `pip install structure_threader`. Using this method,
-binaries for STRUCTURE and fastStructure are also distributed. For more details
-on this, please check the manual.
+installed by simply running `pip install structure_threader`. Don't forget the
+`--user` option if you can't or don't want to install the program as `root`
+user. Using this method, binaries for STRUCTURE and fastStructure are also
+distributed. For more details on this, please check the manual.
 
 
 ## Documentation
