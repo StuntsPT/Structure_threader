@@ -17,9 +17,9 @@
 
 echo "Runnig STRUCTURE 'field test'. This will simulate a full wrapped run on small test data."
 
-#~/virtualenv/python3.5/bin/structure_threader -i
+which structure_threader
+which fastStructure
 
-ls ~/
-ls ~/virtualenv
-ls ~/virtualenv/python3.5
-ls ~/virtualenv/python3.5/bin
+git_dir=`pwd`
+
+~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/PTS/data/Reduced_dataset.structure -o ~/results -st ~/virtualenv/python3.5/bin/structure -K 2 -t 2 -R 1
