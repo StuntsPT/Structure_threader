@@ -15,14 +15,14 @@ This means that binaries built on older systems will run on newer systems, but
 the opposite may not be true.
 
 ### OSX binaries
-We have not built any OSX binaries yet. We will update this section once we do.
-
+Binaries were build on Mid 2013 MacBook Air with an "Haswell" based i5 CPU, running OSX 10.10 Yosemite.
+They should be forward compatible with later OSX releases.
 
 ## STRUCTURE
 
 STRUCTURE is relatively simple to build. Source code can be obtained from the
  [STRUCTURE website](http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz). To build the binary, we used our helper
- script "install_structure.sh".
+ script "install_structure.sh". The binary version is 2.3.4.
 
 
  ## fastStructure
@@ -36,4 +36,4 @@ To build the binary, we have insatlled fastStructure using our helper script
 "install_faststructure.sh" and then we have used
 [pyinstaller](http://www.pyinstaller.org/) to turn it into a binary. The used
 "specfile" can be found [here](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts/structure.spec) which contains all the required information to reproduce the
-build.
+build. The binary version is 1.0.
