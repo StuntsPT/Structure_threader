@@ -20,4 +20,4 @@ echo "Runnig STRUCTURE 'field test'. This will simulate a full wrapped run on sm
 git_dir=`pwd`
 str_bin=`which structure`
 
-~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/PTS/data/Reduced_dataset.structure -o ~/results -st ${str_bin} -K 2 -t 2 -R 8
+~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/PTS/data/Reduced_dataset.structure -o ~/results -st ${str_bin} -K 3 -t 4 -R 5
