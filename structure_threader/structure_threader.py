@@ -167,7 +167,7 @@ def structure_harvester(resultsdir, wrapped_prog):
         try:
             import evanno.structureHarvester as sh
         except ImportError:
-            import structure_threader.structureHarvester as sh
+            import structure_threader.evanno.structureHarvester as sh
 
     sh.main(resultsdir, outdir)
 

@@ -57,9 +57,13 @@ THE SOFTWARE.
 
 """
 import glob
-import evanno.harvesterCore as hc
 import os
 import time
+try:
+    import evanno.harvesterCore as hc
+except ImportError:
+    import structure_threader.evanno.harvesterCore as hc
+
 
 __version__ = 'v0.6.94 July 2014'
 EPSILON = 0.0000001 # for determining if a stdev ~ 0
