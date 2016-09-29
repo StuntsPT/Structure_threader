@@ -24,6 +24,13 @@ import numpy as np
 from collections import Counter
 import os
 
+def parse_popinfo(fhandle):
+    """
+    Parses Structure results when using the USEPOPINFO flag.
+    """
+
+    qvalues_dic = {}
+
 
 def dataminer(indfile_name, fmt, popfile=None):
     """Parse the output files of structure and faststructure and return a
@@ -37,6 +44,7 @@ def dataminer(indfile_name, fmt, popfile=None):
     """
 
     poplist = []
+    popinfo = False
 
     # Parse popfile if provided
     if popfile:
@@ -64,16 +72,22 @@ def dataminer(indfile_name, fmt, popfile=None):
             for line in file_handle:
                 if line.strip().lower().startswith("inferred ancestry of "
                                                    "individuals:"):
-                    # Enter parse mode ON
-                    parse = True
                     # Skip subheader
-                    next(file_handle)
+                    if next(file_handle).lower() == "Probability of being from"
+                                                    " assumed population | prob"
+                                                    " of other pops"
+                        # Enter parse mode ON
+                        next(file_handle)
+                        parse, popinfo = True, True
+                    else:
+                        pass
+
                 elif line.strip().lower().startswith("estimated allele "
                                                      "frequencies in each "
                                                      "cluster"):
                     # parse mode OFF
                     parse = False
-                elif parse:
+                elif parse and not popinfo:
                     if line.strip() != "":
                         fields = line.strip().split()
                         # Get cluster values
@@ -85,6 +99,14 @@ def dataminer(indfile_name, fmt, popfile=None):
                         if not popfile:
                             # Get population
                             poplist.append(int(fields[3]))
+
+                elif parse and popinfo:
+                    if line.strip() != "":
+                        fields = line.split("|")
+
+                        # Get choosen pop
+
+
 
         if not popfile:
             # Transform poplist in convenient format, in which each element
