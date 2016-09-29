@@ -8,5 +8,5 @@ install:
 
 # Run tests
 script:
-  - py.test tests/* -v
+  - py.test tests/*.py -v
   - tests/structure_field_test.sh
