@@ -19,12 +19,13 @@ set -e
 
 LightGreen='\033[1;32m'
 NoColor='\033[0m'
+
 echo "Runnig fastStructure 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=`pwd`
 str_bin=`which fastStructure`
 
-tar xvfJ ${git_dir}/PTS/data/BigTestData.str.tar.xz -C ${git_dir}/PTS/data/
-~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/PTS/data/BigTestData.str -o ~/results_fs -fs ${str_bin} -K 4 -t 4
+tar xvfJ ${git_dir}/tests/smalldata/BigTestData.str.tar.xz -C ${git_dir}/tests/smalldata/
+~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/tests/smalldata/BigTestData.str -o ~/results_fs -fs ${str_bin} -K 4 -t 4
 
 echo -e "${LightGreen}fastStructure 'Field test' ran successfully. Yay!${NoColor}"
