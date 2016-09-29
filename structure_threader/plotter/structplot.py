@@ -90,8 +90,7 @@ def dataminer(indfile_name, fmt, popfile=None):
             # Transform poplist in convenient format, in which each element
             # is the boundary of a population in the x-axis
             poplist = Counter(poplist)
-            poplist = [(x, None) for x in np.cumsum(list(poplist.values()))]
-            print("oh")
+            poplist = [([x]*y, None) for x, y in poplist.items()]
 
 
     if popfile:
@@ -180,19 +179,23 @@ def plotter(qvalues, poplist, outfile):
 
     # Annotate population info
     if poplist:
-        orderings = [(x, y[0][0]) for x, y in
-                     zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
-        count = 1
+        for i in zip(np.cumsum([len(x[0]) for x in poplist]), poplist):
+            orderings = [(x, y[0][0]) for x, y in
+                        zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
+            count = 1
         for ppl, vals in enumerate(orderings):
+
             # Add population delimiting lines
             plt.axvline(x=vals[0], linewidth=1.5, color='black')
+
             # Add population labels
             # Determine x pos
             xpos = vals[0] - ((vals[0] - orderings[ppl - 1][0]) / 2) if ppl > 0 \
                 else vals[0] / 2
+
             # Draw text
             ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
-                    rotation=45, va="top", ha="right", fontsize=14,
+                    rotation=45, va="top", ha="right", fontsize=6,
                     weight="bold")
             count += 1
 
@@ -203,7 +206,7 @@ def plotter(qvalues, poplist, outfile):
     plt.yticks([])
     plt.xticks([])
 
-    plt.savefig("{}.svg".format(outfile), bbox_inches="tight")
+    plt.savefig("{}.pdf".format(outfile), bbox_inches="tight")
 
 
 def main(result_files, fmt, outdir, popfile=None):
