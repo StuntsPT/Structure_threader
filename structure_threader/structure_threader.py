@@ -298,17 +298,9 @@ def main():
     if arg.faststructure_bin != None:
         wrapped_prog = "fastStructure"
         external = arg.faststructure_bin
-        try:
-            import evanno.fastChooseK as sh
-        except ImportError:
-            import structure_threader.evanno.fastChooseK as sh
     else:
         wrapped_prog = "structure"
         external = arg.structure_bin
-        try:
-            import evanno.structureHarvester as sh
-        except ImportError:
-            import structure_threader.evanno.structureHarvester as sh
 
 
     # Check the existance of several files:
