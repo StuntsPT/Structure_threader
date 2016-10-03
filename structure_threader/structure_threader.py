@@ -37,7 +37,7 @@ except ImportError:
 def gracious_exit(*args):
     """Graciously exit the program."""
     print("\rExiting graciously, murdering child processes and cleaning output"
-          " directory", end="")
+          " directory.", end="")
     os.chdir(CWD)
     sys.exit(0)
 
