@@ -20,24 +20,24 @@ import os
 from collections import Counter, defaultdict
 import numpy as np
 import matplotlib
-import matplotlib.pyplot as plt
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
 def parse_usepopinfo(fhandle, end_string):
     """
     Parses Structure results when using the USEPOPINFO flag.
     """
-    qvalues_dic = defaultdict(float)
     qvalues = np.array([])
+    poplist = []
     # Skip subheader
     next(fhandle)
     for line in fhandle:
         if line.strip() != "":
             if line.strip().lower().startswith(end_string):
-                print(qvalues)
                 return qvalues, poplist
 
+            qvalues_dic = defaultdict(float)
             fields = line.strip().split("|")[:-1]
             # Assumed pop
             qvalues_dic[fields[0].split()[3]] = float(fields[0].split()[5])
@@ -46,13 +46,13 @@ def parse_usepopinfo(fhandle, end_string):
                 prob = sum(map(float, pop.split()[-3:]))
                 qvalues_dic[pop.split()[1][:-1]] = prob
             clv = []
-            poplist = sorted(list(qvalues_dic.keys()))
-            for percents in poplist:
-                clv.append(qvalues_dic[percents])
+            for percents in sorted(list(map(int, list(qvalues_dic.keys())))):
+                clv.append(qvalues_dic[str(percents)])
             try:
                 qvalues = np.vstack((qvalues, clv))
             except ValueError:
                 qvalues = np.array(clv)
+            poplist.append(int(fields[0].split()[3]))
 
 
 def parse_nousepopinfo(fhandle, end_string):
@@ -65,7 +65,6 @@ def parse_nousepopinfo(fhandle, end_string):
     for line in fhandle:
         if line.strip() != "":
             if line.strip().lower().startswith(end_string):
-                print(qvalues)
                 return qvalues, poplist
 
             fields = line.strip().split()
@@ -121,16 +120,19 @@ def dataminer(indfile_name, fmt, popfile=None):
                     if next(file_handle).lower().startswith(popinfo_string):
                         qvalues, numlist = parse_usepopinfo(file_handle,
                                                             end_parsing_string)
+                        break
                     else:
                         qvalues, numlist = parse_nousepopinfo(file_handle,
                                                               end_parsing_string)
-                    if not popfile:
-                        poplist = numlist
+                        break
+        #if not popfile:
+            #poplist = numlist
 
 
         if not popfile:
             # Transform poplist in convenient format, in which each element
             # is the boundary of a population in the x-axis
+            poplist = numlist
             poplist = Counter(poplist)
             poplist = [([x]*y, None) for x, y in poplist.items()]
 
@@ -248,7 +250,8 @@ def plotter(qvalues, poplist, outfile):
     plt.yticks([])
     plt.xticks([])
 
-    plt.savefig("{}.pdf".format(outfile), bbox_inches="tight")
+
+    plt.savefig("{}.svg".format(outfile), bbox_inches="tight")
 
 
 def main(result_files, fmt, outdir, popfile=None):
