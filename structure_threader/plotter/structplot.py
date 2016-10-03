@@ -21,28 +21,41 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
 import os
 
-def parse_popinfo(fhandle, end_string, popfile):
+def parse_usepopinfo(fhandle, end_string):
     """
     Parses Structure results when using the USEPOPINFO flag.
     """
-    qvalues_dic = {}
+    qvalues_dic = defaultdict(float)
+    qvalues = np.array([])
     # Skip subheader
     next(fhandle)
     for line in fhandle:
-
         if line.strip() != "":
-            fields = line.split("|")
+            if line.strip().lower().startswith(end_string):
+                print(qvalues)
+                return qvalues, poplist
+
+            fields = line.strip().split("|")[:-1]
+            # Assumed pop
+            qvalues_dic[fields[0].split()[3]] = float(fields[0].split()[5])
+            # Other pops
+            for pop in fields[1:]:
+                prob = sum(map(float, pop.split()[-3:]))
+                qvalues_dic[pop.split()[1][:-1]] = prob
+            clv = []
+            poplist = sorted(list(qvalues_dic.keys()))
+            for percents in poplist:
+                clv.append(qvalues_dic[percents])
+            try:
+                qvalues = np.vstack((qvalues, clv))
+            except ValueError:
+                qvalues = np.array(clv)
 
 
-
-        if line.strip().lower().startswith(end_string):
-            return qvalues_dic
-
-
-def parse_nopopinfo(fhandle, end_string):
+def parse_nousepopinfo(fhandle, end_string):
     """
     Parses Structure results when **not** using the USEPOPINFO flag.
     """
@@ -51,6 +64,10 @@ def parse_nopopinfo(fhandle, end_string):
 
     for line in fhandle:
         if line.strip() != "":
+            if line.strip().lower().startswith(end_string):
+                print(qvalues)
+                return qvalues, poplist
+
             fields = line.strip().split()
             # Get cluster values
             clv = [float(x) for x in fields[5:]]
@@ -60,10 +77,6 @@ def parse_nopopinfo(fhandle, end_string):
                 qvalues = np.array(clv)
             # Get population
             poplist.append(int(fields[3]))
-
-        if line.strip().lower().startswith(end_string):
-            return qvalues, poplist
-
 
 
 def dataminer(indfile_name, fmt, popfile=None):
@@ -98,22 +111,21 @@ def dataminer(indfile_name, fmt, popfile=None):
 
     else:  # STRUCTURE
         parsing_string = "inferred ancestry of individuals:"
-        popinfo_string = "Probability of being from assumed population | prob \
-                          of other pops"
+        popinfo_string = ("probability of being from assumed population | " +
+                          "prob of other pops")
         end_parsing_string = "estimated allele frequencies in each cluster"
 
         with open(indfile_name) as file_handle:
             for line in file_handle:
                 if line.strip().lower().startswith(parsing_string):
                     if next(file_handle).lower().startswith(popinfo_string):
-                        qvalues = parse_popinfo(file_handle,
-                                                end_parsing_string,
-                                                popfile)
+                        qvalues, numlist = parse_usepopinfo(file_handle,
+                                                            end_parsing_string)
                     else:
-                        numlist, qvalues = parse_nopopinfo(file_handle,
-                                                         end_parsing_string)
-                        if not popfile:
-                            poplist = numlist
+                        qvalues, numlist = parse_nousepopinfo(file_handle,
+                                                              end_parsing_string)
+                    if not popfile:
+                        poplist = numlist
 
 
         if not popfile:
@@ -255,6 +267,6 @@ def main(result_files, fmt, outdir, popfile=None):
 if __name__ == "__main__":
     from sys import argv
     # Usage: structplot.py results_file format outdir
-    datafile = []
-    datafile.append(argv[1])
-    main(datafile, argv[2], argv[3], argv[4])
+    datafiles = []
+    datafiles.append(argv[1])
+    main(datafiles, argv[2], argv[3])
