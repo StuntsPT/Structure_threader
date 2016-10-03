@@ -16,13 +16,66 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+from collections import Counter, defaultdict
+import numpy as np
 import matplotlib
 matplotlib.use('Agg')
-
 import matplotlib.pyplot as plt
-import numpy as np
-from collections import Counter
-import os
+
+
+def parse_usepopinfo(fhandle, end_string):
+    """
+    Parses Structure results when using the USEPOPINFO flag.
+    """
+    qvalues = np.array([])
+    poplist = []
+    # Skip subheader
+    next(fhandle)
+    for line in fhandle:
+        if line.strip() != "":
+            if line.strip().lower().startswith(end_string):
+                return qvalues, poplist
+
+            qvalues_dic = defaultdict(float)
+            fields = line.strip().split("|")[:-1]
+            # Assumed pop
+            qvalues_dic[fields[0].split()[3]] = float(fields[0].split()[5])
+            # Other pops
+            for pop in fields[1:]:
+                prob = sum(map(float, pop.split()[-3:]))
+                qvalues_dic[pop.split()[1][:-1]] = prob
+            clv = []
+            for percents in sorted(list(map(int, list(qvalues_dic.keys())))):
+                clv.append(qvalues_dic[str(percents)])
+            try:
+                qvalues = np.vstack((qvalues, clv))
+            except ValueError:
+                qvalues = np.array(clv)
+            poplist.append(int(fields[0].split()[3]))
+
+
+def parse_nousepopinfo(fhandle, end_string):
+    """
+    Parses Structure results when **not** using the USEPOPINFO flag.
+    """
+    qvalues = np.array([])
+    poplist = []
+
+    for line in fhandle:
+        if line.strip() != "":
+            if line.strip().lower().startswith(end_string):
+                return qvalues, poplist
+
+            fields = line.strip().split()
+            # Get cluster values
+            clv = [float(x) for x in fields[5:]]
+            try:
+                qvalues = np.vstack((qvalues, clv))
+            except ValueError:
+                qvalues = np.array(clv)
+            # Get population
+            poplist.append(int(fields[3]))
 
 
 def dataminer(indfile_name, fmt, popfile=None):
@@ -52,43 +105,34 @@ def dataminer(indfile_name, fmt, popfile=None):
                        [x[2] for x in poparray])]
 
     # Parse structure/faststructure output file
-    if fmt == "fastStructure":
+    if fmt == "fastStructure":  # fastStructure
         qvalues = np.genfromtxt(indfile_name)
 
-    else:
-        qvalues = np.array([])
+    else:  # STRUCTURE
+        parsing_string = "inferred ancestry of individuals:"
+        popinfo_string = ("probability of being from assumed population | " +
+                          "prob of other pops")
+        end_parsing_string = "estimated allele frequencies in each cluster"
 
-        # Start file parsing
-        parse = False
         with open(indfile_name) as file_handle:
             for line in file_handle:
-                if line.strip().lower().startswith("inferred ancestry of "
-                                                   "individuals:"):
-                    # Enter parse mode ON
-                    parse = True
-                    # Skip subheader
-                    next(file_handle)
-                elif line.strip().lower().startswith("estimated allele "
-                                                     "frequencies in each "
-                                                     "cluster"):
-                    # parse mode OFF
-                    parse = False
-                elif parse:
-                    if line.strip() != "":
-                        fields = line.strip().split()
-                        # Get cluster values
-                        cl = [float(x) for x in fields[5:]]
-                        try:
-                            qvalues = np.vstack((qvalues, cl))
-                        except ValueError:
-                            qvalues = np.array(cl)
-                        if not popfile:
-                            # Get population
-                            poplist.append(int(fields[3]))
+                if line.strip().lower().startswith(parsing_string):
+                    if next(file_handle).lower().startswith(popinfo_string):
+                        qvalues, numlist = parse_usepopinfo(file_handle,
+                                                            end_parsing_string)
+                        break
+                    else:
+                        qvalues, numlist = parse_nousepopinfo(file_handle,
+                                                              end_parsing_string)
+                        break
+        #if not popfile:
+            #poplist = numlist
+
 
         if not popfile:
             # Transform poplist in convenient format, in which each element
             # is the boundary of a population in the x-axis
+            poplist = numlist
             poplist = Counter(poplist)
             poplist = [([x]*y, None) for x, y in poplist.items()]
 
@@ -159,7 +203,7 @@ def plotter(qvalues, poplist, outfile):
     plt.rcParams["figure.figsize"] = (8 * numinds * .01, 2.64)
 
     fig = plt.figure()
-    ax = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
+    axe = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
 
     for i in range(qvalues.shape[1]):
         # Get bar color. If K exceeds the 12 colors, generate random color
@@ -169,19 +213,19 @@ def plotter(qvalues, poplist, outfile):
             clr = np.random.rand(3, 1)
 
         if i == 0:
-            ax.bar(range(numinds), qvalues[:, i], facecolor=clr,
-                   edgecolor="none", width=1)
+            axe.bar(range(numinds), qvalues[:, i], facecolor=clr,
+                    edgecolor="none", width=1)
             former_q = qvalues[:, i]
         else:
-            ax.bar(range(numinds), qvalues[:, i], bottom=former_q,
-                   facecolor=clr, edgecolor="none", width=1)
+            axe.bar(range(numinds), qvalues[:, i], bottom=former_q,
+                    facecolor=clr, edgecolor="none", width=1)
             former_q = former_q + qvalues[:, i]
 
     # Annotate population info
     if poplist:
         for i in zip(np.cumsum([len(x[0]) for x in poplist]), poplist):
             orderings = [(x, y[0][0]) for x, y in
-                        zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
+                         zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
             count = 1
         for ppl, vals in enumerate(orderings):
 
@@ -194,19 +238,20 @@ def plotter(qvalues, poplist, outfile):
                 else vals[0] / 2
 
             # Draw text
-            ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
-                    rotation=45, va="top", ha="right", fontsize=6,
-                    weight="bold")
+            axe.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
+                     rotation=45, va="top", ha="right", fontsize=6,
+                     weight="bold")
             count += 1
 
     for axis in ["top", "bottom", "left", "right"]:
-        ax.spines[axis].set_linewidth(2)
-        ax.spines[axis].set_color("black")
+        axe.spines[axis].set_linewidth(2)
+        axe.spines[axis].set_color("black")
 
     plt.yticks([])
     plt.xticks([])
 
-    plt.savefig("{}.pdf".format(outfile), bbox_inches="tight")
+
+    plt.savefig("{}.svg".format(outfile), bbox_inches="tight")
 
 
 def main(result_files, fmt, outdir, popfile=None):
@@ -225,6 +270,6 @@ def main(result_files, fmt, outdir, popfile=None):
 if __name__ == "__main__":
     from sys import argv
     # Usage: structplot.py results_file format outdir
-    datafile = []
-    datafile.append(argv[1])
-    main(datafile, argv[2], argv[3], argv[4])
+    DATAFILES = []
+    DATAFILES.append(argv[1])
+    main(DATAFILES, argv[2], argv[3])
