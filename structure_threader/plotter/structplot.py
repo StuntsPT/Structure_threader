@@ -16,13 +16,13 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+from collections import Counter, defaultdict
+import numpy as np
 import matplotlib
+import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 
-import matplotlib.pyplot as plt
-import numpy as np
-from collections import Counter, defaultdict
-import os
 
 def parse_usepopinfo(fhandle, end_string):
     """
@@ -201,7 +201,7 @@ def plotter(qvalues, poplist, outfile):
     plt.rcParams["figure.figsize"] = (8 * numinds * .01, 2.64)
 
     fig = plt.figure()
-    ax = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
+    axe = fig.add_subplot(111, xlim=(0, numinds), ylim=(0, 1))
 
     for i in range(qvalues.shape[1]):
         # Get bar color. If K exceeds the 12 colors, generate random color
@@ -211,19 +211,19 @@ def plotter(qvalues, poplist, outfile):
             clr = np.random.rand(3, 1)
 
         if i == 0:
-            ax.bar(range(numinds), qvalues[:, i], facecolor=clr,
-                   edgecolor="none", width=1)
+            axe.bar(range(numinds), qvalues[:, i], facecolor=clr,
+                    edgecolor="none", width=1)
             former_q = qvalues[:, i]
         else:
-            ax.bar(range(numinds), qvalues[:, i], bottom=former_q,
-                   facecolor=clr, edgecolor="none", width=1)
+            axe.bar(range(numinds), qvalues[:, i], bottom=former_q,
+                    facecolor=clr, edgecolor="none", width=1)
             former_q = former_q + qvalues[:, i]
 
     # Annotate population info
     if poplist:
         for i in zip(np.cumsum([len(x[0]) for x in poplist]), poplist):
             orderings = [(x, y[0][0]) for x, y in
-                        zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
+                         zip(np.cumsum([len(x[0]) for x in poplist]), poplist)]
             count = 1
         for ppl, vals in enumerate(orderings):
 
@@ -236,14 +236,14 @@ def plotter(qvalues, poplist, outfile):
                 else vals[0] / 2
 
             # Draw text
-            ax.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
-                    rotation=45, va="top", ha="right", fontsize=6,
-                    weight="bold")
+            axe.text(xpos, -0.05, vals[1] if vals[1] else "Pop{}".format(count),
+                     rotation=45, va="top", ha="right", fontsize=6,
+                     weight="bold")
             count += 1
 
     for axis in ["top", "bottom", "left", "right"]:
-        ax.spines[axis].set_linewidth(2)
-        ax.spines[axis].set_color("black")
+        axe.spines[axis].set_linewidth(2)
+        axe.spines[axis].set_color("black")
 
     plt.yticks([])
     plt.xticks([])
@@ -267,6 +267,6 @@ def main(result_files, fmt, outdir, popfile=None):
 if __name__ == "__main__":
     from sys import argv
     # Usage: structplot.py results_file format outdir
-    datafiles = []
-    datafiles.append(argv[1])
-    main(datafiles, argv[2], argv[3])
+    DATAFILES = []
+    DATAFILES.append(argv[1])
+    main(DATAFILES, argv[2], argv[3])
