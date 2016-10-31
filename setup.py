@@ -31,7 +31,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
@@ -56,7 +56,10 @@ setup(
                  "GPLv3)",
                  "Natural Language :: English",
                  "Operating System :: POSIX :: Linux",
-                 "Topic :: Scientific/Engineering :: Bio-Informatics"],
+                 "Topic :: Scientific/Engineering :: Bio-Informatics",
+                 "Programming Language :: Python :: 3 :: Only",
+                 "Programming Language :: Python :: 3.4",
+                 "Programming Language :: Python :: 3.5"],
     data_files=DATA_FILES,
     entry_points={
         "console_scripts": [
