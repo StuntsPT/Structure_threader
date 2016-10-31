@@ -9,6 +9,13 @@ except ImportError:
     from setuptools import setup
 
 
+class NotSupportedException(BaseException): pass
+
+
+if sys.version_info.major < 3:
+    raise NotSupportedException("Only Python 3.x Supported")
+
+
 def platform_detection(install_binaries=True):
     """
     Detect the platform and adapt the binaries location.
@@ -31,7 +38,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
