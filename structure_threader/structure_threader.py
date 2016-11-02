@@ -74,7 +74,8 @@ def runprogram(wrapped_prog, iterations):
                 except OSError as err:
                     if err.errno != 17:
                         raise
-            infile = arg.infile[:-4]
+            else:
+                infile = arg.infile[:-4]
 
 
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
