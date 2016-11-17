@@ -3,7 +3,7 @@
 ## Preferred method
 
 Since v0.1.8 *Structure_threader* is available in
-[Pypi](https://pypi.python.org/pypi/structure_threader/0.1.8), which means that
+[Pypi](https://pypi.python.org/pypi/structure_threader/), which means that
 currently, installing *Structure_threader* is as simple as running
 `pip3 install structure_threader`. Don't forget the `--user` option if you can't
 or don't want to install the program as `root` user.
