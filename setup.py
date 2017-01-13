@@ -66,7 +66,7 @@ setup(
               "structure_threader.plotter",
               "structure_threader.sanity_checks"],
     install_requires=["matplotlib",
-                      "numpy",],
+                      "numpy", ],
     description=("A program to parallelize runs of 'Structure' and "
                  "'fastStructure'."),
     url=URL,
