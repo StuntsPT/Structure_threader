@@ -67,10 +67,10 @@ def runprogram(wrapped_prog, iterations):
             infile = arg.infile[:-4]
         else:
             file_format = "str"  # Assume 'STR' format if plink is not specified
-            if arg.infile.endswith(".str") is False: # Do we need a symlink?
-                from os import symlink
+            if arg.infile.endswith(".str") is False:  # Do we need a symlink?
+                infile = arg.infile
                 try:
-                    symlink(arg.infile, arg.infile+".str")
+                    os.symlink(arg.infile, arg.infile+".str")
                 except OSError as err:
                     if err.errno != 17:
                         raise
