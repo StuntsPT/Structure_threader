@@ -197,7 +197,9 @@ def create_plts(resultsdir, wrapped_prog):
 
 
 def argument_parser(args):
-    # Argument list
+    """
+    Parses the list of arguments as implemented in argparse.
+    """
     parser = argparse.ArgumentParser(description="A simple program to "
                                                  "paralelize the runs of the "
                                                  "Structure software.",
