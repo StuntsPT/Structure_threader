@@ -183,8 +183,13 @@ def create_plts(resultsdir, wrapped_prog):
 
     if wrapped_prog == "structure":
         # Get only relevant output files, choosen randomly from the replictes.
+        # Failsafe in case we only have 1 replicate:
+        if arg.replicates == 1:
+            file_to_plot = "1"
+        else:
+            file_to_plot = str(randrange(arg.minK, arg.replicates))
         plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
-                     str(randrange(arg.minK, arg.replicates)) + "_f"
+                     file_to_plot + "_f"
                      for i in range(arg.minK, arg.Ks + 1)]
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
