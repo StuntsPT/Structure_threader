@@ -34,6 +34,7 @@ except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
 
+
 def gracious_exit(*args):
     """Graciously exit the program."""
     print("\rExiting graciously, murdering child processes and cleaning output"
@@ -53,13 +54,13 @@ def runprogram(wrapped_prog, iterations):
 
     K, rep_num = iterations
 
-    if wrapped_prog == "structure": # Run STRUCTURE
+    if wrapped_prog == "structure":  # Run STRUCTURE
         # Keeps correct directory separator across OS's
         output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
-    else: # Run fastStructure
+    else:  # Run fastStructure
         # Keeps correct directory separator across OS's
         output_file = os.path.join(arg.outpath, "fS_run_K")
         if arg.infile.endswith((".bed", ".fam", ".bim")):
@@ -77,7 +78,6 @@ def runprogram(wrapped_prog, iterations):
             else:
                 infile = arg.infile[:-4]
 
-
         cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
                infile, "--output", output_file, "--format", file_format,
                arg.extra_options]
@@ -85,7 +85,6 @@ def runprogram(wrapped_prog, iterations):
         # Are we using the python script or a binary?
         if arg.faststructure_bin.endswith(".py") is False:
             cli = cli[1:]
-
 
     print("Running: " + " ".join(cli))
     program = subprocess.Popen(cli, bufsize=64, shell=False,
@@ -121,7 +120,6 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
         replicates = [1]
     else:
         os.chdir(os.path.dirname(arg.infile))
-
 
     jobs = list(itertools.product(Ks, replicates))[::-1]
 
@@ -281,7 +279,6 @@ def argument_parser(args):
         arguments.extra_options = "--{0}".format(arguments.extra_options)
         arguments.extra_options = " --".join(arguments.extra_options.split())
 
-
     return arguments
 
 
@@ -301,17 +298,16 @@ def main():
     arg.outpath = os.path.abspath(arg.outpath)
 
     # Figure out which program we are wrapping
-    if arg.faststructure_bin != None:
+    if arg.faststructure_bin is not None:
         wrapped_prog = "fastStructure"
         external = arg.faststructure_bin
     else:
         wrapped_prog = "structure"
         external = arg.structure_bin
 
-
     # Check the existance of several files:
     # Popfile
-    if arg.popfile != None:
+    if arg.popfile is not None:
         sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
                                          "exist.".format(arg.popfile))
     # External program
@@ -342,6 +338,7 @@ def main():
 
     if arg.noplot is False:
         create_plts(arg.outpath, wrapped_prog)
+
 
 if __name__ == "__main__":
     main()
