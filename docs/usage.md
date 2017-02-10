@@ -3,16 +3,17 @@ This section describes how to use *Structure_threader*.
 
 These are the arguments the program currently takes:
 
-* K (-K)
-* Replicates (ignored for fastStructure; -R)
 * Input file (-i)
 * Output dir (-o)
+* Number of K
+    * K (To test all values of "K" from 1 to "K"; -K)
+    * K-list (To test all values of "K" in the provided list; -K-list)
+* Replicates (ignored for fastStructure; -R)
 * Number of threads (-t)
 * Program location - you have to pass one and only of the following arguments:
     * Structure location (if you want to run "structure"; -st)
     * fastStructure location (if you want to run "fastStructure"; -fs)
 * Logging (optional - useful when problems arise; --log)
-* Minimum K (optional - use as a start value for "K" - by default the value is 1; --min_K)
 * No-tests (optional - use this if you do not want to run the BestK tests; --no-tests)
 * No-plots (optional - use this if you do not want to draw plots; --no-plots)
 * Popfile (optional - use this if you want to name your populations in the plot. Should be a text file with 3 columns, one for population name, one for number of individuals represented in that population and one for the population position in the input file. This effectively allows the plot to be drawn in any chosen order.)
