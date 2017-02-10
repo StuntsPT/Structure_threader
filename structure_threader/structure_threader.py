@@ -208,10 +208,12 @@ def argument_parser(args):
 
     io_opts = parser.add_argument_group("Input/Output options")
     main_exec = parser.add_argument_group("Program execution options")
+    k_opts = parser.add_argument_group("Cluster options")
     run_opts = parser.add_argument_group("Structure run options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
 
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
+    k_opts = k_opts.add_mutually_exclusive_group(required=True)
 
     main_exec_ex.add_argument("-st", dest="structure_bin", type=str,
                               default=None,
@@ -224,13 +226,10 @@ def argument_parser(args):
                               help="Location of the fastStructure executable "
                               "(structure.py) in your environment.")
 
-    run_opts.add_argument("-K", dest="Ks", type=int, required=True,
-                          help="Number of Ks to run.\n", metavar="int")
-
-    run_opts.add_argument("--min_K", dest="minK", type=int, required=False,
-                          help="Minimum value of \"K\" to test "
-                               "(default:%(default)s).\n",
-                          metavar="int", default=1)
+    k_opts.add_argument("-K", dest="Ks", type=int,
+                        help="Number of Ks to calculate.\n", metavar="int")
+    k_opts.add_argument("-K-list", dest="Ks", type=list,
+                        help="List of Ks to calculate.\n", metavar="list")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value of K "
@@ -324,7 +323,10 @@ def main():
                                      "directory.".format(arg.outpath), False)
 
     # Number of Ks
-    Ks = range(arg.minK, arg.Ks + 1)
+    if type(arg.Ks) is int:
+        Ks = range(1, arg.Ks + 1)
+    else:
+        Ks = arg.Ks
 
     # Number of replicates
     replicates = range(1, arg.replicates + 1)
