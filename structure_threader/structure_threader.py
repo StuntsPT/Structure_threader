@@ -171,9 +171,11 @@ def structure_harvester(resultsdir, wrapped_prog):
     sh.main(resultsdir, outdir)
 
 
-def create_plts(resultsdir, wrapped_prog):
+def create_plts(resultsdir, wrapped_prog, Ks):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
+
+    plt_list = [x for x in Ks if x != 1]  # Don't plot K=1
 
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
@@ -188,10 +190,10 @@ def create_plts(resultsdir, wrapped_prog):
             file_to_plot = str(randrange(arg.minK, arg.replicates))
         plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                      file_to_plot + "_f"
-                     for i in range(arg.minK, arg.Ks + 1)]
+                     for i in plt_list]
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
-                     for i in range(max(arg.minK, 2), arg.Ks + 1)]
+                     for i in plt_list]
 
     sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
 
@@ -341,7 +343,7 @@ def main():
         structure_harvester(arg.outpath, wrapped_prog)
 
     if arg.noplot is False:
-        create_plts(arg.outpath, wrapped_prog)
+        create_plts(arg.outpath, wrapped_prog, Ks)
 
 
 if __name__ == "__main__":
