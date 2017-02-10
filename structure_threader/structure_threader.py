@@ -187,7 +187,7 @@ def create_plts(resultsdir, wrapped_prog, Ks):
         if arg.replicates == 1:
             file_to_plot = "1"
         else:
-            file_to_plot = str(randrange(arg.minK, arg.replicates))
+            file_to_plot = str(randrange(1, arg.replicates + 1))
         plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
