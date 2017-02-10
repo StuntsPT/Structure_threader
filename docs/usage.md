@@ -4,13 +4,13 @@ This section describes how to use *Structure_threader*.
 These are the arguments the program currently takes:
 
 * Input file (-i)
-* Output dir (-o)
-* Number of K
+* Output directory (-o)
+* Number of K - you have to pass one and only one of the following arguments:
     * K (To test all values of "K" from 1 to "K"; -K)
     * K-list (To test all values of "K" in the provided list; -K-list)
 * Replicates (ignored for fastStructure; -R)
 * Number of threads (-t)
-* Program location - you have to pass one and only of the following arguments:
+* Program location - you have to pass one and only one of the following arguments:
     * Structure location (if you want to run "structure"; -st)
     * fastStructure location (if you want to run "fastStructure"; -fs)
 * Logging (optional - useful when problems arise; --log)
