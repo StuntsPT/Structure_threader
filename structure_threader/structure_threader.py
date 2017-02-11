@@ -230,7 +230,7 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
-    k_opts.add_argument("-K-list", dest="Ks", type=list,
+    k_opts.add_argument("-K-list", dest="Ks", nargs="+", type=int,
                         help="List of Ks to calculate.\n", metavar="list")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
