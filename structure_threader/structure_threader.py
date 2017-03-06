@@ -44,7 +44,7 @@ def gracious_exit(*args):
 
 
 def runprogram(wrapped_prog, iterations):
-    """Run each structure job. Return the worker status.
+    """Run each wrapped program job. Return the worker status.
     This attribute will be populated with the worker exit code and output file
     and returned. The first element is the exit code itself (0 if normal exit
     and -1 in case of errors). The second element contains the output file
@@ -60,6 +60,20 @@ def runprogram(wrapped_prog, iterations):
                                    str(rep_num))
         cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
+
+    elif wrapped_prog == "maverick":  # Run MavericK
+        # This will break on non-POSIX OSes, but mavericks requires a trailing /
+        output_dir = os.path.join(arg.outpath, "K" + str(K)) + "/"
+        try:
+            os.mkdir(output_dir)
+        except FileExistsError:
+            pass
+        cli = [arg.maverick_bin, "-Kmin", str(K), "-Kmax", str(K), "-data",
+               arg.infile, "-outputRoot", output_dir, "-masterRoot", "/",
+               "-parameters", arg.params]
+        if arg.notests is True:
+            cli += ["-thermodynamic_on", "f"]
+
     else:  # Run fastStructure
         # Keeps correct directory separator across OS's
         output_file = os.path.join(arg.outpath, "fS_run_K")
@@ -96,7 +110,10 @@ def runprogram(wrapped_prog, iterations):
     # Check for errors in the program's exit code
     if program.returncode != 0:
         arg.log = True
-        worker_status = (-1, output_file)
+        try:
+            worker_status = (-1, output_file)
+        except UnboundLocalError:
+            worker_status = (-1, output_dir)
     else:
         worker_status = (0, None)
 
@@ -116,7 +133,7 @@ def runprogram(wrapped_prog, iterations):
 def structure_threader(Ks, replicates, threads, wrapped_prog):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
 
-    if wrapped_prog == "fastStructure":
+    if wrapped_prog != "structure":
         replicates = [1]
     else:
         os.chdir(os.path.dirname(arg.infile))
@@ -140,8 +157,8 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
 
     print("\n==============================\n")
     if error_list:
-        print("%s Structure runs exited with errors. Check the log files of "
-              "the following output files:" % len(error_list))
+        print("%s %s runs exited with errors. Check the log files of "
+              "the following output files:" % len(error_list), wrapped_prog)
         for out in error_list:
             print(out)
     else:
@@ -227,6 +244,11 @@ def argument_parser(args):
                               metavar="filepath",
                               help="Location of the fastStructure executable "
                               "(structure.py) in your environment.")
+    main_exec_ex.add_argument("-mv", dest="maverick_bin", type=str,
+                              default=None,
+                              metavar="filepath",
+                              help="Location of the maverick executable "
+                              "in your environment.")
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
@@ -236,7 +258,7 @@ def argument_parser(args):
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value of K "
                                "(default:%(default)s).\n"
-                               "Ignored for fastStructure",
+                               "Ignored for fastStructure and MavericK",
                           metavar="int", default=20)
 
     run_opts.add_argument("--extra-options", dest="extra_options", type=str,
@@ -254,8 +276,12 @@ def argument_parser(args):
                          metavar="output_directory")
 
     io_opts.add_argument("--pop", dest="popfile", type=str, required=False,
-                         help="File wth population information.",
+                         help="File with population information.",
                          metavar="popfile", default=None)
+
+    io_opts.add_argument("--params", dest="params", type=str, required=False,
+                         help="File with run parameters.",
+                         metavar="parameters", default=None)
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
                            help="Number of threads to use "
@@ -282,6 +308,13 @@ def argument_parser(args):
         arguments.extra_options = "--{0}".format(arguments.extra_options)
         arguments.extra_options = " --".join(arguments.extra_options.split())
 
+    # Make sure we provide paths for mainparam, extraparams and parameters.txt
+    # depending on the wrapped program.
+    if arguments.params is not None:
+        arguments.params = os.path.abspath(arguments.params)
+    if arguments.maverick_bin is not None and arguments.params is None:
+        parser.error("-mv requires --params.")
+
     return arguments
 
 
@@ -304,6 +337,9 @@ def main():
     if arg.faststructure_bin is not None:
         wrapped_prog = "fastStructure"
         external = arg.faststructure_bin
+    if arg.maverick_bin is not None:
+        wrapped_prog = "maverick"
+        external = arg.maverick_bin
     else:
         wrapped_prog = "structure"
         external = arg.structure_bin
