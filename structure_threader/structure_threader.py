@@ -220,11 +220,11 @@ def argument_parser(args):
     """
     Parses the list of arguments as implemented in argparse.
     """
-    parser = argparse.ArgumentParser(description="A simple program to "
-                                                 "paralelize the runs of the "
-                                                 "Structure software.",
-                                     prog="Structure_threader",
-                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="A simple program to paralelize the runs of the "
+                    "Structure software.",
+        prog="Structure_threader",
+        formatter_class=argparse.RawTextHelpFormatter)
 
     io_opts = parser.add_argument_group("Input/Output options")
     main_exec = parser.add_argument_group("Program execution options. Mutually "
