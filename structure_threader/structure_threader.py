@@ -62,7 +62,7 @@ def runprogram(wrapped_prog, iterations):
                output_file]
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        # This will break on non-POSIX OSes, but mavericks requires a trailing /
+        # This will break on non-POSIX OSes, but maverick requires a trailing /
         output_dir = os.path.join(arg.outpath, "K" + str(K)) + "/"
         try:
             os.mkdir(output_dir)
@@ -101,7 +101,7 @@ def runprogram(wrapped_prog, iterations):
             cli = cli[1:]
 
     print("Running: " + " ".join(cli))
-    program = subprocess.Popen(cli, bufsize=64, shell=False,
+    program = subprocess.Popen(cli,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
 
@@ -216,6 +216,39 @@ def create_plts(resultsdir, wrapped_prog, Ks):
     sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
 
 
+def maverick_merger(outdir, Klist):
+    """
+    Grabs the split outputs from MavericK and merges them in a single directory.
+    """
+    files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv",
+                  "outputLikelihood.csv"]
+    mrg_res_dir = os.path.join(outdir, "merged")
+    os.makedirs(mrg_res_dir)
+
+    def mav_output_parser(filename, header=False):
+        infile = open(filename, 'r')
+        header = infile.readline()
+        data = infile.readlines()
+        infile.close()
+        if header is True:
+            return header + data
+        else:
+            return data
+
+    for filename in files_list:
+        outfile = open(os.path.join(mrg_res_dir, filename), "a")
+        for i in Klist.sort():
+            if i == 1:
+                header = True
+            else:
+                header = False
+            data_dir = os.path.join(outdir, "K" + str(i))
+            data = mav_output_parser(os.path.join(data_dir, filename), header)
+            outfile.write(data)
+
+        outfile.close()
+
+
 def argument_parser(args):
     """
     Parses the list of arguments as implemented in argparse.
@@ -249,7 +282,7 @@ def argument_parser(args):
     main_exec_ex.add_argument("-mv", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
-                              help="Location of the maverick executable "
+                              help="Location of the MavericK executable "
                               "in your environment.")
 
     k_opts.add_argument("-K", dest="Ks", type=int,
@@ -375,6 +408,9 @@ def main():
     signal.signal(signal.SIGINT, gracious_exit)
 
     structure_threader(Ks, replicates, threads, wrapped_prog)
+
+    if wrapped_prog == "maverick":
+        maverick_merger(arg.outpath, Ks)
 
     if arg.notests is False:
         structure_harvester(arg.outpath, wrapped_prog)
