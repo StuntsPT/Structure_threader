@@ -125,6 +125,7 @@ def runprogram(wrapped_prog, iterations):
         print("Writing logfile for K" + str(K) + ", replicate " +
               str(rep_num) + ". Please wait...")
         logfile.write(out)
+        logfile.write(err)
         logfile.close()
 
     return worker_status
