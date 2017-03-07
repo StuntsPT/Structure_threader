@@ -58,7 +58,7 @@ def runprogram(wrapped_prog, iterations):
         # Keeps correct directory separator across OS's
         output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
                                    str(rep_num))
-        cli = [arg.structure_bin, "-K", str(K), "-i", arg.infile, "-o",
+        cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
 
     elif wrapped_prog == "maverick":  # Run MavericK
@@ -68,7 +68,7 @@ def runprogram(wrapped_prog, iterations):
             os.mkdir(output_dir)
         except FileExistsError:
             pass
-        cli = [arg.maverick_bin, "-Kmin", str(K), "-Kmax", str(K), "-data",
+        cli = [arg.external_prog, "-Kmin", str(K), "-Kmax", str(K), "-data",
                arg.infile, "-outputRoot", output_dir, "-masterRoot", "/",
                "-parameters", arg.params]
         if arg.notests is True:
@@ -92,12 +92,12 @@ def runprogram(wrapped_prog, iterations):
             else:
                 infile = arg.infile[:-4]
 
-        cli = ["python2", arg.faststructure_bin, "-K", str(K), "--input",
+        cli = ["python2", arg.external_prog, "-K", str(K), "--input",
                infile, "--output", output_file, "--format", file_format,
                arg.extra_options]
 
         # Are we using the python script or a binary?
-        if arg.faststructure_bin.endswith(".py") is False:
+        if arg.external_prog.endswith(".py") is False:
             cli = cli[1:]
 
     print("Running: " + " ".join(cli))
@@ -158,7 +158,7 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
     print("\n==============================\n")
     if error_list:
         print("%s %s runs exited with errors. Check the log files of "
-              "the following output files:" % len(error_list), wrapped_prog)
+              "the following output files:" % (len(error_list), wrapped_prog))
         for out in error_list:
             print(out)
     else:
@@ -226,7 +226,8 @@ def argument_parser(args):
                                      formatter_class=argparse.RawTextHelpFormatter)
 
     io_opts = parser.add_argument_group("Input/Output options")
-    main_exec = parser.add_argument_group("Program execution options")
+    main_exec = parser.add_argument_group("Program execution options. Mutually "
+                                          "exclusive")
     k_opts = parser.add_argument_group("Cluster options")
     run_opts = parser.add_argument_group("Structure run options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
@@ -234,17 +235,17 @@ def argument_parser(args):
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
     k_opts = k_opts.add_mutually_exclusive_group(required=True)
 
-    main_exec_ex.add_argument("-st", dest="structure_bin", type=str,
+    main_exec_ex.add_argument("-st", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
                               help="Location of the structure executable in "
                               " your environment.")
-    main_exec_ex.add_argument("-fs", dest="faststructure_bin", type=str,
+    main_exec_ex.add_argument("-fs", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
                               help="Location of the fastStructure executable "
-                              "(structure.py) in your environment.")
-    main_exec_ex.add_argument("-mv", dest="maverick_bin", type=str,
+                              "in your environment.")
+    main_exec_ex.add_argument("-mv", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
                               help="Location of the maverick executable "
@@ -252,7 +253,7 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
-    k_opts.add_argument("-K-list", dest="Ks", nargs="+", type=int,
+    k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
                         help="List of Ks to calculate.\n", metavar="list")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
@@ -312,7 +313,7 @@ def argument_parser(args):
     # depending on the wrapped program.
     if arguments.params is not None:
         arguments.params = os.path.abspath(arguments.params)
-    if arguments.maverick_bin is not None and arguments.params is None:
+    if "-mv" in sys.argv and arguments.params is None:
         parser.error("-mv requires --params.")
 
     return arguments
@@ -334,15 +335,12 @@ def main():
     arg.outpath = os.path.abspath(arg.outpath)
 
     # Figure out which program we are wrapping
-    if arg.faststructure_bin is not None:
+    if "-fs" in sys.argv:
         wrapped_prog = "fastStructure"
-        external = arg.faststructure_bin
-    if arg.maverick_bin is not None:
+    elif "-mv" in sys.argv:
         wrapped_prog = "maverick"
-        external = arg.maverick_bin
-    else:
+    elif "-st" in sys.argv:
         wrapped_prog = "structure"
-        external = arg.structure_bin
 
     # Check the existance of several files:
     # Popfile
@@ -350,8 +348,10 @@ def main():
         sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
                                          "exist.".format(arg.popfile))
     # External program
-    sanity.file_checker(external, "Could not find your external program in the "
-                                  "specified path '{}'.".format(external))
+    print(arg.external_prog)
+    sanity.file_checker(arg.external_prog, "Could not find your external "
+                                           "program in the specified path "
+                                           "'{}'.".format(arg.external_prog))
     # Input file
     sanity.file_checker(arg.infile, "The specified infile '{}' does not "
                                     "exist.".format(arg.infile))
