@@ -225,25 +225,22 @@ def maverick_merger(outdir, Klist):
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir)
 
-    def mav_output_parser(filename, header=False):
+    def mav_output_parser(filename, get_header):
         infile = open(filename, 'r')
         header = infile.readline()
-        data = infile.readlines()
+        data = "".join(infile.readlines())
         infile.close()
-        if header is True:
-            return header + data
-        else:
-            return data
+        if get_header is True:
+            data = header + data
+        return data
 
     for filename in files_list:
+        header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "a")
-        for i in Klist.sort():
-            if i == 1:
-                header = True
-            else:
-                header = False
+        for i in Klist:
             data_dir = os.path.join(outdir, "K" + str(i))
             data = mav_output_parser(os.path.join(data_dir, filename), header)
+            header = False
             outfile.write(data)
 
         outfile.close()
@@ -412,7 +409,7 @@ def main():
     if wrapped_prog == "maverick":
         maverick_merger(arg.outpath, Ks)
 
-    if arg.notests is False:
+    elif arg.notests is False:
         structure_harvester(arg.outpath, wrapped_prog)
 
     if arg.noplot is False:
