@@ -220,8 +220,7 @@ def maverick_merger(outdir, Klist):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
-    files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv",
-                  "outputLikelihood.csv"]
+    files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir)
     log_evidence_TI = {}
