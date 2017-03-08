@@ -38,9 +38,9 @@ def test_file_checker(tmpdir):
     testfile.write("content")
 
     # Correctly check for a file
-    assert sc.file_checker(str(testfile)) == None
+    assert sc.file_checker(str(testfile)) is None
     # Correctlly check for a directory
-    assert sc.file_checker(str(testdir), is_file=False) == None
+    assert sc.file_checker(str(testdir), is_file=False) is None
     # Check for a file, but given a dir
     with pytest.raises(SystemExit):
         sc.file_checker(str(testdir))
