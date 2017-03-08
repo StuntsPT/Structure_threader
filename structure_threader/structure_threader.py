@@ -224,15 +224,35 @@ def maverick_merger(outdir, Klist):
                   "outputLikelihood.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir)
+    log_evidence_TI = {}
 
     def mav_output_parser(filename, get_header):
+        """
+        Parse MavericK output files that need to be merged for TI calculations.
+        Returns the contents of the parsed files as a single string, with or
+        without a header.
+        """
         infile = open(filename, 'r')
         header = infile.readline()
         data = "".join(infile.readlines())
         infile.close()
         if get_header is True:
             data = header + data
+
         return data
+
+    def ti_test(outdir, log_evidence_TI):
+        """
+        Write a bestK result based in TI results.
+        """
+        bestk_dir = os.path.join(outdir, "bestK")
+        os.makedirs(bestk_dir)
+        bestk = max(log_evidence_TI, key=log_evidence_TI.get).replace("K", "1")
+        bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
+        output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
+                       "that the best value of 'K' is: {}\n".format(bestk))
+        bestk_file.write(output_text)
+        bestk_file.close()
 
     for filename in files_list:
         header = True
@@ -241,9 +261,14 @@ def maverick_merger(outdir, Klist):
             data_dir = os.path.join(outdir, "K" + str(i))
             data = mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
+            if filename == "outputEvidence.csv":
+                log_evidence_TI[data.split(",")[0]] = float(data.split(",")[-2])
             outfile.write(data)
 
         outfile.close()
+
+    if arg.notests is False:
+        ti_test(outdir, log_evidence_TI)
 
 
 def argument_parser(args):
