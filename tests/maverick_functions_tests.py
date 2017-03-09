@@ -15,6 +15,30 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-import pytest
+import hashlib
 import os
+import pytest
 import structure_threader.structure_threader as st
+
+
+def test_maverick_merger():
+    """
+    Tests if maverick_merger() is working correctlly.
+    """
+
+    def _hash_function(dir_to_test):
+        """
+        A function to generate sha256 checksum of all contents of a directory.
+        """
+        fnamelst = os.listdir(dir_to_test)
+        hashes = [(fname,
+                   hashlib.sha256(open(fname, 'rb').read()).digest())
+                  for fname in fnamelst]
+
+        return hashes
+
+    st.maverick_merger("files", [1, 2, 3])
+    known_hashes = _hash_function("files/test_merged")
+    generated_hashes = _hash_function("files/merged")
+
+    assert known_hashes == generated_hashes
