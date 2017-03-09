@@ -225,7 +225,7 @@ def maverick_merger(outdir, Klist):
     os.makedirs(mrg_res_dir)
     log_evidence_TI = {}
 
-    def mav_output_parser(filename, get_header):
+    def _mav_output_parser(filename, get_header):
         """
         Parse MavericK output files that need to be merged for TI calculations.
         Returns the contents of the parsed files as a single string, with or
@@ -240,7 +240,7 @@ def maverick_merger(outdir, Klist):
 
         return data
 
-    def ti_test(outdir, log_evidence_TI):
+    def _ti_test(outdir, log_evidence_TI):
         """
         Write a bestK result based in TI results.
         """
@@ -258,7 +258,7 @@ def maverick_merger(outdir, Klist):
         outfile = open(os.path.join(mrg_res_dir, filename), "a")
         for i in Klist:
             data_dir = os.path.join(outdir, "K" + str(i))
-            data = mav_output_parser(os.path.join(data_dir, filename), header)
+            data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
                 log_evidence_TI[data.split(",")[0]] = float(data.split(",")[-2])
@@ -267,7 +267,7 @@ def maverick_merger(outdir, Klist):
         outfile.close()
 
     if arg.notests is False:
-        ti_test(outdir, log_evidence_TI)
+        _ti_test(outdir, log_evidence_TI)
 
 
 def argument_parser(args):
