@@ -27,6 +27,4 @@ maverick_bin=`which MavericK`
 
 ~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -mv ${maverick_bin} -K 3 -t 4 --no-plots 1 --params ${git_dir}/tests/smalldata/parameters.txt
 
-cat /home/travis/results/K1_rep1.stlog
-
 echo -e "${LightGreen}MavericK 'Field test' ran successfully. Yay!${NoColor}"
