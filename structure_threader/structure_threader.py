@@ -275,20 +275,25 @@ def argument_parser(args):
     Parses the list of arguments as implemented in argparse.
     """
     parser = argparse.ArgumentParser(
-        description="A simple program to paralelize the runs of the "
-                    "Structure software.",
+        description="A software wrapper to paralelize genetic clustering "
+                    "programs.",
         prog="Structure_threader",
         formatter_class=argparse.RawTextHelpFormatter)
 
+    # Group definition
     io_opts = parser.add_argument_group("Input/Output options")
+    id_opts = parser.add_argument_group("Individual/Population identification "
+                                        "options")
     main_exec = parser.add_argument_group("Program execution options. Mutually "
                                           "exclusive")
     k_opts = parser.add_argument_group("Cluster options")
     run_opts = parser.add_argument_group("Structure run options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
 
+    # Group options
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
     k_opts = k_opts.add_mutually_exclusive_group(required=True)
+    id_opts = id_opts.add_mutually_exclusive_group(required=False)
 
     main_exec_ex.add_argument("-st", dest="external_prog", type=str,
                               default=None,
@@ -331,13 +336,17 @@ def argument_parser(args):
                               "in.\n",
                          metavar="output_directory")
 
-    io_opts.add_argument("--pop", dest="popfile", type=str, required=False,
-                         help="File with population information.",
-                         metavar="popfile", default=None)
-
     io_opts.add_argument("--params", dest="params", type=str, required=False,
                          help="File with run parameters.",
                          metavar="parameters", default=None)
+
+    id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
+                         help="File with population information.",
+                         metavar="popfile", default=None)
+
+    id_opts.add_argument("--ind", dest="indfile", type=str, required=False,
+                         help="File with population information.",
+                         metavar="popfile", default=None)
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
                            help="Number of threads to use "
@@ -363,6 +372,12 @@ def argument_parser(args):
     if arguments.extra_options != "":
         arguments.extra_options = "--{0}".format(arguments.extra_options)
         arguments.extra_options = " --".join(arguments.extra_options.split())
+
+    # fastStructure is really only usefull with either a pop or indfile...
+    if "-fs" in sys.argv and\
+        arguments.popfile is None and\
+            arguments.indfile is None:
+        parser.error("-fs requires either --pop or --ind.")
 
     # Make sure we provide paths for mainparam, extraparams and parameters.txt
     # depending on the wrapped program.
