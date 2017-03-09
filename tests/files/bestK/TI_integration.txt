@@ -1,1 +1,0 @@
-MavericK's 'Thermodynamic Integration' test revealed that the best value of 'K' is: 3
