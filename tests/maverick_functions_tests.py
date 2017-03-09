@@ -31,13 +31,13 @@ def test_maverick_merger():
         A function to generate sha256 checksum of all contents of a directory.
         """
         fnamelst = os.listdir(dir_to_test)
-        hashes = [(fname,
-                   hashlib.sha256(open(fname, 'rb').read()).digest())
+        fnamelst = [os.path.join(dir_to_test, fname) for fname in fnamelst]
+        hashes = [(hashlib.sha256(open(fname, 'rb').read()).digest())
                   for fname in fnamelst]
 
         return hashes
 
-    st.maverick_merger("files", [1, 2, 3])
+    st.maverick_merger("files", [1, 2, 3], False)
     known_hashes = _hash_function("files/test_merged")
     generated_hashes = _hash_function("files/merged")
 

@@ -216,7 +216,7 @@ def create_plts(resultsdir, wrapped_prog, Ks):
     sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
 
 
-def maverick_merger(outdir, Klist):
+def maverick_merger(outdir, Klist, tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
@@ -266,7 +266,7 @@ def maverick_merger(outdir, Klist):
 
         outfile.close()
 
-    if arg.notests is False:
+    if tests is False:
         _ti_test(outdir, log_evidence_TI)
 
 
@@ -431,7 +431,7 @@ def main():
     structure_threader(Ks, replicates, threads, wrapped_prog)
 
     if wrapped_prog == "maverick":
-        maverick_merger(arg.outpath, Ks)
+        maverick_merger(arg.outpath, Ks, arg.notests)
 
     elif arg.notests is False:
         structure_harvester(arg.outpath, wrapped_prog)
