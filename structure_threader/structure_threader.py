@@ -63,7 +63,7 @@ def runprogram(wrapped_prog, iterations):
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # This will break on non-POSIX OSes, but maverick requires a trailing /
-        output_dir = os.path.join(arg.outpath, "K" + str(K)) + "/"
+        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + "/"
         try:
             os.mkdir(output_dir)
         except FileExistsError:
@@ -257,7 +257,7 @@ def maverick_merger(outdir, Klist, tests):
         header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "a")
         for i in Klist:
-            data_dir = os.path.join(outdir, "K" + str(i))
+            data_dir = os.path.join(outdir, "mav_K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
