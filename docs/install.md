@@ -21,7 +21,7 @@ better, `pip3 install .`) from the distribution's root directory (where
 
 Please note that while dependencies like numpy and matplotlib are handled by
 this method, the preferred method for installing via Pypi will also install
-binary versions of both STRUCTURE and fastStructure for your platform.
+binary versions of STRUCTURE, fastStructure and MavericK for your platform.
 These binaries are installed in the "standard" `setup.py`
 [locations](https://docs.python.org/2/install/), eg. `/usr/bin/` if installed
 with `sudo` or `~/.local/bin/` if installed with the option `--user`, etc...
@@ -29,7 +29,7 @@ with `sudo` or `~/.local/bin/` if installed with the option `--user`, etc...
 If you wish to compile your own binaries for these programs, you may wish to
 rely on our
 ["helper_scripts"](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts)
-which contain commands to compile and install *Structure* **and**
+which contain commands to compile and install *MavericK*, *Structure* **and**
 *fastStructure* (along with any required dependencies). For more details check
 the next few sections.
 
@@ -92,3 +92,23 @@ export LD_LIBRARY_PATH
 ```
 
 Where `$install_dir` is the directory defined in `install_faststructure.sh`.
+
+
+### install_maverick.sh
+
+This script will download and install MavericK.
+
+
+#### Requirements:
+* a recent C compiler, such as GCC 6.1 and above.
+
+This should be available in every HPC environment.
+
+In Ubuntu, all you should need is the package "build-essential" (if it is not
+already installed for some reason). It can be installed like this:
+
+```
+sudo apt-get install build-essential
+```
+
+In other distros, the package name should be similar.
