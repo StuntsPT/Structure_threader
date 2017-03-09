@@ -213,7 +213,8 @@ def create_plts(resultsdir, wrapped_prog, Ks):
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
                      for i in plt_list]
 
-    sp.main(plt_files, wrapped_prog, outdir, arg.popfile)
+    sp.main(plt_files, wrapped_prog, outdir, popfile=arg.popfile,
+            indfile=arg.indfile)
 
 
 def maverick_merger(outdir, Klist, tests):

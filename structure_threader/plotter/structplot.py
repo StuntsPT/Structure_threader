@@ -254,7 +254,7 @@ def plotter(qvalues, poplist, outfile):
     plt.savefig("{}.svg".format(outfile), bbox_inches="tight")
 
 
-def main(result_files, fmt, outdir, popfile=None):
+def main(result_files, fmt, outdir, popfile=None, indfile=None):
     """
     Wrapper function that generates one plot for each K value.
     :return:
