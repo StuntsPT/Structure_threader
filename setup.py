@@ -48,13 +48,14 @@ def platform_detection(install_binaries=True):
 
     structure_bin = bin_dir + "/structure"
     faststructure_bin = bin_dir + "/fastStructure"
+    maverick_bin = bin_dir + "/MavericK"
 
-    return [('bin', [faststructure_bin, structure_bin])]
+    return [('bin', [faststructure_bin, structure_bin, maverick_bin])]
 
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "0.2.7"
+VERSION = "0.2.8"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
