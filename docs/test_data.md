@@ -3,7 +3,7 @@ In [this directory](https://github.com/StuntsPT/Structure_threader/tree/master/T
 
 
 ## BigTestData.str.tar.xz
-This file is a fastStructure formatted input file which was used to benchmark fastStructure. This is a large SNP file (1000 SNPs across 1000 individuals) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftoolshttps://github.com/vcftools/vcftools) with the following criteria:
+This file is a *fastStructure* formatted input file which was used to benchmark *fastStructure*. This is a large SNP file (1000 SNPs across 1000 individuals) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftoolshttps://github.com/vcftools/vcftools) with the following criteria:
 
 * only biallelic, non-singleton SNV sites
 * SNvs must be at lest 2KB apart from each other
@@ -28,7 +28,7 @@ The used commands were:
 
 
 ## extraparams and mainparams
-The STRUCTURE paramater files that were used in the benchmarking process.
+The *STRUCTURE* parameter files that were used in the benchmarking process.
 
 
 ## joblist.txt
@@ -43,3 +43,7 @@ The used commands were:
 
     cut -d " " -f 1-80 SmallData.structure > SmallData302SNPs.structure
     head -n 201 SmallData302SNPs.structure > SmallTestData.structure
+
+
+## parameter.txt
+    The *MavericK* parameter file that is used in the unit tests.
