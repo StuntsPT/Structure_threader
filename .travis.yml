@@ -14,4 +14,4 @@ script:
   - py.test tests/*.py -v
   - tests/structure_field_test.sh
   - tests/fastStructure_field_test.sh
-  # - tests/maverick_field_test.sh
+  - tests/maverick_field_test.sh
