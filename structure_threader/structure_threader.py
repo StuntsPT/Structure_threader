@@ -346,7 +346,7 @@ def argument_parser(args):
 
     id_opts.add_argument("--ind", dest="indfile", type=str, required=False,
                          help="File with population information.",
-                         metavar="popfile", default=None)
+                         metavar="indfile", default=None)
 
     misc_opts.add_argument("-t", dest="threads", type=int, required=True,
                            help="Number of threads to use "
@@ -417,6 +417,11 @@ def main():
     if arg.popfile is not None:
         sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
                                          "exist.".format(arg.popfile))
+    # Indfile
+    if arg.indfile is not None:
+        sanity.file_checker(arg.indfile, "The specified indfile '{}' does not "
+                                         "exist.".format(arg.indfile))
+
     # External program
     print(arg.external_prog)
     sanity.file_checker(arg.external_prog, "Could not find your external "
