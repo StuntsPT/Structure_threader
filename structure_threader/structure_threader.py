@@ -365,9 +365,15 @@ def argument_parser(args):
     plot_opts.add_argument("--just_plots", dest="justplot", type=bool,
                            required=False,
                            help="Just draw the plots. Do not run any wrapped "
-                                "programs. Requires a previously completed "
+                                "programs. Requires\na previously completed "
                                 "run.",
                            metavar="bool", default=False)
+
+    plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
+                           required=False, nargs="+",
+                           help="Override 'K' values from the given list to be "
+                           "ploteted in the combined figure.",
+                           metavar="'2 4 5'", default=None)
 
     misc_opts.add_argument("--no_tests", dest="notests", type=bool,
                            required=False,
@@ -379,7 +385,6 @@ def argument_parser(args):
                            help="Add extra arguments to pass to the wrapped "
                            "program here.\nExample: prior=logistic seed=123",
                            metavar="string", default="")
-
 
     arguments = parser.parse_args(args)
 
@@ -473,6 +478,8 @@ def main():
         bestk = structure_harvester(arg.outpath, wrapped_prog)
 
         if arg.noplot is False:
+            if arg.bestk is not None:
+                bestk = arg.bestk
             create_plts(arg.outpath, wrapped_prog, Ks, bestk)
 
 
