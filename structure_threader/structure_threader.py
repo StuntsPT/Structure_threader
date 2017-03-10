@@ -223,7 +223,7 @@ def maverick_merger(outdir, Klist, tests):
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
-    os.makedirs(mrg_res_dir)
+    os.makedirs(mrg_res_dir, exist_ok=True)
     log_evidence_TI = {}
 
     def _mav_output_parser(filename, get_header):
@@ -246,7 +246,7 @@ def maverick_merger(outdir, Klist, tests):
         Write a bestK result based in TI results.
         """
         bestk_dir = os.path.join(outdir, "bestK")
-        os.makedirs(bestk_dir)
+        os.makedirs(bestk_dir, exist_ok=True)
         bestk = max(log_evidence_TI, key=log_evidence_TI.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
         output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
