@@ -33,7 +33,7 @@ class PlotK:
     be transverse to all output files and stored in the PlotList object.
     """
 
-    def __init__(self, kfile, fmt):
+    def __init__(self, kfile, fmt, get_indv=False):
         """
         Automatically parses the kfile (meanQ file) according to the fmt
         (format). Also sets all instance attributes
@@ -68,6 +68,18 @@ class PlotK:
         float64 dtype.
         """
         self.qvals = None
+
+        """
+        Establishes whether the individual sample names should
+        get parsed
+        """
+        self.get_indv = get_indv
+
+        """
+        Array that continas the list of individualnames. This will
+        only be populated when get_indv argument is set to True
+        """
+        self.indv = []
 
         parse_methods = {"structure": self._parse_structure,
                          "fastStructure": self._parse_faststructure,
@@ -112,6 +124,10 @@ class PlotK:
                 # We stop the parsing here
                 if line.strip().lower().startswith(end_string):
                     return
+
+                # Get indv names if get_indv is True
+                if self.get_indv:
+                    self.indv.append(line.split()[1])
 
                 # Since the assignment probabilities of each taxon to a
                 # specific cluster are not ordered in this output file,
@@ -177,6 +193,10 @@ class PlotK:
                 # We stop parsing here
                 if line.strip().lower().startswith(end_string):
                     return
+
+                # Get indv names if get_indv is True
+                if self.get_indv:
+                    self.indv.append(line.split()[1])
             
                 # Get the cluster values
                 fields = line.strip().split()
@@ -245,8 +265,14 @@ class PlotK:
         # However, this messes the shape of the structure array, so....
         # 3. We transpose the array so that each row is a taxon and
         # the columns represent the assignment probabilities for each K
-        self.qvals = np.genfromtxt(self.file_path, delimiter=",",
-                                   skip_header=1).T[3:].T
+        mavarray = np.genfromtxt(self.file_path, delimiter=",",
+                                   skip_header=1)
+        self.qvals = mavarray.T[3:].T
+
+        if self.get_indv:
+            self.indv = list(np.genfromtxt(self.file_path, delimiter=",",
+                                           dtype="|U20",
+                                           skip_header=1).T[1].T)
 
 
 class PlotList:
@@ -322,18 +348,6 @@ class PlotList:
         """
         self.number_indv = None
 
-        # Parse each output file and add it to the kvals attribute
-        for fpath in ouput_file_list:
-
-            # Create PlotK object
-            kobj = PlotK(fpath, self.fmt)
-            self.kvals[kobj.k] = kobj
-            # Add metadata for the PlotK object
-            self.metadata[kobj.k] = {"filename": fpath}
-            # Check maximum K value
-            if kobj.k > self.max_k:
-                self.max_k = kobj.k
-
         # If a popfile has been provided, parse it and set the pops attribute
         if popfile:
             self._parse_popfile(popfile)
@@ -341,6 +355,25 @@ class PlotList:
         # If an indfile
         if indfile:
             self._parse_indfile(indfile)
+
+        # Parse each output file and add it to the kvals attribute
+        for fpath in ouput_file_list:
+
+            if not self.indv and not self.pops:
+                # Create PlotK object
+                kobj = PlotK(fpath, self.fmt, get_indv=True)
+                self.indv = kobj.indv
+            else:
+                # Create PlotK object
+                kobj = PlotK(fpath, self.fmt)
+
+            self.kvals[kobj.k] = kobj
+
+            # Add metadata for the PlotK object
+            self.metadata[kobj.k] = {"filename": fpath}
+            # Check maximum K value
+            if kobj.k > self.max_k:
+                self.max_k = kobj.k
 
     def __getattr__(self, item):
         """
@@ -482,7 +515,7 @@ class PlotList:
                 if indarray.shape[1] == 3:
                     indarray = indarray[indarray[:, 2].argsort()]
                     # Sort the population list according to the new order
-                    npops = list(OrderedDict.fromkeys(indarray[:,1]))
+                    npops = list(OrderedDict.fromkeys(indarray[:, 1]))
 
                 else:
                     # Sort the individuals alphabetically per population if no
@@ -670,7 +703,6 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
 
     # Plot all K files individually
     for k, kobj in klist:
-        print(k)
         klist.plotk([k], outdir)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
