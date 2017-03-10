@@ -809,12 +809,16 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
     :return:
     """
 
+    bestk = [x for x in bestk if x >= 1]
+
     klist = PlotList(result_files, fmt, popfile=popfile, indfile=indfile)
 
     # Plot all K files individually
     for k, kobj in klist:
-        klist.plotk([k], outdir)
-        klist.plotk_static(k, outdir)
+
+        if k >= 1:
+            klist.plotk([k], outdir)
+            klist.plotk_static(k, outdir)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot
