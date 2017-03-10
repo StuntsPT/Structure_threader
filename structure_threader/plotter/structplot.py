@@ -15,14 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
+import plotly.plotly as py
 from plotly.offline import plot
 import plotly.graph_objs as go
 from plotly import tools
 import colorlover as cl
 
-from os.path import basename, join
+from os.path import basename, join, splitext
 from collections import Counter, defaultdict, OrderedDict
 import numpy as np
+from plotter.html_template import ploty_html
 
 
 class PlotK:
@@ -539,7 +541,7 @@ class PlotList:
                     self.pops_xrange.append(
                         (pop_sums[p] - pop_counts[pop], pop_sums[p]))
 
-    def plotk(self, kvals, output_file):
+    def plotk(self, kvals, output_dir):
         """
         Generates a plot for each K value in kvals. These kvals must be
         present in the kvals dictionary attribute. If only one k value is
@@ -560,7 +562,8 @@ class PlotList:
 
         :param kvals: (sequence/iterable) A sequence of the K values that
         should be plotted.
-        :param output_file: (str) Path of the plot output file
+        :param output_dir: (str) Path to the directory where the plots will
+        be generated
         """
 
         # Get number of plots (confirm the kvals are valid before)
@@ -673,19 +676,20 @@ class PlotList:
                      "ticktext": self.pops,
                      "tickvals": self.pops_xpos,
                      "tickangle": -45,
-                     "tickfont": dict(family="Droid Sans Mono",
-                                      size=22,
-                                      color='black')}
-            # Update first xaxis
-            fig["layout"]["xaxis1"].update(**xdata)
-            # Update layout with population boundary shapes
-            fig["layout"].update(shapes=shape_list)
+                     "tickfont": dict(size=22,
+                                       color='black')}
 
             # Automatic setting of the bottom margin to accomodate larger
             # population labels
             bmargin = 14.5 * max([len(x) for x in self.pops])
 
         else:
+            xdata = {"range": [-0.6, self.number_indv - 0.4],
+                     "showticklabels": True,
+                     "mirror": True,
+                     "tickangle": -45,
+                     "tickfont": dict(size=22,
+                                       color='black')}
 
             # Automatic setting of the bottom margin to accommodate larger
             # individual sample names
@@ -693,11 +697,37 @@ class PlotList:
 
         bmargin = bmargin if bmargin >= 80 else 80
 
+        # Update layout with population boundary shapes
+        fig["layout"].update(shapes=shape_list)  # Update first xaxis
+        fig["layout"]["xaxis1"].update(**xdata)
+
         fig["layout"].update(barmode="stack",
                              bargap=0,
                              margin={"b": bmargin},
                              legend={"x": 1, "y": 0.5})
-        plot(fig)
+
+        # Determine file name. If a single K value is provided, then
+        # adapt from the ouptut name of that K value file.
+        # If there are multiple K vales,the filename will reflect the
+        # K values included.
+        if len(kvals) == 1:
+            kfile = self.kvals[kvals[0]].file_path
+            filename = splitext(basename(kfile))[0]
+        else:
+            filename = "ComparativePlot_{}".format("-".join(kvals))
+        filepath = join(output_dir, filename)
+
+        pdiv = plot(fig, include_plotlyjs=False, output_type='div')
+        # Remove plotly div
+        pdiv = pdiv.replace(', {"showLink": true, "linkText": '
+                             '"Export to plot.ly"}', '')
+
+        # Create html file
+        print(filepath)
+        with open(filepath, "w") as fh:
+            fh.write(ploty_html(pdiv))
+
+        #py.image.save_as(fig, filename="teste.png")
 
 
 def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
