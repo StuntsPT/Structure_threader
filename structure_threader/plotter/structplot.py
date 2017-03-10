@@ -20,7 +20,7 @@ import plotly.graph_objs as go
 from plotly import tools
 import colorlover as cl
 
-from os.path import basename
+from os.path import basename, join
 from collections import Counter, defaultdict, OrderedDict
 import numpy as np
 
@@ -70,7 +70,7 @@ class PlotK:
         self.qvals = None
 
         parse_methods = {"structure": self._parse_structure,
-                         "faststructure": self._parse_faststructure,
+                         "fastStructure": self._parse_faststructure,
                          "maverick": self._parse_maverick}
 
         # Let the parsing begin
@@ -553,10 +553,10 @@ class PlotList:
             shape_list = []
 
         # Make sure that the highest K is processed first
-        for j, k in enumerate(sorted(kvals.keys(), reverse=True)):
+        for j, k in enumerate(sorted(self.kvals.keys(), reverse=True)):
 
             # Fetch PlotK object that will be plotted
-            kobj = kvals[k]
+            kobj = self.kvals[k]
 
             # Iterate over each meanQ column (corresponding to each cluster)
             for p, i in enumerate(kobj.qvals.T):
@@ -620,8 +620,8 @@ class PlotList:
                  "x1": self.number_indv - 0.5, "y1": 1,
                  "yref": "y{}".format(j + 1), "line": {"width": 2}})
             shape_list.append(
-                {"type": "line", "x0": len(obj.indv) - 0.5, "y0": 0,
-                 "x1": len(obj.indv) - 0.5, "y1": 1,
+                {"type": "line", "x0": self.number_indv - 0.5, "y0": 0,
+                 "x1": self.number_indv - 0.5, "y1": 1,
                  "yref": "y{}".format(j + 1), "line": {"width": 2}})
 
         if self.pops:
@@ -670,13 +670,23 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
 
     # Plot all K files individually
     for k, kobj in klist:
+        print(k)
         klist.plotk([k], outdir)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot
-    klist.plot(bestk, outdir)
+    if bestk:
+        klist.plot(bestk, outdir)
 
 if __name__ == "__main__":
-    from sys import argv
-    # Usage: structplot.py results_file format outdir
-    pass
+    kdir = "/home/diogo/Diogo/Science/PhD/Tasks/Hemileia_RADs/" \
+           "2_RADs_full/Assembly/ipyrad/Ingroup/Var1/Analyses/" \
+           "Structure/RandSNP/R2/"
+    files = ["HvFullSample_ingroup_v1_MM50_mafRandSNP.5.meanQ",
+             "HvFullSample_ingroup_v1_MM50_mafRandSNP.4.meanQ",
+             "HvFullSample_ingroup_v1_MM50_mafRandSNP.3.meanQ",
+             "HvFullSample_ingroup_v1_MM50_mafRandSNP.2.meanQ"]
+    indfile = join(kdir, "indfile2.txt")
+    kfiles = [join(kdir, f) for f in files]
+
+    main(kfiles, "faststructure", "./", indfile=indfile)
