@@ -155,7 +155,9 @@ def writeEvannoTableToFile(data, outdir):
                   data.estLnProbStdevs[k], LnPKstr, LnPPKstr, deltaKstr))
   file.close()
   # Retrieve the top 3 k values
-  bk = [x[0] for x in sorted(x.items(), key=lambda j: j[1], reverse=True)][:3]
+  bk = [x[0] for x in sorted(data.deltaK.items(),
+                             key=lambda j: j[1],
+                             reverse=True)][:3]
   return bk
 
 def failHandler(message):
