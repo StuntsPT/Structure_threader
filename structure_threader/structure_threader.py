@@ -43,7 +43,7 @@ def gracious_exit(*args):
     sys.exit(0)
 
 
-def runprogram(wrapped_prog, iterations, params=None):
+def runprogram(wrapped_prog, iterations):
     """Run each wrapped program job. Return the worker status.
     This attribute will be populated with the worker exit code and output file
     and returned. The first element is the exit code itself (0 if normal exit
@@ -60,9 +60,10 @@ def runprogram(wrapped_prog, iterations, params=None):
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
-        if params is not None:
-            mainparams = params
-            extraparams = os.path.join(os.path.dirname(params), "extraparams")
+        if arg.params is not None:
+            mainparams = arg.params
+            extraparams = os.path.join(os.path.dirname(arg.params),
+                                       "extraparams")
             cli += ["-m", mainparams, "-e", extraparams]
 
     elif wrapped_prog == "maverick":  # Run MavericK
@@ -147,7 +148,7 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
-    temp = partial(runprogram, wrapped_prog, arg.params)
+    temp = partial(runprogram, wrapped_prog)
 
     # This will automatically create the Pool object, run the jobs and deadlock
     # the function while the children processed are being executed. This will
