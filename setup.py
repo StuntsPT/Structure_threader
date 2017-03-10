@@ -68,7 +68,8 @@ setup(
               "structure_threader.sanity_checks"],
     install_requires=["plotly",
                       "colorlover",
-                      "numpy", ],
+                      "numpy",
+                      "matplotlib"],
     description=("A program to parallelize runs of 'Structure' and "
                  "'fastStructure'."),
     url=URL,
