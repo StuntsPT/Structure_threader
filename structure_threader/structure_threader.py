@@ -186,7 +186,10 @@ def structure_harvester(resultsdir, wrapped_prog):
         except ImportError:
             import structure_threader.evanno.structureHarvester as sh
 
-    sh.main(resultsdir, outdir)
+    # Retrieve list of best K values
+    bestk = sh.main(resultsdir, outdir)
+
+    return bestk
 
 
 def create_plts(resultsdir, wrapped_prog, Ks):
@@ -434,7 +437,7 @@ def main():
         maverick_merger(arg.outpath, Ks, arg.notests)
 
     elif arg.notests is False:
-        structure_harvester(arg.outpath, wrapped_prog)
+        bestk = structure_harvester(arg.outpath, wrapped_prog)
 
     if arg.noplot is False:
         create_plts(arg.outpath, wrapped_prog, Ks)

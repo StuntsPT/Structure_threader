@@ -154,7 +154,9 @@ def writeEvannoTableToFile(data, outdir):
                   len(data.records[k]), data.estLnProbMeans[k],
                   data.estLnProbStdevs[k], LnPKstr, LnPPKstr, deltaKstr))
   file.close()
-
+  # Retrieve the top 3 k values
+  bk = [x[0] for x in sorted(x.items(), key=lambda j: j[1], reverse=True)][:3]
+  return bk
 
 def failHandler(message):
   raise Exception(message)
@@ -165,7 +167,9 @@ def main(resultsdir, outdir):
   harvestFiles(data, resultsdir)
   hc.calculateMeansAndSds(data)
   evannoMethod(data, outdir)
-  hc.writeRawOutputToFile(os.path.join(outdir, 'summary.txt'), data)
+  bestk = hc.writeRawOutputToFile(os.path.join(outdir, 'summary.txt'), data)
+
+  return bestk
 
 if __name__ == '__main__':
   #Usage: python3 structureHarvester.py resultsdir outdir
