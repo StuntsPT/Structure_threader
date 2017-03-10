@@ -217,6 +217,11 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk):
         plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
+    elif wrapped_prog == "maverick":
+        plt_files = [os.path.join(os.path.join(resultsdir, "K" + str(i)),
+                                  "outputQmatrix_ind_K" + str(i) + ".csv")
+                     for i in plt_list]
+
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
                      for i in plt_list]
@@ -225,7 +230,7 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk):
             indfile=arg.indfile)
 
 
-def maverick_merger(outdir, k_list, tests):
+def maverick_merger(outdir, k_list, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
@@ -261,6 +266,7 @@ def maverick_merger(outdir, k_list, tests):
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
+        return [bestk]
 
     for filename in files_list:
         header = True
@@ -275,8 +281,9 @@ def maverick_merger(outdir, k_list, tests):
 
         outfile.close()
 
-    if tests is False:
-        _ti_test(outdir, log_evidence_ti)
+    if no_tests is False:
+        bestk = _ti_test(outdir, log_evidence_ti)
+        return bestk
 
 
 def argument_parser(args):
@@ -477,15 +484,18 @@ def main():
         structure_threader(Ks, replicates, threads, wrapped_prog)
 
         if wrapped_prog == "maverick":
-            maverick_merger(arg.outpath, Ks, arg.notests)
+            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+            arg.notests = True
 
     if arg.notests is False:
         bestk = structure_harvester(arg.outpath, wrapped_prog)
 
-        if arg.noplot is False:
-            if arg.bestk is not None:
-                bestk = arg.bestk
-            create_plts(arg.outpath, wrapped_prog, Ks, bestk)
+    if arg.noplot is False:
+        if arg.bestk is not None:
+            bestk = arg.bestk
+        else:
+            bestk = None
+        create_plts(arg.outpath, wrapped_prog, Ks, bestk)
 
 
 if __name__ == "__main__":
