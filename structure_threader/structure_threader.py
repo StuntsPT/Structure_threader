@@ -456,7 +456,7 @@ def main():
                                      "directory.".format(arg.outpath), False)
 
     # Number of Ks
-    if type(arg.Ks) is int:
+    if isinstance(arg.Ks, int):
         Ks = range(1, arg.Ks + 1)
     else:
         Ks = arg.Ks
