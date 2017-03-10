@@ -374,7 +374,7 @@ class PlotList:
         # Parse each output file and add it to the kvals attribute
         for fpath in ouput_file_list:
 
-            if self.indv is None and self.pops is None:
+            if self.indv is None and self.pops == []:
                 # Create PlotK object
                 kobj = PlotK(fpath, self.fmt, get_indv=True)
                 self.indv = kobj.indv
