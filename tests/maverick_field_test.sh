@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-# set -e
+set -e
 
 LightGreen='\033[1;32m'
 NoColor='\033[0m'
