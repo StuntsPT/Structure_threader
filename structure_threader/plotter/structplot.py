@@ -363,18 +363,10 @@ class PlotList:
         """
         self.number_indv = None
 
-        # If a popfile has been provided, parse it and set the pops attribute
-        if popfile:
-            self._parse_popfile(popfile)
-
-        # If an indfile
-        if indfile:
-            self._parse_indfile(indfile)
-
         # Parse each output file and add it to the kvals attribute
         for fpath in ouput_file_list:
 
-            if self.indv is None and self.pops == []:
+            if not popfile and not indfile and self.indv is None:
                 # Create PlotK object
                 kobj = PlotK(fpath, self.fmt, get_indv=True)
                 self.indv = kobj.indv
@@ -390,6 +382,14 @@ class PlotList:
             # Check maximum K value
             if kobj.k > self.max_k:
                 self.max_k = kobj.k
+
+        # If a popfile has been provided, parse it and set the pops attribute
+        if popfile:
+            self._parse_popfile(popfile)
+
+        # If an indfile
+        if indfile:
+            self._parse_indfile(indfile)
 
     def __getattr__(self, item):
         """
