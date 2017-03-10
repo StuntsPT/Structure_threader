@@ -292,6 +292,7 @@ def argument_parser(args):
                                           "exclusive")
     k_opts = parser.add_argument_group("Cluster options")
     run_opts = parser.add_argument_group("Structure run options")
+    plot_opts = parser.add_argument_group("Q-matrix plotting options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
 
     # Group options
@@ -317,20 +318,15 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
+
     k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
-                        help="List of Ks to calculate.\n", metavar="list")
+                        help="List of Ks to calculate.\n", metavar="'2 4 6'")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value of K "
                                "(default:%(default)s).\n"
                                "Ignored for fastStructure and MavericK",
                           metavar="int", default=20)
-
-    run_opts.add_argument("--extra-options", dest="extra_options", type=str,
-                          required=False,
-                          help="Add extra arguments to pass to the extrenal "
-                          "program here.\nExample: prior=logistic seed=123",
-                          metavar="str", default="")
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
@@ -342,7 +338,7 @@ def argument_parser(args):
 
     io_opts.add_argument("--params", dest="params", type=str, required=False,
                          help="File with run parameters.",
-                         metavar="parameters", default=None)
+                         metavar="parameters_file.txt", default=None)
 
     id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
                          help="File with population information.",
@@ -362,13 +358,28 @@ def argument_parser(args):
                                 "logging.",
                            metavar="bool", default=False)
 
-    misc_opts.add_argument("--no-tests", dest="notests", type=bool,
-                           required=False, help="Disable best K tests.",
-                           metavar="bool", default=False)
-
-    misc_opts.add_argument("--no-plots", dest="noplot", type=bool,
+    plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",
                            metavar="bool", default=False)
+
+    plot_opts.add_argument("--just_plots", dest="justplot", type=bool,
+                           required=False,
+                           help="Just draw the plots. Do not run any wrapped "
+                                "programs. Requires a previously completed "
+                                "run.",
+                           metavar="bool", default=False)
+
+    misc_opts.add_argument("--no_tests", dest="notests", type=bool,
+                           required=False,
+                           help="Disable best K tests. Implies --no_plots",
+                           metavar="bool", default=False)
+
+    misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
+                           required=False,
+                           help="Add extra arguments to pass to the wrapped "
+                           "program here.\nExample: prior=logistic seed=123",
+                           metavar="string", default="")
+
 
     arguments = parser.parse_args(args)
 
@@ -452,16 +463,17 @@ def main():
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    structure_threader(Ks, replicates, threads, wrapped_prog)
+    if arg.justplot is False:
+        structure_threader(Ks, replicates, threads, wrapped_prog)
 
-    if wrapped_prog == "maverick":
-        maverick_merger(arg.outpath, Ks, arg.notests)
+        if wrapped_prog == "maverick":
+            maverick_merger(arg.outpath, Ks, arg.notests)
 
-    elif arg.notests is False:
+    if arg.notests is False:
         bestk = structure_harvester(arg.outpath, wrapped_prog)
 
-    if arg.noplot is False:
-        create_plts(arg.outpath, wrapped_prog, Ks, bestk)
+        if arg.noplot is False:
+            create_plts(arg.outpath, wrapped_prog, Ks, bestk)
 
 
 if __name__ == "__main__":
