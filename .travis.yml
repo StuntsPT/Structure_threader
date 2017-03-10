@@ -15,3 +15,9 @@ script:
   - tests/structure_field_test.sh
   - tests/fastStructure_field_test.sh
   - tests/maverick_field_test.sh
+
+# Other stuff
+notifications:
+  email:
+    - f.pinamartins@gmail.com
+    - o.diogo.silva@gmail.com
