@@ -122,8 +122,11 @@ def main(indir, outpath):
 
     outfile.write(ml)
     outfile.write(ex_str)
-
     outfile.close()
+
+    # Retrieve list of bestk
+    return [x for x in range(Ks[np.argmax(marginal_likelihoods)],
+                             np.argmax(np.bincount(bestKs)) + 1)]
 
 
 if __name__ == "__main__":
