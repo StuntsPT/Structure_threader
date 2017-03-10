@@ -88,6 +88,9 @@ class PlotK:
         # Let the parsing begin
         parse_methods[self.fmt]()
 
+        # Set K value
+        self.k = self.qvals.shape[1]
+
     def _parse_usepopinfo(self, fhandle, end_string):
         """
         This method handles the parsing of a Structure output file when the
@@ -207,7 +210,7 @@ class PlotK:
                 # for the current taxon. If it does not exist, create a new
                 # array from the values of the first taxon
                 try:
-                    self.qvals = np.vstack((qvalues, cl_vals))
+                    self.qvals = np.vstack((self.qvals, cl_vals))
                 except ValueError:
                     self.qvals = np.array(cl_vals)
 
@@ -363,6 +366,7 @@ class PlotList:
                 # Create PlotK object
                 kobj = PlotK(fpath, self.fmt, get_indv=True)
                 self.indv = kobj.indv
+                self.number_indv = len(self.indv)
             else:
                 # Create PlotK object
                 kobj = PlotK(fpath, self.fmt)
@@ -571,10 +575,11 @@ class PlotList:
             rows=nplots,
             cols=1,
             shared_xaxes=True,
-            subplot_titles=[basename(x.file_path) for x in
-                            self.kvals.values()],
+            subplot_titles=[basename(self.kvals[k].file_path) for k in kvals
+                            if k in self.kvals],
             vertical_spacing=0.05)
 
+        shape_list = []
         # Attributes specific for when population labels are provided
         if self.pops:
             # Variable that will store the coordinates of the population
@@ -583,10 +588,10 @@ class PlotList:
                 [x for y in self.pops_xrange for x in y]))[1:-1]
             # Stores the information on the population vertical lines
             # that will be passed to the figure layout
-            shape_list = []
 
         # Make sure that the highest K is processed first
-        for j, k in enumerate(sorted(self.kvals.keys(), reverse=True)):
+        for j, k in enumerate(sorted(
+                [x for x in kvals if x in self.kvals], reverse=True)):
 
             # Fetch PlotK object that will be plotted
             kobj = self.kvals[k]
@@ -620,21 +625,23 @@ class PlotList:
                     showlegend=True if j == 0 else False)
 
                 # Append the current barplot to the respective subplot
+                print(j)
                 fig.append_trace(current_bar, j + 1, 1)
 
             # Add population boundary lines
-            for x in pop_lines:
-                line_data = {
-                    "type": "line",
-                    "x0": x - .5,
-                    "y0": 0,
-                    "x1": x - .5,
-                    "y1": 1,
-                    # Add reference to the subplot where this line will be
-                    # added
-                    "yref": "y{}".format(j + 1),
-                    "line": {"width": 3}}
-                shape_list.append(line_data)
+            if self.pops:
+                for x in pop_lines:
+                    line_data = {
+                        "type": "line",
+                        "x0": x - .5,
+                        "y0": 0,
+                        "x1": x - .5,
+                        "y1": 1,
+                        # Add reference to the subplot where this line will be
+                        # added
+                        "yref": "y{}".format(j + 1),
+                        "line": {"width": 3}}
+                    shape_list.append(line_data)
 
             # Disable yticks for current subplot
             fig["layout"]["yaxis{}".format(j + 1)].update(
@@ -688,8 +695,8 @@ class PlotList:
 
         fig["layout"].update(barmode="stack",
                              bargap=0,
-                             margin={"b":bmargin},
-                             legend={"x": 1, "y":0.5})
+                             margin={"b": bmargin},
+                             legend={"x": 1, "y": 0.5})
         plot(fig)
 
 
