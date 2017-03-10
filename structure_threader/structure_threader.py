@@ -60,6 +60,11 @@ def runprogram(wrapped_prog, iterations):
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
+        if arg.params is not None:
+            mainparams = arg.params
+            extraparams = os.path.join(os.path.dirname(arg.params),
+                                       "extraparams")
+            cli += ["-m", mainparams, "-e", extraparams]
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # This will break on non-POSIX OSes, but maverick requires a trailing /
@@ -226,7 +231,7 @@ def maverick_merger(outdir, k_list, tests):
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
-    os.makedirs(mrg_res_dir)
+    os.makedirs(mrg_res_dir, exist_ok=True)
     log_evidence_ti = {}
 
     def _mav_output_parser(filename, get_header):
@@ -249,7 +254,7 @@ def maverick_merger(outdir, k_list, tests):
         Write a bestK result based in TI results.
         """
         bestk_dir = os.path.join(outdir, "bestK")
-        os.makedirs(bestk_dir)
+        os.makedirs(bestk_dir, exist_ok=True)
         bestk = max(log_evidence_ti, key=log_evidence_ti.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
         output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
