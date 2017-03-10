@@ -207,9 +207,9 @@ class PlotK:
                 # for the current taxon. If it does not exist, create a new
                 # array from the values of the first taxon
                 try:
-                    qvalues = np.vstack((qvalues, cl_vals))
+                    self.qvals = np.vstack((qvalues, cl_vals))
                 except ValueError:
-                    qvalues = np.array(cl_vals)
+                    self.qvals = np.array(cl_vals)
 
     def _parse_structure(self):
         """
