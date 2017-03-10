@@ -192,7 +192,7 @@ def structure_harvester(resultsdir, wrapped_prog):
     return bestk
 
 
-def create_plts(resultsdir, wrapped_prog, Ks):
+def create_plts(resultsdir, wrapped_prog, Ks, bestk):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
 
@@ -216,7 +216,7 @@ def create_plts(resultsdir, wrapped_prog, Ks):
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
                      for i in plt_list]
 
-    sp.main(plt_files, wrapped_prog, outdir, popfile=arg.popfile,
+    sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile)
 
 
@@ -461,7 +461,7 @@ def main():
         bestk = structure_harvester(arg.outpath, wrapped_prog)
 
     if arg.noplot is False:
-        create_plts(arg.outpath, wrapped_prog, Ks)
+        create_plts(arg.outpath, wrapped_prog, Ks, bestk)
 
 
 if __name__ == "__main__":
