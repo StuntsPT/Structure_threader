@@ -24,7 +24,17 @@ import colorlover as cl
 from os.path import basename, join, splitext
 from collections import Counter, defaultdict, OrderedDict
 import numpy as np
-from plotter.html_template import ploty_html
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+try:
+    from plotter.html_template import ploty_html
+except ImportError:
+    from structure_threader.plotter.html_template import ploty_html
+
+# Create color pallete
+c = cl.scales["12"]["qual"]["Set3"]
 
 
 class PlotK:
@@ -364,7 +374,7 @@ class PlotList:
         # Parse each output file and add it to the kvals attribute
         for fpath in ouput_file_list:
 
-            if not self.indv and not self.pops:
+            if not any(self.indv) and not any(self.pops):
                 # Create PlotK object
                 kobj = PlotK(fpath, self.fmt, get_indv=True)
                 self.indv = kobj.indv
@@ -448,7 +458,7 @@ class PlotList:
             # Add population label to list
             self.pops.append(x[0])
             # Add population label position in x-axis
-            self.pops_xpos.append(x[1] / 2) + sum(poparray["nind"][:p])
+            self.pops_xpos.append(x[1] / 2 + sum(poparray["nind"][:p]))
             # Add population range in the x-axis
             self.pops_xrange.append(
                 (pop_sums[p] - poparray["nind"][p], pop_sums[p]))
@@ -494,7 +504,7 @@ class PlotList:
 
         # Now we evaluate the the information contained in the indfile
         # If only one column is present, we set self.indv and nothing more
-        if indarray.shape[1] == 1:
+        if len(indarray.shape) == 1:
             self.indv = indarray
             self.number_indv = len(self.indv)
             return
@@ -569,9 +579,6 @@ class PlotList:
         # Get number of plots (confirm the kvals are valid before)
         nplots = len([x for x in kvals if int(x) in self.kvals])
 
-        # Create color pallete
-        c = cl.scales["12"]["qual"]["Set3"]
-
         # Set the figure object with the subplots and their titles already
         # specified
         fig = tools.make_subplots(
@@ -621,14 +628,13 @@ class PlotList:
                         #TODO: Only 12 colors supported for now
                         color=c[p],
                         line=dict(
-                            color='rgb(8,48,107)',
-                            width=0.6,
+                            color='grey',
+                            width=2,
                         )),
                     # Only the first (highest K) plot will have a legend
                     showlegend=True if j == 0 else False)
 
                 # Append the current barplot to the respective subplot
-                print(j)
                 fig.append_trace(current_bar, j + 1, 1)
 
             # Add population boundary lines
@@ -654,18 +660,18 @@ class PlotList:
             shape_list.append(
                 {"type": "line", "x0": -0.5, "y0": 0,
                  "x1": self.number_indv - 0.5, "y1": 0,
-                 "yref": "y{}".format(j + 1), "line": {"width": 2}})
+                 "yref": "y{}".format(j + 1), "line": {"width": 3}})
             shape_list.append(
                 {"type": "line", "x0": -0.5, "y0": 0, "x1": -0.5, "y1": 1,
-                 "yref": "y{}".format(j + 1), "line": {"width": 2}})
+                 "yref": "y{}".format(j + 1), "line": {"width": 3}})
             shape_list.append(
                 {"type": "line", "x0": -0.5, "y0": 1,
                  "x1": self.number_indv - 0.5, "y1": 1,
-                 "yref": "y{}".format(j + 1), "line": {"width": 2}})
+                 "yref": "y{}".format(j + 1), "line": {"width": 3}})
             shape_list.append(
                 {"type": "line", "x0": self.number_indv - 0.5, "y0": 0,
                  "x1": self.number_indv - 0.5, "y1": 1,
-                 "yref": "y{}".format(j + 1), "line": {"width": 2}})
+                 "yref": "y{}".format(j + 1), "line": {"width": 3}})
 
         if self.pops:
             # Customization of x-axis with population labels
@@ -688,7 +694,7 @@ class PlotList:
                      "showticklabels": True,
                      "mirror": True,
                      "tickangle": -45,
-                     "tickfont": dict(size=22,
+                     "tickfont": dict(size=14,
                                        color='black')}
 
             # Automatic setting of the bottom margin to accommodate larger
@@ -702,9 +708,9 @@ class PlotList:
         fig["layout"]["xaxis1"].update(**xdata)
 
         fig["layout"].update(barmode="stack",
-                             bargap=0,
-                             margin={"b": bmargin},
-                             legend={"x": 1, "y": 0.5})
+                              bargap=0,
+                              margin={"b": bmargin},
+                              legend={"x": 1, "y": 0.5})
 
         # Determine file name. If a single K value is provided, then
         # adapt from the ouptut name of that K value file.
@@ -714,7 +720,8 @@ class PlotList:
             kfile = self.kvals[kvals[0]].file_path
             filename = splitext(basename(kfile))[0]
         else:
-            filename = "ComparativePlot_{}".format("-".join(kvals))
+            filename = "ComparativePlot_{}".format("-".join(
+                [str(x) for x in kvals]))
         filepath = join(output_dir, filename)
 
         pdiv = plot(fig, include_plotlyjs=False, output_type='div')
@@ -723,11 +730,77 @@ class PlotList:
                              '"Export to plot.ly"}', '')
 
         # Create html file
-        print(filepath)
         with open(filepath, "w") as fh:
             fh.write(ploty_html(pdiv))
 
-        #py.image.save_as(fig, filename="teste.png")
+    def plotk_static(self, kval, output_dir):
+        """
+
+        """
+
+        qvalues = self.kvals[kval].qvals
+
+        plt.style.use("ggplot")
+
+        numinds = self.number_indv
+
+        clist = [[i / 255. for i in x] for x in cl.to_numeric(c)]
+
+        # Update plot width according to the number of samples
+        plt.rcParams["figure.figsize"] = (8 * numinds * .03, 2.64)
+
+        fig = plt.figure()
+        axe = fig.add_subplot(111, xlim=(-.5, numinds - .5), ylim=(0, 1))
+
+        for i in range(qvalues.shape[1]):
+            # Get bar color. If K exceeds the 12 colors, generate random color
+            try:
+                clr = clist[i]
+            except IndexError:
+                clr = np.random.rand(3, 1)
+
+            if i == 0:
+                axe.bar(range(numinds), qvalues[:, i], facecolor=clr,
+                        edgecolor="grey", width=1)
+                former_q = qvalues[:, i]
+            else:
+                axe.bar(range(numinds), qvalues[:, i], bottom=former_q,
+                        facecolor=clr, edgecolor="grey", width=1)
+                former_q = former_q + qvalues[:, i]
+
+        # Annotate population info
+        if self.pops:
+
+            pop_lines = list(OrderedDict.fromkeys(
+                [x for y in self.pops_xrange for x in y]))[1:-1]
+
+            for pl in pop_lines:
+
+                # Add population delimiting lines
+                plt.axvline(x=pl - 0.5, linewidth=1.5, color="black")
+
+            for p, pos in enumerate(self.pops_xpos):
+                axe.text(pos, -0.05, self.pops[p],
+                         rotation=45, va="top", ha="right", fontsize=16,
+                         weight="bold")
+        else:
+
+            for pos in range(self.number_indv):
+                axe.text(pos, -0.05, self.indv[pos],
+                         rotation=45, va="top", ha="right", fontsize=10)
+
+        for axis in ["top", "bottom", "left", "right"]:
+            axe.spines[axis].set_linewidth(2)
+            axe.spines[axis].set_color("black")
+
+        plt.yticks([])
+        plt.xticks([])
+
+        kfile = self.kvals[kval].file_path
+        filename = splitext(basename(kfile))[0]
+        filepath = join(output_dir, filename)
+
+        plt.savefig("{}.svg".format(filepath), bbox_inches="tight")
 
 
 def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
@@ -741,11 +814,12 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
     # Plot all K files individually
     for k, kobj in klist:
         klist.plotk([k], outdir)
+        klist.plotk_static(k, outdir)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot
     if bestk:
-        klist.plot(bestk, outdir)
+        klist.plotk(bestk, outdir)
 
 if __name__ == "__main__":
     kdir = "/home/diogo/Diogo/Science/PhD/Tasks/Hemileia_RADs/" \
