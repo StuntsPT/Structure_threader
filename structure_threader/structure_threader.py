@@ -75,7 +75,7 @@ def runprogram(wrapped_prog, iterations):
             pass
         cli = [arg.external_prog, "-Kmin", str(K), "-Kmax", str(K), "-data",
                arg.infile, "-outputRoot", output_dir, "-masterRoot", "/",
-               "-parameters", params]
+               "-parameters", arg.params]
         if arg.notests is True:
             cli += ["-thermodynamic_on", "f"]
 
