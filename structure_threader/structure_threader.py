@@ -220,14 +220,14 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk):
             indfile=arg.indfile)
 
 
-def maverick_merger(outdir, Klist, tests):
+def maverick_merger(outdir, k_list, tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir)
-    log_evidence_TI = {}
+    log_evidence_ti = {}
 
     def _mav_output_parser(filename, get_header):
         """
@@ -244,13 +244,13 @@ def maverick_merger(outdir, Klist, tests):
 
         return data
 
-    def _ti_test(outdir, log_evidence_TI):
+    def _ti_test(outdir, log_evidence_ti):
         """
         Write a bestK result based in TI results.
         """
         bestk_dir = os.path.join(outdir, "bestK")
         os.makedirs(bestk_dir)
-        bestk = max(log_evidence_TI, key=log_evidence_TI.get).replace("K", "1")
+        bestk = max(log_evidence_ti, key=log_evidence_ti.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
         output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
                        "that the best value of 'K' is: {}\n".format(bestk))
@@ -260,18 +260,18 @@ def maverick_merger(outdir, Klist, tests):
     for filename in files_list:
         header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "a")
-        for i in Klist:
+        for i in k_list:
             data_dir = os.path.join(outdir, "K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
-                log_evidence_TI[data.split(",")[0]] = float(data.split(",")[-2])
+                log_evidence_ti[data.split(",")[0]] = float(data.split(",")[-2])
             outfile.write(data)
 
         outfile.close()
 
     if tests is False:
-        _ti_test(outdir, log_evidence_TI)
+        _ti_test(outdir, log_evidence_ti)
 
 
 def argument_parser(args):
