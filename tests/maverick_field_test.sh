@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-# set -e
+set -e
 
 LightGreen='\033[1;32m'
 NoColor='\033[0m'
@@ -25,6 +25,6 @@ echo "Runnig MavericK 'field test'. This will simulate a full wrapped run on sma
 git_dir=`pwd`
 maverick_bin=`which MavericK`
 
-~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -mv ${maverick_bin} -K 3 -t 4 --no-plots 1 --params ${git_dir}/tests/smalldata/parameters.txt
+~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -mv ${maverick_bin} -K 3 -t 4  --params ${git_dir}/tests/smalldata/parameters.txt
 
 echo -e "${LightGreen}MavericK 'Field test' ran successfully. Yay!${NoColor}"

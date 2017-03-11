@@ -60,6 +60,11 @@ def runprogram(wrapped_prog, iterations):
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
+        if arg.params is not None:
+            mainparams = arg.params
+            extraparams = os.path.join(os.path.dirname(arg.params),
+                                       "extraparams")
+            cli += ["-m", mainparams, "-e", extraparams]
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # This will break on non-POSIX OSes, but maverick requires a trailing /
@@ -186,10 +191,13 @@ def structure_harvester(resultsdir, wrapped_prog):
         except ImportError:
             import structure_threader.evanno.structureHarvester as sh
 
-    sh.main(resultsdir, outdir)
+    # Retrieve list of best K values
+    bestk = sh.main(resultsdir, outdir)
+
+    return bestk
 
 
-def create_plts(resultsdir, wrapped_prog, Ks):
+def create_plts(resultsdir, wrapped_prog, Ks, bestk):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
 
@@ -209,22 +217,27 @@ def create_plts(resultsdir, wrapped_prog, Ks):
         plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
+    elif wrapped_prog == "maverick":
+        plt_files = [os.path.join(os.path.join(resultsdir, "K" + str(i)),
+                                  "outputQmatrix_ind_K" + str(i) + ".csv")
+                     for i in plt_list]
+
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
                      for i in plt_list]
 
-    sp.main(plt_files, wrapped_prog, outdir, popfile=arg.popfile,
+    sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile)
 
 
-def maverick_merger(outdir, Klist, tests):
+def maverick_merger(outdir, k_list, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
-    os.makedirs(mrg_res_dir)
-    log_evidence_TI = {}
+    os.makedirs(mrg_res_dir, exist_ok=True)
+    log_evidence_ti = {}
 
     def _mav_output_parser(filename, get_header):
         """
@@ -241,34 +254,36 @@ def maverick_merger(outdir, Klist, tests):
 
         return data
 
-    def _ti_test(outdir, log_evidence_TI):
+    def _ti_test(outdir, log_evidence_ti):
         """
         Write a bestK result based in TI results.
         """
         bestk_dir = os.path.join(outdir, "bestK")
-        os.makedirs(bestk_dir)
-        bestk = max(log_evidence_TI, key=log_evidence_TI.get).replace("K", "1")
+        os.makedirs(bestk_dir, exist_ok=True)
+        bestk = max(log_evidence_ti, key=log_evidence_ti.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
         output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
+        return [bestk]
 
     for filename in files_list:
         header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "a")
-        for i in Klist:
+        for i in k_list:
             data_dir = os.path.join(outdir, "K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
-                log_evidence_TI[data.split(",")[0]] = float(data.split(",")[-2])
+                log_evidence_ti[data.split(",")[0]] = float(data.split(",")[-2])
             outfile.write(data)
 
         outfile.close()
 
-    if tests is False:
-        _ti_test(outdir, log_evidence_TI)
+    if no_tests is False:
+        bestk = _ti_test(outdir, log_evidence_ti)
+        return bestk
 
 
 def argument_parser(args):
@@ -289,6 +304,7 @@ def argument_parser(args):
                                           "exclusive")
     k_opts = parser.add_argument_group("Cluster options")
     run_opts = parser.add_argument_group("Structure run options")
+    plot_opts = parser.add_argument_group("Q-matrix plotting options")
     misc_opts = parser.add_argument_group("Miscellaneous options")
 
     # Group options
@@ -314,20 +330,15 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
+
     k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
-                        help="List of Ks to calculate.\n", metavar="list")
+                        help="List of Ks to calculate.\n", metavar="'2 4 6'")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value of K "
                                "(default:%(default)s).\n"
                                "Ignored for fastStructure and MavericK",
                           metavar="int", default=20)
-
-    run_opts.add_argument("--extra-options", dest="extra_options", type=str,
-                          required=False,
-                          help="Add extra arguments to pass to the extrenal "
-                          "program here.\nExample: prior=logistic seed=123",
-                          metavar="str", default="")
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
@@ -339,7 +350,7 @@ def argument_parser(args):
 
     io_opts.add_argument("--params", dest="params", type=str, required=False,
                          help="File with run parameters.",
-                         metavar="parameters", default=None)
+                         metavar="parameters_file.txt", default=None)
 
     id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
                          help="File with population information.",
@@ -359,13 +370,33 @@ def argument_parser(args):
                                 "logging.",
                            metavar="bool", default=False)
 
-    misc_opts.add_argument("--no-tests", dest="notests", type=bool,
-                           required=False, help="Disable best K tests.",
-                           metavar="bool", default=False)
-
-    misc_opts.add_argument("--no-plots", dest="noplot", type=bool,
+    plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",
                            metavar="bool", default=False)
+
+    plot_opts.add_argument("--just_plots", dest="justplot", type=bool,
+                           required=False,
+                           help="Just draw the plots. Do not run any wrapped "
+                                "programs. Requires\na previously completed "
+                                "run.",
+                           metavar="bool", default=False)
+
+    plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
+                           required=False, nargs="+",
+                           help="Override 'K' values from the given list to be "
+                           "ploteted in the combined figure.",
+                           metavar="'2 4 5'", default=None)
+
+    misc_opts.add_argument("--no_tests", dest="notests", type=bool,
+                           required=False,
+                           help="Disable best K tests. Implies --no_plots",
+                           metavar="bool", default=False)
+
+    misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
+                           required=False,
+                           help="Add extra arguments to pass to the wrapped "
+                           "program here.\nExample: prior=logistic seed=123",
+                           metavar="string", default="")
 
     arguments = parser.parse_args(args)
 
@@ -437,7 +468,7 @@ def main():
                                      "directory.".format(arg.outpath), False)
 
     # Number of Ks
-    if type(arg.Ks) is int:
+    if isinstance(arg.Ks, int):
         Ks = range(1, arg.Ks + 1)
     else:
         Ks = arg.Ks
@@ -449,16 +480,22 @@ def main():
 
     signal.signal(signal.SIGINT, gracious_exit)
 
-    structure_threader(Ks, replicates, threads, wrapped_prog)
+    if arg.justplot is False:
+        structure_threader(Ks, replicates, threads, wrapped_prog)
 
-    if wrapped_prog == "maverick":
-        maverick_merger(arg.outpath, Ks, arg.notests)
+        if wrapped_prog == "maverick":
+            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+            arg.notests = True
 
-    elif arg.notests is False:
-        structure_harvester(arg.outpath, wrapped_prog)
+    if arg.notests is False:
+        bestk = structure_harvester(arg.outpath, wrapped_prog)
 
     if arg.noplot is False:
-        create_plts(arg.outpath, wrapped_prog, Ks)
+        if arg.bestk is not None:
+            bestk = arg.bestk
+        else:
+            bestk = None
+        create_plts(arg.outpath, wrapped_prog, Ks, bestk)
 
 
 if __name__ == "__main__":

@@ -66,8 +66,10 @@ setup(
               "structure_threader.evanno",
               "structure_threader.plotter",
               "structure_threader.sanity_checks"],
-    install_requires=["matplotlib",
-                      "numpy", ],
+    install_requires=["plotly",
+                      "colorlover",
+                      "numpy",
+                      "matplotlib"],
     description=("A program to parallelize runs of 'Structure' and "
                  "'fastStructure'."),
     url=URL,
@@ -83,7 +85,8 @@ setup(
                  "Topic :: Scientific/Engineering :: Bio-Informatics",
                  "Programming Language :: Python :: 3 :: Only",
                  "Programming Language :: Python :: 3.4",
-                 "Programming Language :: Python :: 3.5"],
+                 "Programming Language :: Python :: 3.5",
+                 "Programming Language :: Python :: 3.6"],
     data_files=DATA_FILES,
     entry_points={
         "console_scripts": [

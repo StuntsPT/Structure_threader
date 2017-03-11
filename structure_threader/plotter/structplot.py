@@ -27,7 +27,6 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import logging
 
 try:
     from plotter.html_template import ploty_html
@@ -37,16 +36,6 @@ except ImportError:
 # Create color pallete
 c = cl.scales["12"]["qual"]["Set3"]
 
-def log_bad_auxfile(msg, f):
-
-    # Get handle on StructurePlotter logger
-    #plotlog = logging.getLogger('StructurePlotter')
-
-    logging.error("Badly formatted popfile\n{}".format(msg))
-    logging.info("Please correct your {}file. You can re-run only"
-                 " the plot generation by using the following command:"
-                 "\n\n".format(f))
-    raise SystemExit
 
 class PlotK:
     """
@@ -457,10 +446,7 @@ class PlotList:
         datatype = np.dtype([("popname", "|U20"), ("nind", int),
                              ("original_order", int)])
 
-        try:
-            poparray = np.genfromtxt(popfile, dtype=datatype)
-        except ValueError as e:
-            log_bad_auxfile(e, "pop")
+        poparray = np.genfromtxt(popfile, dtype=datatype)
 
         # Sort array according to the order in the third column
         poparray.sort(order="original_order")
