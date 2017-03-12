@@ -270,7 +270,7 @@ def maverick_merger(outdir, k_list, no_tests):
 
     for filename in files_list:
         header = True
-        outfile = open(os.path.join(mrg_res_dir, filename), "a")
+        outfile = open(os.path.join(mrg_res_dir, filename), "w")
         for i in k_list:
             data_dir = os.path.join(outdir, "K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
