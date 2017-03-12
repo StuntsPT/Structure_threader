@@ -16,6 +16,31 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import numpy as np
+import logging
+
+
+class AuxSanity(object):
+
+    def log_error(self, msg, aux):
+
+        logging.error("Badly formatted {f1}file (provided with --{f1})"
+                      " with error:\n"
+                      "{f2}\n"
+                      "Please correct the provided {f1}file and re-run"
+                      " the plotting operation of structure_threader "
+                      "with the following command:\n\n"
+                      "<command missing>".format(f1=aux, f2=msg))
+        raise SystemExit
+
+    def check_popfile(self, filepath, **kwargs):
+
+        try:
+            np.genfromtxt(filepath)
+        except ValueError as e:
+            self.log_error(e, "pop")
+
+        super().check_popfile(**kwargs)
 
 
 def cpu_checker(asked_threads):
