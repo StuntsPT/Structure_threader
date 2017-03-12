@@ -30,8 +30,10 @@ import matplotlib.pyplot as plt
 
 try:
     from plotter.html_template import ploty_html
+    from sanity_checks.sanity import AuxSanity
 except ImportError:
     from structure_threader.plotter.html_template import ploty_html
+    from structure_threader.sanity_checks.sanity import AuxSanity
 
 # Create color pallete
 c = cl.scales["12"]["qual"]["Set3"]
@@ -290,7 +292,7 @@ class PlotK:
                                            skip_header=1).T[1].T)
 
 
-class PlotList:
+class PlotList(AuxSanity):
     """
     Main class object that will store multiple PlotK instances for each
     output file provided. The population information is stored in this class
@@ -442,6 +444,8 @@ class PlotList:
         :param popfile: (str) Path to pop file
 
         """
+
+        self.check_popfile(popfile)
 
         datatype = np.dtype([("popname", "|U20"), ("nind", int),
                              ("original_order", int)])
