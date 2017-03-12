@@ -483,9 +483,9 @@ def main():
     if arg.justplot is False:
         structure_threader(Ks, replicates, threads, wrapped_prog)
 
-        if wrapped_prog == "maverick":
-            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
-            arg.notests = True
+    if wrapped_prog == "maverick":
+        bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+        arg.notests = True
 
     if arg.notests is False:
         bestk = structure_harvester(arg.outpath, wrapped_prog)
