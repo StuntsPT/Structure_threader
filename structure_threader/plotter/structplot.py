@@ -263,7 +263,7 @@ class PlotK:
         and number of clusters (k)
         """
 
-        # Thanks FastStructure, this was really easy.
+        # Thanks fastStructure, this was really easy.
         self.qvals = np.genfromtxt(self.file_path)
 
         self.nind, self.k = self.qvals.shape
@@ -297,14 +297,14 @@ class PlotList:
     output file provided. The population information is stored in this class
     since it is the same for all PlotK objects. This class also contains
     plotting and array manipulation methods that are necessary to produce
-    the output plots
+    the output plots.
     """
 
     def __init__(self, ouput_file_list, fmt, popfile=None, indfile=None):
         """
         When a PlotList instance is created, a list of the output files and
         their format must be provided. Optionally, a population file may
-        also be provided for additional plot features
+        also be provided for additional plot features.
 
         :param ouput_file_list (list): Each element being the path to a
          structure/faststructure/maverick output file (presumably with
@@ -319,12 +319,12 @@ class PlotList:
 
         """
         Dictionary attribute that stores the K number
-        as key and the corresponding PlotK object as value
+        as key and the corresponding PlotK object as value.
         """
         self.kvals = {}
 
         """
-        Sets the maximum K value from the loaded PlotK objects
+        Sets the maximum K value from the loaded PlotK objects.
         """
         self.max_k = 0
 
