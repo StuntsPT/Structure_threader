@@ -282,7 +282,7 @@ class PlotK:
         # 3. We transpose the array so that each row is a taxon and
         # the columns represent the assignment probabilities for each K
         mavarray = np.genfromtxt(self.file_path, delimiter=",",
-                                   skip_header=1)
+                                 skip_header=1)
         self.qvals = mavarray.T[3:].T
 
         if self.get_indv:
@@ -546,7 +546,7 @@ class PlotList:
 
                 # Populate pops related attributes
                 for p, pop in enumerate(npops):
-                # Add population label to list
+                    # Add population label to list
                     self.pops.append(pop)
                     self.pops_xpos.append(pop_sums[p] - pop_counts[pop] / 2)
                     self.pops_xrange.append(
@@ -626,7 +626,7 @@ class PlotList:
                     text=["Assignment: {}%".format(x * 100) for x in i],
                     # Customization of bars
                     marker=dict(
-                        #TODO: Only 12 colors supported for now
+                        # TODO: Only 12 colors supported for now
                         color=c[p],
                         line=dict(
                             color='grey',
@@ -684,7 +684,7 @@ class PlotList:
                      "tickvals": self.pops_xpos,
                      "tickangle": -45,
                      "tickfont": dict(size=22,
-                                       color='black')}
+                                      color='black')}
 
             # Automatic setting of the bottom margin to accomodate larger
             # population labels
@@ -696,7 +696,7 @@ class PlotList:
                      "mirror": True,
                      "tickangle": -45,
                      "tickfont": dict(size=14,
-                                       color='black')}
+                                      color='black')}
 
             # Automatic setting of the bottom margin to accommodate larger
             # individual sample names
@@ -709,9 +709,9 @@ class PlotList:
         fig["layout"]["xaxis1"].update(**xdata)
 
         fig["layout"].update(barmode="stack",
-                              bargap=0,
-                              margin={"b": bmargin},
-                              legend={"x": 1, "y": 0.5})
+                             bargap=0,
+                             margin={"b": bmargin},
+                             legend={"x": 1, "y": 0.5})
 
         # Determine file name. If a single K value is provided, then
         # adapt from the ouptut name of that K value file.
@@ -728,7 +728,7 @@ class PlotList:
         pdiv = plot(fig, include_plotlyjs=False, output_type='div')
         # Remove plotly div
         pdiv = pdiv.replace(', {"showLink": true, "linkText": '
-                             '"Export to plot.ly"}', '')
+                            '"Export to plot.ly"}', '')
 
         # Create html file
         with open(filepath, "w") as fh:
@@ -824,6 +824,7 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
     if bestk:
         bestk = [x for x in bestk if x >= 1]
         klist.plotk(bestk, outdir)
+
 
 if __name__ == "__main__":
     kdir = "/home/diogo/Diogo/Science/PhD/Tasks/Hemileia_RADs/" \
