@@ -3,21 +3,31 @@ This section describes how to use *Structure_threader*.
 
 These are the arguments the program currently takes:
 
-* Input file (-i)
-* Output directory (-o)
+* I/O arguments:
+    * Input file (-i)
+    * Output directory (-o)
+    * Path to parameters_file (--params)
+* Individual/Population identification options:
+    * Path to popfile (--pop) [See below for more information]
+    * Path to indfile (--ind) [See below for more information]
+* Extrnal program location - you have to pass one and only one of the following arguments:
+    * *STRUCTURE* location (if you want to run *STRUCTURE*; -st)
+    * *fastStructure* location (if you want to run *fastStructure*; -fs)
+    * *MavericK* location (if you want to run *MavericK*; -mv)
 * Number of K - you have to pass one and only one of the following arguments:
     * K (To test all values of "K" from 1 to "K"; -K)
     * Klist (To test all values of "K" in the provided list; -Klist)
 * Replicates (ignored for *fastStructure* and *MavericK*; -R)
-* Number of threads (-t)
-* Program location - you have to pass one and only one of the following arguments:
-    * *STRUCTURE* location (if you want to run *STRUCTURE*; -st)
-    * *fastStructure* location (if you want to run *fastStructure*; -fs)
-    * *MavericK* location (if you want to run *MavericK*; -mv)
-* Logging (optional - useful when problems arise; --log)
-* No-tests (optional - use this if you do not want to run the BestK tests; --no-tests)
-* No-plots (optional - use this if you do not want to draw plots; --no-plots)
-* Popfile (optional - use this if you want to name your populations in the plot. Should be a text file with 3 columns, one for population name, one for number of individuals represented in that population and one for the population position in the input file. This effectively allows the plot to be drawn in any chosen order.)
+* Number of threads to use (-t)
+* Q-matrix plotting options:
+  * Disable plot drawing (--no_plots)       
+  * Just draw the plots, do not run any wrapped programs. Requires a previously finished run (--just_plots)
+  * Override 'K' values from the given list to be plotted in the combined figure (--override_bestk '2 4 5')
+* Other options                
+    * Enable logging - useful when problems arise (--log)
+    * Do not run the BestK tests (--no-tests)
+    * Add extra arguments to pass to the wrapped program (--extra_opts) [Example: prior=logistic seed=123]
+
 
 Example run:
 
