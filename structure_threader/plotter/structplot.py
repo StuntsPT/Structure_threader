@@ -26,13 +26,16 @@ from os.path import basename, join, splitext
 from collections import Counter, defaultdict, OrderedDict
 import numpy as np
 import matplotlib
+import logging
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 try:
     from plotter.html_template import ploty_html
+    from sanity_checks.sanity import AuxSanity
 except ImportError:
     from structure_threader.plotter.html_template import ploty_html
+    from structure_threader.sanity_checks.sanity import AuxSanity
 
 # Create color pallete
 c = cl.scales["12"]["qual"]["Set3"]
@@ -102,7 +105,10 @@ class PlotK:
         parse_methods[self.fmt]()
 
         # Set K value
-        self.k = self.qvals.shape[1]
+        try:
+            self.k = self.qvals.shape[1]
+        except IndexError:
+            self.k = 1
 
     def _parse_usepopinfo(self, fhandle, end_string):
         """
@@ -266,7 +272,10 @@ class PlotK:
         # Thanks fastStructure, this was really easy.
         self.qvals = np.genfromtxt(self.file_path)
 
-        self.nind, self.k = self.qvals.shape
+        try:
+            self.nind, self.k = self.qvals.shape
+        except ValueError:
+            self.k = 1
 
     def _parse_maverick(self):
         """
@@ -291,7 +300,7 @@ class PlotK:
                                            skip_header=1).T[1].T)
 
 
-class PlotList:
+class PlotList(AuxSanity):
     """
     Main class object that will store multiple PlotK instances for each
     output file provided. The population information is stored in this class
@@ -412,6 +421,46 @@ class PlotList:
         for k, kobj in self.kvals.items():
             yield k, kobj
 
+    def _sort_qvals_pop(self, poparray=None, indarray=None):
+        """
+        Sorts an ndarray with popfile/indfile information ALONG with the
+        qvalues array
+        :param poparray: (numpy.ndarray) As returned by genfromtxt
+        :param indarray: (numpy.array) As returned by genfromtxt
+        """
+
+        sorted_array = None
+
+        if poparray is not None:
+            # Create a ndarray of the same size as the qvalues array
+            for i in range(len(poparray)):
+                if sorted_array is None:
+                    sorted_array = np.repeat(poparray[i:i + 1, np.newaxis],
+                                             poparray[i][1],
+                                             0)
+                else:
+                    sorted_array = np.vstack(
+                        [sorted_array,
+                         np.repeat(poparray[i:i + 1, np.newaxis],
+                                   poparray[i][1],
+                                   0)])
+        # Sort the qvalues array acorrding to the "original_order" column
+        # of poparray
+        for _, kobj in self.kvals.items():
+            # Retrieve meanQ array
+            qvals = kobj.qvals
+
+            # Stack index to meanQ array
+            if poparray is not None:
+                index_array = np.c_[sorted_array["original_order"],
+                                    qvals]
+            elif indarray is not None:
+                index = indarray[:, 2].astype(np.float64)
+                index_array = np.c_[index, qvals]
+            # Sort indexed array
+            sorted_qvals = index_array[index_array[:, 0].argsort()]
+            kobj.qvals = sorted_qvals[:, 1:]
+
     def _parse_popfile(self, popfile):
         """
         Parses a population file and sets the pops attribute.
@@ -444,11 +493,15 @@ class PlotList:
 
         """
 
+        self.check_popfile(popfile, self.kvals)
+
         datatype = np.dtype([("popname", "|U20"), ("nind", int),
                              ("original_order", int)])
 
         poparray = np.genfromtxt(popfile, dtype=datatype)
 
+        # Sort meanQ arrays
+        self._sort_qvals_pop(poparray=poparray)
         # Sort array according to the order in the third column
         poparray.sort(order="original_order")
 
@@ -498,6 +551,8 @@ class PlotList:
         :param indfile: (str) Path to indfile
         """
 
+        self.check_indfile(indfile, self.kvals)
+
         # Import infile as array. dtype is set to None to allow automatic
         # detection of dtype for each column (since the number of columns
         # is variable)
@@ -530,6 +585,7 @@ class PlotList:
                 # Sort the individuals according to the order provided in the
                 # third column, if it is available
                 if indarray.shape[1] == 3:
+                    self._sort_qvals_pop(indarray=indarray)
                     indarray = indarray[indarray[:, 2].argsort()]
                     # Sort the population list according to the new order
                     npops = list(OrderedDict.fromkeys(indarray[:, 1]))
@@ -588,7 +644,8 @@ class PlotList:
             shared_xaxes=True,
             subplot_titles=[basename(self.kvals[k].file_path) for k in kvals
                             if k in self.kvals],
-            vertical_spacing=0.05)
+            vertical_spacing=0.05,
+            print_grid=False)
 
         shape_list = []
         # Attributes specific for when population labels are provided
@@ -804,7 +861,8 @@ class PlotList:
         plt.savefig("{}.svg".format(filepath), bbox_inches="tight")
 
 
-def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
+def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
+         filter_k=None):
     """
     Wrapper function that generates one plot for each K value.
     :return:
@@ -812,10 +870,19 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
 
     klist = PlotList(result_files, fmt, popfile=popfile, indfile=indfile)
 
+    # Check if any of filter_k is not present in klist
+    if filter_k:
+        missing = [str(x) for x in filter_k if x not in klist.kvals]
+        if missing:
+            logging.warning("The following K values are missing: {}".format(
+                    " ".join(missing)))
+    else:
+        filter_k = list(klist.kvals.keys())
+
     # Plot all K files individually
     for k, kobj in klist:
 
-        if k >= 1:
+        if k >= 1 and k in filter_k:
             klist.plotk([k], outdir)
             klist.plotk_static(k, outdir)
 
