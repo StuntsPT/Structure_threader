@@ -34,6 +34,9 @@ except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
 
+# Where are we?
+CWD = os.getcwd()
+
 
 def gracious_exit(*args):
     """Graciously exit the program."""
@@ -426,9 +429,6 @@ def main():
     from."""
 
     arg = argument_parser(sys.argv[1:])
-
-    # Where are we?
-    CWD = os.getcwd()
 
     # Switch relative to absolute paths
     arg.infile = os.path.abspath(arg.infile)
