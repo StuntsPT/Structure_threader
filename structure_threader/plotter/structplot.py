@@ -644,7 +644,8 @@ class PlotList(AuxSanity):
             shared_xaxes=True,
             subplot_titles=[basename(self.kvals[k].file_path) for k in kvals
                             if k in self.kvals],
-            vertical_spacing=0.05)
+            vertical_spacing=0.05,
+            print_grid=False)
 
         shape_list = []
         # Attributes specific for when population labels are provided
@@ -870,10 +871,13 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
     klist = PlotList(result_files, fmt, popfile=popfile, indfile=indfile)
 
     # Check if any of filter_k is not present in klist
-    missing = [str(x) for x in filter_k if x not in klist.kvals]
-    if missing:
-        logging.warning("The following K values are missing: {}".format(
-                " ".join(missing)))
+    if filter_k:
+        missing = [str(x) for x in filter_k if x not in klist.kvals]
+        if missing:
+            logging.warning("The following K values are missing: {}".format(
+                    " ".join(missing)))
+    else:
+        filter_k = list(klist.kvals.keys())
 
     # Plot all K files individually
     for k, kobj in klist:
