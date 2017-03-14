@@ -56,7 +56,7 @@ def runprogram(wrapped_prog, iterations):
 
     if wrapped_prog == "structure":  # Run STRUCTURE
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
+        output_file = os.path.join(arg.outpath, "str_K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
