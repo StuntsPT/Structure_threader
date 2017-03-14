@@ -26,6 +26,6 @@ git_dir=`pwd`
 str_bin=`which fastStructure`
 
 tar xvfJ ${git_dir}/tests/smalldata/BigTestData.str.tar.xz -C ${git_dir}/tests/smalldata/
-~/virtualenv/python3.5/bin/structure_threader -i ${git_dir}/tests/smalldata/BigTestData.str -o ~/results_fs -fs ${str_bin} -K 4 -t 4 --ind ${git_dir}/tests/smalldata/indfile.txt
+~/virtualenv/python3.5/bin/structure_threader run -i ${git_dir}/tests/smalldata/BigTestData.str -o ~/results_fs -fs ${str_bin} -K 4 -t 4 --ind ${git_dir}/tests/smalldata/indfile.txt
 
 echo -e "${LightGreen}fastStructure 'Field test' ran successfully. Yay!${NoColor}"

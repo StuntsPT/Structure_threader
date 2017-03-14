@@ -66,7 +66,7 @@ def runprogram(wrapped_prog, iterations, arg):
 
     if wrapped_prog == "structure":  # Run STRUCTURE
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
+        output_file = os.path.join(arg.outpath, "str_K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
@@ -78,7 +78,7 @@ def runprogram(wrapped_prog, iterations, arg):
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # This will break on non-POSIX OSes, but maverick requires a trailing /
-        output_dir = os.path.join(arg.outpath, "K" + str(K)) + "/"
+        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + "/"
         try:
             os.mkdir(output_dir)
         except FileExistsError:
@@ -231,11 +231,11 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
             file_to_plot = "1"
         else:
             file_to_plot = str(randrange(1, arg.replicates + 1))
-        plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
+        plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
     elif wrapped_prog == "maverick":
-        plt_files = [os.path.join(os.path.join(resultsdir, "K" + str(i)),
+        plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
                      for i in plt_list]
 
@@ -283,13 +283,13 @@ def maverick_merger(outdir, k_list, no_tests):
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
-        return [bestk]
+        return [int(bestk)]
 
     for filename in files_list:
         header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "w")
         for i in k_list:
-            data_dir = os.path.join(outdir, "K" + str(i))
+            data_dir = os.path.join(outdir, "mav_K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
@@ -313,16 +313,28 @@ def argument_parser(args):
         prog="Structure_threader",
         formatter_class=argparse.RawTextHelpFormatter)
 
+    # Create subparsers for each main structure_threader  operation
+    subparsers = parser.add_subparsers(
+        help="Select which structure_threader command you wish to"
+             "execute.",
+        dest="main_op")
+
+    run_parser = subparsers.add_parser("run", help="Performs a complete"
+                                       " run of structure_threader.")
+    plot_parser = subparsers.add_parser("plot", help="Performs only the"
+                                        " plotting operations.")
+
+    # ####################### RUN ARGUMENTS ###################################
     # Group definition
-    io_opts = parser.add_argument_group("Input/Output options")
-    id_opts = parser.add_argument_group("Individual/Population identification "
-                                        "options")
-    main_exec = parser.add_argument_group("Program execution options. Mutually "
-                                          "exclusive")
-    k_opts = parser.add_argument_group("Cluster options")
-    run_opts = parser.add_argument_group("Structure run options")
-    plot_opts = parser.add_argument_group("Q-matrix plotting options")
-    misc_opts = parser.add_argument_group("Miscellaneous options")
+    io_opts = run_parser.add_argument_group("Input/Output options")
+    id_opts = run_parser.add_argument_group(
+        "Individual/Population identification options")
+    main_exec = run_parser.add_argument_group(
+        "Program execution options. Mutually exclusive")
+    k_opts = run_parser.add_argument_group("Cluster options")
+    run_opts = run_parser.add_argument_group("Structure run options")
+    plot_opts = run_parser.add_argument_group("Q-matrix plotting options")
+    misc_opts = run_parser.add_argument_group("Miscellaneous options")
 
     # Group options
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
@@ -332,13 +344,13 @@ def argument_parser(args):
     main_exec_ex.add_argument("-st", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
-                              help="Location of the structure executable in "
-                              " your environment.")
+                              help="Location of the structure executable "
+                              "in  your environment.")
     main_exec_ex.add_argument("-fs", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
-                              help="Location of the fastStructure executable "
-                              "in your environment.")
+                              help="Location of the fastStructure "
+                              "executable in your environment.")
     main_exec_ex.add_argument("-mv", dest="external_prog", type=str,
                               default=None,
                               metavar="filepath",
@@ -347,24 +359,22 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
-
     k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
-                        help="List of Ks to calculate.\n", metavar="'2 4 6'")
+                        help="List of Ks to calculate.\n",
+                        metavar="'2 4 6'")
 
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
-                          help="Number of replicate runs for each value of K "
-                               "(default:%(default)s).\n"
-                               "Ignored for fastStructure and MavericK",
+                          help="Number of replicate runs for each value "
+                          "of K (default:%(default)s).\nIgnored for "
+                          "fastStructure and MavericK",
                           metavar="int", default=20)
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
-
     io_opts.add_argument("-o", dest="outpath", type=str, required=True,
-                         help="Directory where the results will be stored "
-                              "in.\n",
+                         help="Directory where the results will be "
+                         "stored in.\n",
                          metavar="output_directory")
-
     io_opts.add_argument("--params", dest="params", type=str, required=False,
                          help="File with run parameters.",
                          metavar="parameters_file.txt", default=None)
@@ -372,7 +382,6 @@ def argument_parser(args):
     id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
                          help="File with population information.",
                          metavar="popfile", default=None)
-
     id_opts.add_argument("--ind", dest="indfile", type=str, required=False,
                          help="File with population information.",
                          metavar="indfile", default=None)
@@ -381,59 +390,95 @@ def argument_parser(args):
                            help="Number of threads to use "
                                 "(default:%(default)s).\n",
                            metavar="int", default=4)
-
     misc_opts.add_argument("--log", dest="log", type=bool, required=False,
-                           help="Choose this option if you want to enable "
-                                "logging.",
+                           help="Choose this option if you want to "
+                           "enable logging.",
                            metavar="bool", default=False)
+    misc_opts.add_argument("--no_tests", dest="notests", type=bool,
+                           required=False,
+                           help="Disable best K tests. Implies "
+                           "--no_plots",
+                           metavar="bool", default=False)
+    misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
+                           required=False,
+                           help="Add extra arguments to pass to the "
+                           "wrapped program here.\nExample: "
+                           "prior=logistic seed=123",
+                           metavar="string", default="")
 
     plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",
                            metavar="bool", default=False)
-
-    plot_opts.add_argument("--just_plots", dest="justplot", type=bool,
-                           required=False,
-                           help="Just draw the plots. Do not run any wrapped "
-                                "programs. Requires\na previously completed "
-                                "run.",
-                           metavar="bool", default=False)
-
     plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
                            required=False, nargs="+",
-                           help="Override 'K' values from the given list to be "
-                           "ploteted in the combined figure.",
+                           help="Override 'K' values from the given list"
+                           " to be ploteted in the combined figure.",
                            metavar="'2 4 5'", default=None)
 
-    misc_opts.add_argument("--no_tests", dest="notests", type=bool,
-                           required=False,
-                           help="Disable best K tests. Implies --no_plots",
-                           metavar="bool", default=False)
+    # ####################### PLOT ARGUMENTS ##################################
+    # Group definitions
 
-    misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
-                           required=False,
-                           help="Add extra arguments to pass to the wrapped "
-                           "program here.\nExample: prior=logistic seed=123",
-                           metavar="string", default="")
+    main_opts = plot_parser.add_argument_group("Main plotting options")
+    sort_opts = plot_parser.add_argument_group("Plot sorting options")
 
+    # Group options
+    sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
+
+    main_opts.add_argument("-i", dest="prefix", type=str, required=True,
+                           help="The prefix of the output meanQ files."
+                                "The current directory will be scanned"
+                                " and all files that match the prefix.")
+    main_opts.add_argument("-f", dest="format", type=str, required=True,
+                           choices=["structure", "fastStructure",
+                                    "maverick"],
+                           help="The format of the result files.")
+    main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
+                           help="Choose the K values to plot. Each K"
+                                "value provided will be plotted "
+                                "individually and a comparative plot"
+                                " will all K's will be generated."
+                                "Example: -K 2 3 4.")
+    main_opts.add_argument("-o", dest="outpath", type=str, default=".",
+                           help="The directory where the plots will be"
+                                " generated. If it is not provided,"
+                                " the current working directory"
+                                " will be used.")
+
+    sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
+                              required=False,
+                              help="File with population information.",
+                              metavar="popfile", default=None)
+    sort_opts_ex.add_argument("--ind", dest="indfile", type=str,
+                              required=False,
+                              help="File with individual information.",
+                              metavar="indfile", default=None)
+
+    # ##################### Sanity checks ################################
     arguments = parser.parse_args(args)
 
-    # Handle argparse limitations with "--" options.
-    if arguments.extra_options != "":
-        arguments.extra_options = "--{0}".format(arguments.extra_options)
-        arguments.extra_options = " --".join(arguments.extra_options.split())
+    if arguments.main_op == "run":
+        # Handle argparse limitations with "--" options.
+        if arguments.extra_options != "":
+            arguments.extra_options = "--{0}".format(arguments.extra_options)
+            arguments.extra_options = \
+                " --".join(arguments.extra_options.split())
 
-    # fastStructure is really only usefull with either a pop or indfile...
-    if "-fs" in sys.argv and\
-        arguments.popfile is None and\
-            arguments.indfile is None:
-        parser.error("-fs requires either --pop or --ind.")
+        # fastStructure is really only usefull with either a pop or indfile...
+        if "-fs" in sys.argv and\
+            arguments.popfile is None and\
+                arguments.indfile is None:
+            parser.error("-fs requires either --pop or --ind.")
 
-    # Make sure we provide paths for mainparam, extraparams and parameters.txt
-    # depending on the wrapped program.
-    if arguments.params is not None:
-        arguments.params = os.path.abspath(arguments.params)
-    if "-mv" in sys.argv and arguments.params is None:
-        parser.error("-mv requires --params.")
+        # Make sure we provide paths for mainparam, extraparams and
+        # parameters.txt  depending on the wrapped program.
+        if arguments.params is not None:
+            arguments.params = os.path.abspath(arguments.params)
+        if "-mv" in sys.argv and arguments.params is None:
+            parser.error("-mv requires --params.")
+    else:
+        if arguments.format == "faststructure" and arguments.popfile is None\
+                and arguments.indfile is None:
+            parser.error("fastStructure plots require either --pop or --ind.")
 
     return arguments
 
@@ -446,69 +491,98 @@ def main():
 
     arg = argument_parser(sys.argv[1:])
 
-    # Switch relative to absolute paths
-    arg.infile = os.path.abspath(arg.infile)
-    arg.outpath = os.path.abspath(arg.outpath)
-
-    # Figure out which program we are wrapping
-    if "-fs" in sys.argv:
-        wrapped_prog = "fastStructure"
-    elif "-mv" in sys.argv:
-        wrapped_prog = "maverick"
-    elif "-st" in sys.argv:
-        wrapped_prog = "structure"
-
     # Check the existance of several files:
     # Popfile
     if arg.popfile is not None:
-        sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
-                                         "exist.".format(arg.popfile))
+        sanity.file_checker(arg.popfile,
+                            "The specified popfile '{}' does not "
+                            "exist.".format(arg.popfile))
     # Indfile
     if arg.indfile is not None:
-        sanity.file_checker(arg.indfile, "The specified indfile '{}' does not "
-                                         "exist.".format(arg.indfile))
+        sanity.file_checker(arg.indfile,
+                            "The specified indfile '{}' does not "
+                            "exist.".format(arg.indfile))
 
-    # External program
-    sanity.file_checker(arg.external_prog, "Could not find your external "
-                                           "program in the specified path "
-                                           "'{}'.".format(arg.external_prog))
-    # Input file
-    sanity.file_checker(arg.infile, "The specified infile '{}' does not "
-                                    "exist.".format(arg.infile))
-    # Output dir
-    sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
-                                     "existing file. This argument requires a "
-                                     "directory.".format(arg.outpath), False)
+    # Perform usual structure_threader run
+    if arg.main_op == "run":
 
-    # Number of Ks
-    if isinstance(arg.Ks, int):
-        Ks = range(1, arg.Ks + 1)
-    else:
-        Ks = arg.Ks
+        # Switch relative to absolute paths
+        arg.infile = os.path.abspath(arg.infile)
+        arg.outpath = os.path.abspath(arg.outpath)
 
-    # Number of replicates
-    replicates = range(1, arg.replicates + 1)
+        # Figure out which program we are wrapping
+        if "-fs" in sys.argv:
+            wrapped_prog = "fastStructure"
+        elif "-mv" in sys.argv:
+            wrapped_prog = "maverick"
+        elif "-st" in sys.argv:
+            wrapped_prog = "structure"
 
-    threads = sanity.cpu_checker(arg.threads)
+        # External program
+        sanity.file_checker(arg.external_prog,
+                            "Could not find your external program in "
+                            "the specified path "
+                            "'{}'.".format(arg.external_prog))
+        # Input file
+        sanity.file_checker(arg.infile, "The specified infile '{}' does "
+                                        "not exist.".format(arg.infile))
+        # Output dir
+        sanity.file_checker(arg.outpath,
+                            "Output argument '{}' is pointing to an "
+                            "existing file. This argument requires a "
+                            "directory.".format(arg.outpath), False)
 
-    signal.signal(signal.SIGINT, gracious_exit)
+        # Number of Ks
+        if isinstance(arg.Ks, int):
+            Ks = range(1, arg.Ks + 1)
+        else:
+            Ks = arg.Ks
 
-    if arg.justplot is False:
+        # Number of replicates
+        replicates = range(1, arg.replicates + 1)
+
+        threads = sanity.cpu_checker(arg.threads)
+
+        signal.signal(signal.SIGINT, gracious_exit)
+
         structure_threader(Ks, replicates, threads, wrapped_prog, arg)
 
-    if wrapped_prog == "maverick":
-        bestk = maverick_merger(arg.outpath, Ks, arg.notests)
-        arg.notests = True
+        if wrapped_prog == "maverick":
+            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+            arg.notests = True
 
-    if arg.notests is False:
-        bestk = structure_harvester(arg.outpath, wrapped_prog)
+        if arg.notests is False:
+            bestk = structure_harvester(arg.outpath, wrapped_prog)
 
-    if arg.noplot is False:
-        if arg.bestk is not None:
-            bestk = arg.bestk
+        if arg.noplot is False:
+            create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
+
+    # Perform only plotting operation
+    if arg.main_op == "plot":
+
+        # Get all files matching the provided prefix
+        if arg.format == "fastStructure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".meanQ")]
+        elif arg.format == "structure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and "rep1_" in x]
         else:
-            bestk = None
-        create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".csv")]
+
+        if not infiles:
+            print("ERROR: There are no input files that match the"
+                  " provided prefix")
+            raise SystemExit
+
+        if not os.path.exists(arg.outpath):
+            os.makedirs(arg.outpath)
+
+        bestk = [int(x) for x in arg.bestk]
+
+        sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
+                indfile=arg.indfile, filter_k=bestk)
 
 
 if __name__ == "__main__":
