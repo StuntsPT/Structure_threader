@@ -528,7 +528,7 @@ def main():
 
         signal.signal(signal.SIGINT, gracious_exit)
 
-        structure_threader(Ks, replicates, threads, wrapped_prog)
+        structure_threader(Ks, replicates, threads, wrapped_prog, arg)
 
         if wrapped_prog == "maverick":
             bestk = maverick_merger(arg.outpath, Ks, arg.notests)
