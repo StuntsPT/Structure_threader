@@ -16,10 +16,11 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import numpy as np
 import logging
 
 from collections import Counter
+
+import numpy as np
 
 
 class AuxSanity(object):
@@ -43,8 +44,8 @@ class AuxSanity(object):
             if exp_array.shape[0] != kobj.qvals.shape[0]:
                 mismatch.append("{}: {} individuas (expected from "
                                 "popfile: {})".format(kobj.file_path,
-                                    kobj.qvals.shape[0],
-                                    exp_array.shape[0]))
+                                                      kobj.qvals.shape[0],
+                                                      exp_array.shape[0]))
 
         return mismatch
 
