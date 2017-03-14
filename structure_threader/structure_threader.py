@@ -538,7 +538,7 @@ def main():
             bestk = structure_harvester(arg.outpath, wrapped_prog)
 
         if arg.noplot is False:
-            create_plts(arg.outpath, wrapped_prog, Ks, bestk)
+            create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
 
     # Perform only plotting operation
     if arg.main_op == "plot":
