@@ -450,10 +450,8 @@ class PlotList(AuxSanity):
                 index = indarray[:, 2].astype(np.float64)
                 index_array = np.c_[index, qvals]
             # Sort indexed array
-            print(qvals)
             sorted_qvals = index_array[index_array[:, 0].argsort()]
             kobj.qvals = sorted_qvals[:, 1:]
-            print(sorted_qvals[:, 1:])
 
     def _parse_popfile(self, popfile):
         """
@@ -487,7 +485,7 @@ class PlotList(AuxSanity):
 
         """
 
-        self.check_popfile(popfile)
+        self.check_popfile(popfile, self.kvals)
 
         datatype = np.dtype([("popname", "|U20"), ("nind", int),
                              ("original_order", int)])
@@ -544,6 +542,8 @@ class PlotList(AuxSanity):
 
         :param indfile: (str) Path to indfile
         """
+
+        self.check_indfile(indfile, self.kvals)
 
         # Import infile as array. dtype is set to None to allow automatic
         # detection of dtype for each column (since the number of columns
