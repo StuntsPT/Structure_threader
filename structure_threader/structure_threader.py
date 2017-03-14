@@ -59,7 +59,7 @@ def runprogram(wrapped_prog, iterations, arg):
 
     if wrapped_prog == "structure":  # Run STRUCTURE
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "K" + str(K) + "_rep" +
+        output_file = os.path.join(arg.outpath, "str_K" + str(K) + "_rep" +
                                    str(rep_num))
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
@@ -71,7 +71,7 @@ def runprogram(wrapped_prog, iterations, arg):
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # This will break on non-POSIX OSes, but maverick requires a trailing /
-        output_dir = os.path.join(arg.outpath, "K" + str(K)) + "/"
+        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + "/"
         try:
             os.mkdir(output_dir)
         except FileExistsError:
@@ -217,11 +217,11 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
             file_to_plot = "1"
         else:
             file_to_plot = str(randrange(1, arg.replicates + 1))
-        plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
+        plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
     elif wrapped_prog == "maverick":
-        plt_files = [os.path.join(os.path.join(resultsdir, "K" + str(i)),
+        plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
                      for i in plt_list]
 
@@ -275,7 +275,7 @@ def maverick_merger(outdir, k_list, no_tests):
         header = True
         outfile = open(os.path.join(mrg_res_dir, filename), "w")
         for i in k_list:
-            data_dir = os.path.join(outdir, "K" + str(i))
+            data_dir = os.path.join(outdir, "mav_K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
