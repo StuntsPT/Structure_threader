@@ -43,7 +43,7 @@ def gracious_exit(*args):
     sys.exit(0)
 
 
-def runprogram(wrapped_prog, iterations):
+def runprogram(wrapped_prog, iterations, arg):
     """Run each wrapped program job. Return the worker status.
     This attribute will be populated with the worker exit code and output file
     and returned. The first element is the exit code itself (0 if normal exit
@@ -136,7 +136,7 @@ def runprogram(wrapped_prog, iterations):
     return worker_status
 
 
-def structure_threader(Ks, replicates, threads, wrapped_prog):
+def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
     """Do the threading book-keeping to spawn jobs at the asked rate."""
 
     if wrapped_prog != "structure":
@@ -148,7 +148,7 @@ def structure_threader(Ks, replicates, threads, wrapped_prog):
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
-    temp = partial(runprogram, wrapped_prog)
+    temp = partial(runprogram, wrapped_prog, arg=arg)
 
     # This will automatically create the Pool object, run the jobs and deadlock
     # the function while the children processed are being executed. This will
@@ -424,8 +424,6 @@ def argument_parser(args):
 def main():
     """Main function, where variables are set and other functions get called
     from."""
-    global arg
-    global CWD
 
     arg = argument_parser(sys.argv[1:])
 
@@ -481,7 +479,7 @@ def main():
     signal.signal(signal.SIGINT, gracious_exit)
 
     if arg.justplot is False:
-        structure_threader(Ks, replicates, threads, wrapped_prog)
+        structure_threader(Ks, replicates, threads, wrapped_prog, arg)
 
     if wrapped_prog == "maverick":
         bestk = maverick_merger(arg.outpath, Ks, arg.notests)
