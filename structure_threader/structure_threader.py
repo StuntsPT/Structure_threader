@@ -31,16 +31,16 @@ from functools import partial
 try:
     import plotter.structplot as sp
     import sanity_checks.sanity as sanity
-    import colorer.colorer
+    import colorer.colorer as colorer
 except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
-    import structure_threader.colorer.colorer
+    import structure_threader.colorer.colorer as colorer
 
 # Where are we?
 CWD = os.getcwd()
 
-# Set default log level
+# Set default log level and format
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
