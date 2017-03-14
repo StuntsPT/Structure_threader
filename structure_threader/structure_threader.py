@@ -22,6 +22,7 @@ import signal
 import subprocess
 import itertools
 import argparse
+import logging
 
 from multiprocessing import Pool
 from random import randrange
@@ -40,8 +41,8 @@ CWD = os.getcwd()
 
 def gracious_exit(*args):
     """Graciously exit the program."""
-    print("\rExiting graciously, murdering child processes and cleaning output"
-          " directory.", end="")
+    logging.critical("\rExiting graciously, murdering child processes and "
+                     "cleaning output directory.")
     os.chdir(CWD)
     sys.exit(0)
 
