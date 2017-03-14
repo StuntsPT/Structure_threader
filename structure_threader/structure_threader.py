@@ -269,7 +269,7 @@ def maverick_merger(outdir, k_list, no_tests):
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
-        return [bestk]
+        return [int(bestk)]
 
     for filename in files_list:
         header = True
