@@ -1,0 +1,103 @@
+------------------------------------------
+               MAVERICK
+by Robert Verity and Richard A. Nichols
+    Version 1.0.4 (30 November 2016)
+accessed Wed Mar  8 14:54:27 2017
+------------------------------------------
+
+Parameters file: //home/francisco/Programming/github/MavericK/parameters.txt
+
+Data file: //home/francisco/Programming/github/MavericK/Qsuber_sequenom.structure
+
+Parameters taking default values
+  fixLabels_on = true
+  mainThinning = 1
+  outputComparisonStatistics_on = false
+  outputEvanno_on = false
+  outputEvidenceNormalised_on = true
+  outputMaxLike_admixFreqs_on = false
+  outputMaxLike_alleleFreqs_on = false
+  outputPosteriorGrouping_on = false
+  outputQmatrixError_gene_on = false
+  outputQmatrix_structureFormat_on = false
+  suppressWarning1_on = false
+  thermodynamicThinning = 1
+
+Parameters read in from file
+  EMalgorithm_on = f
+  EMiterations = 100
+  EMrepeats = 100
+  admix_on = t
+  alpha = 1.0
+  alphaPropSD = 0.10
+  exhaustive_on = f
+  fixAlpha_on = f
+  headerRow_on = t
+  mainBurnin = 500
+  mainRepeats = 5
+  mainSamples = 4000
+  missingData = -9
+  outputEvidenceDetails_on = t
+  outputEvidence_on = t
+  outputLikelihood_on = t
+  outputLog_on = t
+  outputQmatrixError_ind_on = t
+  outputQmatrixError_pop_on = t
+  outputQmatrix_gene_on = t
+  outputQmatrix_ind_on = t
+  outputQmatrix_pop_on = t
+  ploidy = 2
+  ploidyCol_on = f
+  popCol_on = t
+  thermodynamicBurnin = 1000
+  thermodynamicRungs = 20
+  thermodynamicSamples = 5000
+  thermodynamic_on = t
+
+Parameters defined on command line
+  Kmax = 1
+  Kmin = 1
+
+Data properties
+  row 1 = header line
+  column 1 = individual labels
+  column 2 = population of origin
+  unique populations = 19
+  individuals = 375
+  loci = 1
+  alleles per locus = {597}
+  missing observations = 0 of 750
+
+-- K=1 ----------------
+
+Running exhaustive approach...
+  complete
+
+Running ordinary MCMC...
+  analysis 1 of 5
+  analysis 2 of 5
+  analysis 3 of 5
+  analysis 4 of 5
+  analysis 5 of 5
+  complete
+
+Carrying out thermodynamic integration...
+  complete
+
+Estimates of (log) model evidence...
+
+Harmonic mean (averaged over 5 runs)
+  estimate: -4950.068622
+  standard error: 0.000000
+
+Structure estimator (averaged over 5 runs)
+  estimate: -4895.170259
+  standard error: 0.591499
+
+Thermodynamic integral estimator
+  estimate: -4950.068622
+  standard error: 0.000000
+
+Program completed in approximately 14 seconds
+Output written to: //home/francisco/aaa/K1/
+------------------------------------------
