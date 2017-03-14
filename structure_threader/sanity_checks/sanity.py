@@ -22,6 +22,9 @@ from collections import Counter
 
 import numpy as np
 
+# Set default log level and format
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
 
 class AuxSanity(object):
 
