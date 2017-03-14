@@ -200,7 +200,7 @@ def structure_harvester(resultsdir, wrapped_prog):
     return bestk
 
 
-def create_plts(resultsdir, wrapped_prog, Ks, bestk):
+def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
     """Create plots from result dir.
     :param resultsdir: path to results directory"""
 
@@ -493,7 +493,7 @@ def main():
             bestk = arg.bestk
         else:
             bestk = None
-        create_plts(arg.outpath, wrapped_prog, Ks, bestk)
+        create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
 
 
 if __name__ == "__main__":
