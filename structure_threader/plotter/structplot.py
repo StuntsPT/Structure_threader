@@ -26,6 +26,7 @@ from os.path import basename, join, splitext
 from collections import Counter, defaultdict, OrderedDict
 import numpy as np
 import matplotlib
+import logging
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -104,7 +105,10 @@ class PlotK:
         parse_methods[self.fmt]()
 
         # Set K value
-        self.k = self.qvals.shape[1]
+        try:
+            self.k = self.qvals.shape[1]
+        except IndexError:
+            self.k = 1
 
     def _parse_usepopinfo(self, fhandle, end_string):
         """
@@ -268,7 +272,10 @@ class PlotK:
         # Thanks FastStructure, this was really easy.
         self.qvals = np.genfromtxt(self.file_path)
 
-        self.nind, self.k = self.qvals.shape
+        try:
+            self.nind, self.k = self.qvals.shape
+        except ValueError:
+            self.k = 1
 
     def _parse_maverick(self):
         """
@@ -853,7 +860,8 @@ class PlotList(AuxSanity):
         plt.savefig("{}.svg".format(filepath), bbox_inches="tight")
 
 
-def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
+def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
+         filter_k=None):
     """
     Wrapper function that generates one plot for each K value.
     :return:
@@ -861,10 +869,16 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None):
 
     klist = PlotList(result_files, fmt, popfile=popfile, indfile=indfile)
 
+    # Check if any of filter_k is not present in klist
+    missing = [str(x) for x in filter_k if x not in klist.kvals]
+    if missing:
+        logging.warning("The following K values are missing: {}".format(
+                " ".join(missing)))
+
     # Plot all K files individually
     for k, kobj in klist:
 
-        if k >= 1:
+        if k >= 1 and k in filter_k:
             klist.plotk([k], outdir)
             klist.plotk_static(k, outdir)
 

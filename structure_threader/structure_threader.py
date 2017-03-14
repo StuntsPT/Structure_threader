@@ -407,20 +407,32 @@ def argument_parser(args):
     # Group options
     sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
 
-    main_opts.add_argument("-i", dest="inpath", type=str, required=True,
-                           help="Directory containing the Structure/"
-                           "fastStructure/Maverick result files.")
+    main_opts.add_argument("-i", dest="prefix", type=str, required=True,
+                           help="The prefix of the output meanQ files."
+                                "The current directory will be scanned"
+                                " and all files that match the prefix.")
     main_opts.add_argument("-f", dest="format", type=str, required=True,
-                           choices=["structure", "faststructure",
+                           choices=["structure", "fastStructure",
                                     "maverick"],
                            help="The format of the result files.")
     main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
-                           help="Choose the K values to plot.")
+                           help="Choose the K values to plot. Each K"
+                                "value provided will be plotted "
+                                "individually and a comparative plot"
+                                " will all K's will be generated."
+                                "Example: -K 2 3 4.")
+    main_opts.add_argument("-o", dest="outpath", type=str, default=".",
+                           help="The directory where the plots will be"
+                                " generated. If it is not provided,"
+                                " the current working directory"
+                                " will be used.")
 
-    sort_opts_ex.add_argument("--pop", dest="popfile", type=str, required=False,
+    sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
+                              required=False,
                               help="File with population information.",
                               metavar="popfile", default=None)
-    sort_opts_ex.add_argument("--ind", dest="indfile", type=str, required=False,
+    sort_opts_ex.add_argument("--ind", dest="indfile", type=str,
+                              required=False,
                               help="File with individual information.",
                               metavar="indfile", default=None)
 
@@ -493,7 +505,6 @@ def main():
             wrapped_prog = "structure"
 
         # External program
-        print(arg.external_prog)
         sanity.file_checker(arg.external_prog,
                             "Could not find your external program in "
                             "the specified path "
@@ -534,8 +545,30 @@ def main():
 
     # Perform only plotting operation
     if arg.main_op == "plot":
-        pass
 
+        # Get all files matching the provided prefix
+        if arg.format == "fastStructure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".meanQ")]
+        elif arg.format == "structure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and "rep1_" in x]
+        else:
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".csv")]
+
+        if not infiles:
+            print("ERROR: There are no input files that match the"
+                  " provided prefix")
+            raise SystemExit
+
+        if not os.path.exists(arg.outpath):
+            os.makedirs(arg.outpath)
+
+        bestk = [int(x) for x in arg.bestk]
+
+        sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
+                indfile=arg.indfile, filter_k=bestk)
 
 if __name__ == "__main__":
     main()
