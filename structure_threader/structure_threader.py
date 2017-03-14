@@ -430,71 +430,101 @@ def main():
 
     arg = argument_parser(sys.argv[1:])
 
-    # Switch relative to absolute paths
-    arg.infile = os.path.abspath(arg.infile)
-    arg.outpath = os.path.abspath(arg.outpath)
-
-    # Figure out which program we are wrapping
-    if "-fs" in sys.argv:
-        wrapped_prog = "fastStructure"
-    elif "-mv" in sys.argv:
-        wrapped_prog = "maverick"
-    elif "-st" in sys.argv:
-        wrapped_prog = "structure"
-
     # Check the existance of several files:
     # Popfile
     if arg.popfile is not None:
-        sanity.file_checker(arg.popfile, "The specified popfile '{}' does not "
-                                         "exist.".format(arg.popfile))
+        sanity.file_checker(arg.popfile,
+                            "The specified popfile '{}' does not "
+                            "exist.".format(arg.popfile))
     # Indfile
     if arg.indfile is not None:
-        sanity.file_checker(arg.indfile, "The specified indfile '{}' does not "
-                                         "exist.".format(arg.indfile))
+        sanity.file_checker(arg.indfile,
+                            "The specified indfile '{}' does not "
+                            "exist.".format(arg.indfile))
 
-    # External program
-    print(arg.external_prog)
-    sanity.file_checker(arg.external_prog, "Could not find your external "
-                                           "program in the specified path "
-                                           "'{}'.".format(arg.external_prog))
-    # Input file
-    sanity.file_checker(arg.infile, "The specified infile '{}' does not "
-                                    "exist.".format(arg.infile))
-    # Output dir
-    sanity.file_checker(arg.outpath, "Output argument '{}' is pointing to an "
-                                     "existing file. This argument requires a "
-                                     "directory.".format(arg.outpath), False)
+    # Perform usual structure_threader run
+    if arg.main_op == "run":
 
-    # Number of Ks
-    if isinstance(arg.Ks, int):
-        Ks = range(1, arg.Ks + 1)
-    else:
-        Ks = arg.Ks
+        # Where are we?
+        CWD = os.getcwd()
 
-    # Number of replicates
-    replicates = range(1, arg.replicates + 1)
+        # Switch relative to absolute paths
+        arg.infile = os.path.abspath(arg.infile)
+        arg.outpath = os.path.abspath(arg.outpath)
 
-    threads = sanity.cpu_checker(arg.threads)
+        # Figure out which program we are wrapping
+        if "-fs" in sys.argv:
+            wrapped_prog = "fastStructure"
+        elif "-mv" in sys.argv:
+            wrapped_prog = "maverick"
+        elif "-st" in sys.argv:
+            wrapped_prog = "structure"
 
-    signal.signal(signal.SIGINT, gracious_exit)
+        # External program
+        sanity.file_checker(arg.external_prog,
+                            "Could not find your external program in "
+                            "the specified path "
+                            "'{}'.".format(arg.external_prog))
+        # Input file
+        sanity.file_checker(arg.infile, "The specified infile '{}' does "
+                                        "not exist.".format(arg.infile))
+        # Output dir
+        sanity.file_checker(arg.outpath,
+                            "Output argument '{}' is pointing to an "
+                            "existing file. This argument requires a "
+                            "directory.".format(arg.outpath), False)
 
-    if arg.justplot is False:
-        structure_threader(Ks, replicates, threads, wrapped_prog, arg)
-
-    if wrapped_prog == "maverick":
-        bestk = maverick_merger(arg.outpath, Ks, arg.notests)
-        arg.notests = True
-
-    if arg.notests is False:
-        bestk = structure_harvester(arg.outpath, wrapped_prog)
-
-    if arg.noplot is False:
-        if arg.bestk is not None:
-            bestk = arg.bestk
+        # Number of Ks
+        if isinstance(arg.Ks, int):
+            Ks = range(1, arg.Ks + 1)
         else:
-            bestk = None
-        create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
+            Ks = arg.Ks
 
+        # Number of replicates
+        replicates = range(1, arg.replicates + 1)
+
+        threads = sanity.cpu_checker(arg.threads)
+
+        signal.signal(signal.SIGINT, gracious_exit)
+
+        structure_threader(Ks, replicates, threads, wrapped_prog)
+
+        if wrapped_prog == "maverick":
+            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+            arg.notests = True
+
+        if arg.notests is False:
+            bestk = structure_harvester(arg.outpath, wrapped_prog)
+
+        if arg.noplot is False:
+            create_plts(arg.outpath, wrapped_prog, Ks, bestk)
+
+    # Perform only plotting operation
+    if arg.main_op == "plot":
+
+        # Get all files matching the provided prefix
+        if arg.format == "fastStructure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".meanQ")]
+        elif arg.format == "structure":
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and "rep1_" in x]
+        else:
+            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
+                       and x.endswith(".csv")]
+
+        if not infiles:
+            print("ERROR: There are no input files that match the"
+                  " provided prefix")
+            raise SystemExit
+
+        if not os.path.exists(arg.outpath):
+            os.makedirs(arg.outpath)
+
+        bestk = [int(x) for x in arg.bestk]
+
+        sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
+                indfile=arg.indfile, filter_k=bestk)
 
 if __name__ == "__main__":
     main()

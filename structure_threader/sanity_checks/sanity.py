@@ -16,6 +16,134 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import numpy as np
+import logging
+
+from collections import Counter
+
+
+class AuxSanity(object):
+
+    def log_error(self, msg, aux):
+
+        logging.error("Badly formatted {f1}file (provided with --{f1})"
+                      " with error:\n\n"
+                      "{f2}\n\n"
+                      "Please correct the provided {f1}file and re-run"
+                      " the plotting operation of structure_threader "
+                      "with the following command:\n\n"
+                      "<command missing>".format(f1=aux, f2=msg))
+        raise SystemExit
+
+    def ind_mismatch(self, exp_array, kvals):
+
+        mismatch = []
+
+        for k, kobj in kvals.items():
+            if exp_array.shape[0] != kobj.qvals.shape[0]:
+                mismatch.append("{}: {} individuas (expected from "
+                                "popfile: {})".format(kobj.file_path,
+                                    kobj.qvals.shape[0],
+                                    exp_array.shape[0]))
+
+        return mismatch
+
+    def check_popfile(self, filepath, kvals, **kwargs):
+
+        # Try to load array from popfile
+        try:
+            poparray = np.genfromtxt(filepath,
+                                     dtype=[("popname", "|U20"),
+                                            ("nind", int),
+                                            ("original_order", int)],
+                                     loose=False)
+        except ValueError as e:
+            self.log_error(e, "pop")
+
+        index = poparray["original_order"]
+
+        # Check if order in third column has only unique fields
+        dups = [str(x) for x, count in Counter(index).items() if count > 1]
+        if dups:
+            self.log_error("Order values in the third column of the "
+                           "popfile must be unique. The following"
+                           " indexes were repeated: {}".format(
+                               " ".join(dups)), "pop")
+
+        # Check if there is no gap in the range of the ordering
+        missing = [str(x) for x in range(max(index)) if
+                   x != 0 and x not in index]
+        if missing:
+            self.log_error("The order values in the third column of the"
+                           " popfile must be in consecutive order."
+                           " The following index(es) is(are) missing:"
+                           " {}".format(" ".join(missing)), "pop")
+
+        # Expand poprarray matrix with the frequency of each population
+        exp_array = None
+        for i in range(len(poparray)):
+            if exp_array is None:
+                exp_array = np.repeat(poparray[i:i + 1, np.newaxis],
+                                      poparray[i][1],
+                                      0)
+            else:
+                exp_array = np.vstack(
+                    [exp_array,
+                     np.repeat(poparray[i:i + 1, np.newaxis],
+                               poparray[i][1],
+                               0)])
+
+        # For each PlotK object, check if the poparray shape is compliant with
+        # the qvals matrices
+        mismatch = self.ind_mismatch(exp_array, kvals)
+
+        if mismatch:
+            self.log_error("The number of individuals specified in"
+                           " the popfile does not match the number of"
+                           " individuals in the meanQ files:\n{}".format(
+                               "\n".join(mismatch)), "pop")
+
+    def check_indfile(self, indfile, kvals):
+
+        try:
+            indarray = np.genfromtxt(indfile, dtype="|U20")
+        except ValueError as e:
+            self.log_error(e, "ind")
+
+        # The indfile may have between 1 to 3 columns. Depending on the number
+        # of columns provided, the checks can vary.
+
+        # Checks for single column
+        if len(indarray.shape) != 1:
+            single_array = indarray[:, 0]
+        else:
+            single_array = indarray
+        # Check if number of individuals matches each qval matrix
+        mismatch = self.ind_mismatch(single_array, kvals)
+        if mismatch:
+            self.log_error("The number of individuals specified in"
+                           " the popfile does not match the number of"
+                           " individuals in the meanQ files:\n{}".format(
+                               "\n".join(mismatch)), "ind")
+
+        if len(indarray.shape) != 1:
+            if indarray.shape[1] == 3:
+                # Check if third column is convertable into int
+                try:
+                    index = indarray[:, 2].astype(np.int64)
+                except ValueError as e:
+                    self.log_error("The elements of the third column in"
+                                   " the indfile must be integers:\n{}"
+                                   "".format(e), "ind")
+                # Check if there is no gap in the range of the ordering
+                missing = [str(x) for x in range(max(index)) if
+                           x != 0 and x not in index]
+                if missing:
+                    self.log_error(
+                        "The order values in the third column of the"
+                        " popfile must be in consecutive order."
+                        " The following index(es) is(are) missing:"
+                        " {}".format(" ".join(missing)), "ind")
 
 
 def cpu_checker(asked_threads):
