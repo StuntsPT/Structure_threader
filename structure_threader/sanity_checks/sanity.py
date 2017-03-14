@@ -40,7 +40,7 @@ class AuxSanity(object):
         except ValueError as e:
             self.log_error(e, "pop")
 
-        super().check_popfile(**kwargs)
+        #super().check_popfile(**kwargs)
 
 
 def cpu_checker(asked_threads):

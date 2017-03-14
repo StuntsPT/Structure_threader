@@ -413,6 +413,48 @@ class PlotList(AuxSanity):
         for k, kobj in self.kvals.items():
             yield k, kobj
 
+    def _sort_qvals_pop(self, poparray=None, indarray=None):
+        """
+        Sorts an ndarray with popfile/indfile information ALONG with the
+        qvalues array
+        :param poparray: (numpy.ndarray) As returned by genfromtxt
+        :param indarray: (numpy.array) As returned by genfromtxt
+        """
+
+        sorted_array = None
+
+        if poparray is not None:
+            # Create a ndarray of the same size as the qvalues array
+            for i in range(len(poparray)):
+                if sorted_array is None:
+                    sorted_array = np.repeat(poparray[i:i + 1, np.newaxis],
+                                             poparray[i][1],
+                                             0)
+                else:
+                    sorted_array = np.vstack(
+                        [sorted_array,
+                         np.repeat(poparray[i:i + 1, np.newaxis],
+                                   poparray[i][1],
+                                   0)])
+        # Sort the qvalues array acorrding to the "original_order" column
+        # of poparray
+        for _, kobj in self.kvals.items():
+            # Retrieve meanQ array
+            qvals = kobj.qvals
+
+            # Stack index to meanQ array
+            if poparray is not None:
+                index_array = np.c_[sorted_array["original_order"],
+                                    qvals]
+            elif indarray is not None:
+                index = indarray[:, 2].astype(np.float64)
+                index_array = np.c_[index, qvals]
+            # Sort indexed array
+            print(qvals)
+            sorted_qvals = index_array[index_array[:, 0].argsort()]
+            kobj.qvals = sorted_qvals[:, 1:]
+            print(sorted_qvals[:, 1:])
+
     def _parse_popfile(self, popfile):
         """
         Parses a population file and sets the pops attribute.
@@ -452,6 +494,8 @@ class PlotList(AuxSanity):
 
         poparray = np.genfromtxt(popfile, dtype=datatype)
 
+        # Sort meanQ arrays
+        self._sort_qvals_pop(poparray=poparray)
         # Sort array according to the order in the third column
         poparray.sort(order="original_order")
 
@@ -533,6 +577,7 @@ class PlotList(AuxSanity):
                 # Sort the individuals according to the order provided in the
                 # third column, if it is available
                 if indarray.shape[1] == 3:
+                    self._sort_qvals_pop(indarray=indarray)
                     indarray = indarray[indarray[:, 2].argsort()]
                     # Sort the population list according to the new order
                     npops = list(OrderedDict.fromkeys(indarray[:, 1]))
@@ -549,7 +594,7 @@ class PlotList(AuxSanity):
 
                 # Populate pops related attributes
                 for p, pop in enumerate(npops):
-                # Add population label to list
+                    # Add population label to list
                     self.pops.append(pop)
                     self.pops_xpos.append(pop_sums[p] - pop_counts[pop] / 2)
                     self.pops_xrange.append(
