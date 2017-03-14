@@ -445,9 +445,6 @@ def main():
     # Perform usual structure_threader run
     if arg.main_op == "run":
 
-        # Where are we?
-        CWD = os.getcwd()
-
         # Switch relative to absolute paths
         arg.infile = os.path.abspath(arg.infile)
         arg.outpath = os.path.abspath(arg.outpath)
