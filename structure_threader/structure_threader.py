@@ -266,7 +266,7 @@ def maverick_merger(outdir, k_list, no_tests):
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
-        return [bestk]
+        return [int(bestk)]
 
     for filename in files_list:
         header = True
@@ -342,7 +342,6 @@ def argument_parser(args):
 
     k_opts.add_argument("-K", dest="Ks", type=int,
                         help="Number of Ks to calculate.\n", metavar="int")
-
     k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
                         help="List of Ks to calculate.\n",
                         metavar="'2 4 6'")
@@ -355,12 +354,10 @@ def argument_parser(args):
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
-
     io_opts.add_argument("-o", dest="outpath", type=str, required=True,
                          help="Directory where the results will be "
                          "stored in.\n",
                          metavar="output_directory")
-
     io_opts.add_argument("--params", dest="params", type=str, required=False,
                          help="File with run parameters.",
                          metavar="parameters_file.txt", default=None)
@@ -368,7 +365,6 @@ def argument_parser(args):
     id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
                          help="File with population information.",
                          metavar="popfile", default=None)
-
     id_opts.add_argument("--ind", dest="indfile", type=str, required=False,
                          help="File with population information.",
                          metavar="indfile", default=None)
@@ -377,28 +373,15 @@ def argument_parser(args):
                            help="Number of threads to use "
                                 "(default:%(default)s).\n",
                            metavar="int", default=4)
-
     misc_opts.add_argument("--log", dest="log", type=bool, required=False,
                            help="Choose this option if you want to "
                            "enable logging.",
                            metavar="bool", default=False)
-
-    plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
-                           required=False, help="Disable plot drawing.",
-                           metavar="bool", default=False)
-
-    plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
-                           required=False, nargs="+",
-                           help="Override 'K' values from the given list"
-                           " to be ploteted in the combined figure.",
-                           metavar="'2 4 5'", default=None)
-
     misc_opts.add_argument("--no_tests", dest="notests", type=bool,
                            required=False,
                            help="Disable best K tests. Implies "
                            "--no_plots",
                            metavar="bool", default=False)
-
     misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
                            required=False,
                            help="Add extra arguments to pass to the "
@@ -406,25 +389,42 @@ def argument_parser(args):
                            "prior=logistic seed=123",
                            metavar="string", default="")
 
+    plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
+                           required=False, help="Disable plot drawing.",
+                           metavar="bool", default=False)
+    plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
+                           required=False, nargs="+",
+                           help="Override 'K' values from the given list"
+                           " to be ploteted in the combined figure.",
+                           metavar="'2 4 5'", default=None)
+
     # ####################### PLOT ARGUMENTS ##################################
+    # Group definitions
 
-    plot_parser.add_argument("-i", dest="inpath", type=str, required=True,
-                             help="Directory containing the Structure/"
-                             "fastStructure/Maverick result files.")
-    plot_parser.add_argument("-f", dest="format", type=str, required=True,
-                             choices=["structure", "faststructure",
-                                      "maverick"],
-                             help="The format of the result files.")
-    plot_parser.add_argument("-K", dest="bestk", nargs="+", required=True,
-                             help="Choose the K values to plot.")
-    plot_parser.add_argument("--pop", dest="popfile", type=str, required=False,
-                             help="File with population information.",
-                             metavar="popfile", default=None)
+    main_opts = plot_parser.add_argument_group("Main plotting options")
+    sort_opts = plot_parser.add_argument_group("Plot sorting options")
 
-    plot_parser.add_argument("--ind", dest="indfile", type=str, required=False,
-                             help="File with population information.",
-                             metavar="indfile", default=None)
+    # Group options
+    sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
 
+    main_opts.add_argument("-i", dest="inpath", type=str, required=True,
+                           help="Directory containing the Structure/"
+                           "fastStructure/Maverick result files.")
+    main_opts.add_argument("-f", dest="format", type=str, required=True,
+                           choices=["structure", "faststructure",
+                                    "maverick"],
+                           help="The format of the result files.")
+    main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
+                           help="Choose the K values to plot.")
+
+    sort_opts_ex.add_argument("--pop", dest="popfile", type=str, required=False,
+                              help="File with population information.",
+                              metavar="popfile", default=None)
+    sort_opts_ex.add_argument("--ind", dest="indfile", type=str, required=False,
+                              help="File with individual information.",
+                              metavar="indfile", default=None)
+
+    # ##################### Sanity checks ################################
     arguments = parser.parse_args(args)
 
     if arguments.main_op == "run":
@@ -446,6 +446,10 @@ def argument_parser(args):
             arguments.params = os.path.abspath(arguments.params)
         if "-mv" in sys.argv and arguments.params is None:
             parser.error("-mv requires --params.")
+    else:
+        if arguments.format == "faststructure" and arguments.popfile is None\
+                and arguments.indfile is None:
+            parser.error("fastStructure plots require either --pop or --ind.")
 
     return arguments
 
