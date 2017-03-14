@@ -1,7 +1,14 @@
 # Usage
 This section describes how to use *Structure_threader*.
 
-These are the arguments the program currently takes:
+*Structure_threader* can be executed via two main modes.
+
+- `run`: The main execution mode that performs the parallel execution of the external structuring program, calculates the best K values and generates the plot files
+- `plot`: This execution mode will only generate new plot files from the output files of the structuring program.
+
+### `run` mode
+
+Using the `run` mode, the program currently takes the following arguments:
 
 * I/O arguments:
     * Input file (-i)
@@ -20,9 +27,7 @@ These are the arguments the program currently takes:
 * Replicates (ignored for *fastStructure* and *MavericK*; -R)
 * Number of threads to use (-t)
 * Q-matrix plotting options:
-  * Disable plot drawing (--no_plots)       
-  * Just draw the plots, do not run any wrapped programs. Requires a previously finished run (--just_plots)
-  * Override 'K' values from the given list to be plotted in the combined figure (--override_bestk '2 4 5')
+  * Disable plot drawing (--no_plots)
 * Other options                
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
@@ -32,7 +37,7 @@ These are the arguments the program currently takes:
 Example run:
 
 ```
-structure_threader.py -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
+structure_threader.py run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
 ```
 
 Where -K is the number of "Ks" to run, -R is the number of replicate runs for
@@ -42,6 +47,28 @@ each value of "K", -i is the input file for *STRUCTURE*, -o is the directory whe
 The program should be run in the same directory where the files "mainparams" and
 "extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this.
 
+### `plot` mode
+
+Using the `plot` mode, the program currently takes the following arguments:
+
+* Main plotting options:
+    * Prefix of the structuring software output files (-i)
+    * External program or format of the output files. This can be 'structure', 'fastStructure' or 'maverick'. (-f)
+    * The K values that you want to plot. Each individual K value that is provided will be plotted individually and in the end, a comparative plot will all K values will also be generated. (-K; Example: -K 2 3 4)
+
+    * Directory where the plots will be generated. By default they will be generated in the current working directory (-o)
+
+* Individual/Population identification options:
+    * Path to popfile (--pop) [See below for more information]
+    * Path to indfile (--ind) [See below for more information]
+
+Example run:
+
+```
+structure_threader.py plot -i fS_run -f fastStructure -K 2 3 4 -o 2_4_plots --ind indfile.txt
+```
+
+Here, *Structure_threader* will search the current directory for all FastStructure output files that start with the "fS_run" string, as specified by the "-i" option. The "-f" option specified the fastStructure format of the output files. The "-K" option specified which K values should be plotted (Note: If any of the provided K values do not exist, they are ignored). Using the "-o" option the plots will be generated into the "2_4_plots" directory. Finally, we also provide an "indfile" using the "--ind" option.
 
 ## Using a "popfile"
 *Structure_threader* can build your structure plots with labels and in a specified order. For that you have to provide a "popfile" (--pop option). This file consists of the following 3 columns: "Population name", "Number of individuals in the population", "Order of the population in the plot file".
