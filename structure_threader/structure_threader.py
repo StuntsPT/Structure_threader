@@ -22,6 +22,7 @@ import signal
 import subprocess
 import itertools
 import argparse
+import logging
 
 from multiprocessing import Pool
 from random import randrange
@@ -30,24 +31,32 @@ from functools import partial
 try:
     import plotter.structplot as sp
     import sanity_checks.sanity as sanity
+    import colorer.colorer as colorer
 except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
+    import structure_threader.colorer.colorer as colorer
 
 # Where are we?
 CWD = os.getcwd()
 
+# Set default log level and format
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
 
 def gracious_exit(*args):
-    """Graciously exit the program."""
-    print("\rExiting graciously, murdering child processes and cleaning output"
-          " directory.", end="")
+    """
+    Graciously exit the program.
+    """
+    logging.critical("\rExiting graciously, murdering child processes and "
+                     "cleaning output directory.")
     os.chdir(CWD)
     sys.exit(0)
 
 
 def runprogram(wrapped_prog, iterations, arg):
-    """Run each wrapped program job. Return the worker status.
+    """
+    Run each wrapped program job. Return the worker status.
     This attribute will be populated with the worker exit code and output file
     and returned. The first element is the exit code itself (0 if normal exit
     and -1 in case of errors). The second element contains the output file
@@ -108,7 +117,7 @@ def runprogram(wrapped_prog, iterations, arg):
         if arg.external_prog.endswith(".py") is False:
             cli = cli[1:]
 
-    print("Running: " + " ".join(cli))
+    logging.info("Running: " + " ".join(cli))
     program = subprocess.Popen(cli,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
@@ -130,8 +139,8 @@ def runprogram(wrapped_prog, iterations, arg):
 
         logfile = open(os.path.join(arg.outpath, "K" + str(K) + "_rep" +
                                     str(rep_num) + ".stlog"), "w")
-        print("Writing logfile for K" + str(K) + ", replicate " +
-              str(rep_num) + ". Please wait...")
+        logging.info("Writing logfile for K" + str(K) + ", replicate " +
+                     str(rep_num) + ". Please wait...")
         logfile.write(out)
         logfile.write(err)
         logfile.close()
@@ -140,7 +149,9 @@ def runprogram(wrapped_prog, iterations, arg):
 
 
 def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
-    """Do the threading book-keeping to spawn jobs at the asked rate."""
+    """
+    Do the threading book-keeping to spawn jobs at the asked rate.
+    """
 
     if wrapped_prog != "structure":
         replicates = [1]
@@ -164,21 +175,24 @@ def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
     # populated with the cli commands that generated the errors
     error_list = [x[1] for x in pool if x[0] == -1]
 
-    print("\n==============================\n")
+    logging.info("\n==============================\n")
     if error_list:
-        print("%s %s runs exited with errors. Check the log files of "
-              "the following output files:" % (len(error_list), wrapped_prog))
+        logging.critical("%s %s runs exited with errors. Check the log files of"
+                         " the following output files:",
+                         len(error_list), wrapped_prog)
         for out in error_list:
-            print(out)
+            logging.error(out)
     else:
-        print("All %s jobs finished successfully." % len(pool))
+        logging.info("All %s jobs finished successfully.", len(pool))
 
     os.chdir(CWD)
 
 
 def structure_harvester(resultsdir, wrapped_prog):
-    """Run structureHarvester or fastChooseK to perform the Evanno test or the
-    likelihood testing on the results."""
+    """
+    Run structureHarvester or fastChooseK to perform the Evanno test or the
+    likelihood testing on the results.
+    """
     outdir = os.path.join(resultsdir, "bestK")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
@@ -201,8 +215,10 @@ def structure_harvester(resultsdir, wrapped_prog):
 
 
 def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
-    """Create plots from result dir.
-    :param resultsdir: path to results directory"""
+    """
+    Create plots from result dir.
+    :param resultsdir: path to results directory
+    """
 
     plt_list = [x for x in Ks if x != 1]  # Don't plot K=1
 
@@ -468,9 +484,12 @@ def argument_parser(args):
 
     return arguments
 
+
 def main():
-    """Main function, where variables are set and other functions get called
-    from."""
+    """
+    Main function, where variables are set and other functions get called
+    from.
+    """
 
     arg = argument_parser(sys.argv[1:])
 
@@ -566,6 +585,7 @@ def main():
 
         sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
                 indfile=arg.indfile, filter_k=bestk)
+
 
 if __name__ == "__main__":
     main()
