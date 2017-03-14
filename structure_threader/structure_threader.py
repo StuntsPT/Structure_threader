@@ -214,11 +214,11 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk):
             file_to_plot = "1"
         else:
             file_to_plot = str(randrange(1, arg.replicates + 1))
-        plt_files = [os.path.join(resultsdir, "K") + str(i) + "_rep" +
+        plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in plt_list]
     elif wrapped_prog == "maverick":
-        plt_files = [os.path.join(os.path.join(resultsdir, "K" + str(i)),
+        plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
                      for i in plt_list]
 
