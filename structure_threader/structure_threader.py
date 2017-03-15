@@ -79,8 +79,8 @@ def runprogram(wrapped_prog, iterations, arg):
             cli += ["-m", mainparams, "-e", extraparams]
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        # This will break on non-POSIX OSes, but maverick requires a trailing /
-        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + "/"
+        # MavericK requires a trailing "/" (or "\" if on windows)
+        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + os.path.sep
         try:
             os.mkdir(output_dir)
         except FileExistsError:
