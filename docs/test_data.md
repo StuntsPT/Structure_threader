@@ -35,8 +35,8 @@ The *STRUCTURE* parameter files that were used in the benchmarking process.
 The joblist used to benchmark *ParallelStructure*. Consists of 16 jobs, 4 values of "K" with 4 replicates each.
 
 
-## SmallTestData.structure.tar.xz
-This file is a Structure formatted input file which was used to benchmark Structure. This is a medium sized SNP file (80 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
+## SmallTestData.structure
+This file is a Structure formatted input file which was used to benchmark STRUCTURE and *MavericK*. This is a medium sized SNP file (80 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
 
 
 The used commands were:
@@ -47,3 +47,6 @@ The used commands were:
 
 ## parameter.txt
     The *MavericK* parameter file that is used in the unit tests.
+
+## mav_benchmark_parameters
+    The file with the *MAvericK* benchmark parameters.
