@@ -780,7 +780,7 @@ class PlotList(AuxSanity):
         else:
             filename = "ComparativePlot_{}".format("-".join(
                 [str(x) for x in kvals]))
-        filepath = join(output_dir, filename)
+        filepath = join(output_dir, filename) + ".html"
 
         pdiv = plot(fig, include_plotlyjs=False, output_type='div')
         # Remove plotly div
@@ -891,17 +891,3 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
     if bestk:
         bestk = [x for x in bestk if x >= 1]
         klist.plotk(bestk, outdir)
-
-
-if __name__ == "__main__":
-    kdir = "/home/diogo/Diogo/Science/PhD/Tasks/Hemileia_RADs/" \
-           "2_RADs_full/Assembly/ipyrad/Ingroup/Var1/Analyses/" \
-           "Structure/RandSNP/R2/"
-    files = ["HvFullSample_ingroup_v1_MM50_mafRandSNP.5.meanQ",
-             "HvFullSample_ingroup_v1_MM50_mafRandSNP.4.meanQ",
-             "HvFullSample_ingroup_v1_MM50_mafRandSNP.3.meanQ",
-             "HvFullSample_ingroup_v1_MM50_mafRandSNP.2.meanQ"]
-    indfile = join(kdir, "indfile2.txt")
-    kfiles = [join(kdir, f) for f in files]
-
-    main(kfiles, "faststructure", "./", indfile=indfile)
