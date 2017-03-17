@@ -73,16 +73,7 @@ def runprogram(wrapped_prog, iterations, arg):
         cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
                output_file]
         if arg.params is not None:
-            mainparams = arg.params
-            extraparams = os.path.join(os.path.dirname(arg.params),
-                                       "extraparams")
-            if os.path.isfile(extraparams) is False:
-                logging.warning("No 'extraparams' file was found. This is not "
-                                "critical, but it is highly recommended that "
-                                "you use one.")
-                cli += ["-m", mainparams]
-            else:
-                cli += ["-m", mainparams, "-e", extraparams]
+            cli += arg.params
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # MavericK requires a trailing "/" (or "\" if on windows)
@@ -163,6 +154,17 @@ def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
         replicates = [1]
     else:
         os.chdir(os.path.dirname(arg.infile))
+        if arg.params is not None:
+            mainparams = arg.params
+            extraparams = os.path.join(os.path.dirname(arg.params),
+                                       "extraparams")
+            if os.path.isfile(extraparams) is False:
+                logging.warning("No 'extraparams' file was found. An empty one "
+                                "was created, but it is highly recommended "
+                                "that you fill one out.")
+                touch = open(extraparams, 'w')
+                touch.close()
+            arg.params = ["-m", mainparams, "-e", extraparams]
 
     jobs = list(itertools.product(Ks, replicates))[::-1]
 
