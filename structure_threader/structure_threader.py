@@ -76,7 +76,13 @@ def runprogram(wrapped_prog, iterations, arg):
             mainparams = arg.params
             extraparams = os.path.join(os.path.dirname(arg.params),
                                        "extraparams")
-            cli += ["-m", mainparams, "-e", extraparams]
+            if os.path.isfile(extraparams) is False:
+                logging.warning("No 'extraparams' file was found. This is not "
+                                "critical, but it is highly recommended that "
+                                "you use one.")
+                cli += ["-m", mainparams]
+            else:
+                cli += ["-m", mainparams, "-e", extraparams]
 
     elif wrapped_prog == "maverick":  # Run MavericK
         # MavericK requires a trailing "/" (or "\" if on windows)
