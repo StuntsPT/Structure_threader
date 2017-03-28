@@ -6,15 +6,19 @@ A program to parallelize the runs of [Structure](http://pritchardlab.stanford.ed
 [![DOI](https://zenodo.org/badge/31598374.svg)](https://zenodo.org/badge/latestdoi/31598374)
 
 
-
-
 ## Installation from Pypi
+
+```bash
+pip3 install structure_threader
+```
+
 *Structure_threader* is available on
 [Pypi](https://pypi.python.org/pypi/structure_threader/). It can be
-installed by simply running `pip install structure_threader`. Don't forget the
+installed by simply running the above command. Don't forget the
 `--user` option if you can't or don't want to install the program as `root`
-user. Using this method, binaries for STRUCTURE and fastStructure are also
-distributed. For more details on this, please check the manual.
+user. Using this method, binaries for STRUCTURE, fastStructure and *MavericK*
+are also distributed. For more details on this, please [check the
+manual](http://structure-threader.readthedocs.io/en/latest/install/).
 
 
 ## Documentation
