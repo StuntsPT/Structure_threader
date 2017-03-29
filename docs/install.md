@@ -1,15 +1,24 @@
 # Installation
+In order to install and use *Structure_threader* you need [Python 3](https://www.python.org/). If you don't already have it installed, that is the first thing you should do.
+Python for windows comes bundled with `pip`, which is the preferred way to install *Structure_threader*. On other platforms, you can either use the OS's builtin package manager to install it (on Ubuntu and other Debian based Linux distributions you can get it by installing the package `python3-pip`) or by following the instructions on the
+[pip website](https://pip.pypa.io/en/stable/installing
+
 
 ## Preferred method
-
 Since v0.1.8 *Structure_threader* is available in
 [Pypi](https://pypi.python.org/pypi/structure_threader/), which means that
-currently, installing *Structure_threader* is as simple as running
-`pip3 install structure_threader`. Don't forget the `--user` option if you can't
-or don't want to install the program as `root` user.
+currently, installing *Structure_threader* is as simple as following these steps (This guide assumes `python 3` and `pip` are already installed in your system):
+
+1. Open a terminal (or `powershell` on Windows)
+2. Type `sudo pip3 install structure_threader` in the terminal is you are on any OS that is not Windows.
+2. If you are on Windows, type `pip install structure_threader`.
+3. You're done.
+
+If you are not on a Windows OS and can't or don't want to install the package with `root` permission, type instead: `pip3 install structure_threader --user`.
+Also, on non Windows platforms, the binaries for *Structure_threader*, STRUCTURE, fastStructure and *MavericK* are placed under `~/.local/bin/` if you install without `root` permissions and under `/usr/local/bin/` if you install as `root`.
+
 
 ## Alternative methods
-
 You can also run *Structure_threader* by simply cloning the repository (or
 downloading one of the releases), and placing the contents of the directory
 "structure_threader", on any location on your `$PATH` env var.
@@ -35,14 +44,12 @@ the next few sections.
 
 
 ## Structure_threader helper scripts
-
 The directory "helper_scripts" contains two scripts that will install STRUCTURE and fastStructre, respectively in a *semi* automatic way.
 
 Both scripts default the programs' install locations to ~/Software/<program_name>. You can change this in the scripts themselves should you wish to change this location.
 
 
 ### install_structure.sh
-
 This script will download and install STRUCTURE.
 
 
@@ -80,7 +87,6 @@ sudo apt-get install cython python-numpy python-scipy gsl-bin
 ```
 
 ###Important note:
-
 If you are relying on the GNU Scientific Library that was installed using the
 `install_faststructure` script, you will need to make your system aware of
 where these libraries are.
@@ -95,7 +101,6 @@ Where `$install_dir` is the directory defined in `install_faststructure.sh`.
 
 
 ### install_maverick.sh
-
 This script will download and install MavericK.
 
 
