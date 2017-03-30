@@ -563,6 +563,8 @@ def main():
 
         if arg.notests is False:
             bestk = structure_harvester(arg.outpath, wrapped_prog)
+        else:
+            bestk = Ks
 
         if arg.noplot is False:
             create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
