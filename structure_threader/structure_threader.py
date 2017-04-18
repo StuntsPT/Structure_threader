@@ -99,7 +99,7 @@ def runprogram(wrapped_prog, iterations, arg):
             if arg.infile.endswith(".str") is False:  # Do we need a symlink?
                 infile = arg.infile
                 try:
-                    os.symlink(arg.infile, arg.infile+".str")
+                    os.symlink(os.path.basename(arg.infile), arg.infile+".str")
                 except OSError as err:
                     if err.errno != 17:
                         raise
