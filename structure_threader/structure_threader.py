@@ -499,6 +499,9 @@ def main():
     from.
     """
 
+    # Make sure we provide an help message instead of an error
+    if len(sys.argv) == 1:
+        sys.argv += ["-h"]
     arg = argument_parser(sys.argv[1:])
 
     # Check the existance of several files:
