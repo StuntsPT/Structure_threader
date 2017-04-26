@@ -28,6 +28,8 @@ Using the `run` mode, the program currently takes the following arguments:
 * Number of threads to use (-t)
 * Q-matrix plotting options:
   * Disable plot drawing (--no_plots)
+  * Force plotting the given values together (--override_bestk)
+  * Draw the plots only in grayscale (-bw)
 * Other options                
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
@@ -61,6 +63,8 @@ Using the `plot` mode, the program currently takes the following arguments:
 * Individual/Population identification options:
     * Path to popfile (--pop) [See below for more information]
     * Path to indfile (--ind) [See below for more information]
+* Extra plotting options:
+    * Do not use colors when drawing the plots (-bw)
 
 Example run:
 
@@ -81,7 +85,7 @@ Location_3  11  3
 ```
 
 This example file contains 3 populations, with 20, 21 and 11 individuals.
- This means that the first 20 individuals are from "Location_1", the next 21 individuals are from "Location_2" and so on. 
+ This means that the first 20 individuals are from "Location_1", the next 21 individuals are from "Location_2" and so on.
  The numbers "1", "2" and "3" will be the order of the populations in the plot file.
 If you want to draw the plot in a different order than what was provided on the input file, you have to reorder the lines. For the sake of the example, let's say that you wish to plot your data, switching the place of Locations 3 and 2. The input file would look like this:
 
