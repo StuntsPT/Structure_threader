@@ -7,4 +7,4 @@
 * Allow the program to show individual label names even when population information is provided (with '--show-ind-labels' option)
 
 ### Bug fixes:
-* Fixed Qvalue sorting when proving an ind file with two columns
+* Fixed Qvalue sorting when providing an --ind file with two columns
