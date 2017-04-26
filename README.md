@@ -28,7 +28,7 @@ The complete documentation can be found on [readthedocs.org](http://structure-th
 
 ## Citation
 If you use *Structure_threader*, please cite our
-[DOI](http://dx.doi.org/10.5281/zenodo.57262).
+[![DOI](https://zenodo.org/badge/31598374.svg)](https://zenodo.org/badge/latestdoi/31598374).
 
 
 ## License
