@@ -455,11 +455,16 @@ class PlotList(AuxSanity):
                 index_array = np.c_[sorted_array["original_order"],
                                     qvals]
             elif indarray is not None:
-                index = indarray[:, 2].astype(np.float64)
-                index_array = np.c_[index, qvals]
+                if indarray.shape[1] == 3:
+                    index = indarray[:, 2].astype(np.float64)
+                    index_array = np.c_[index, qvals]
+                else:
+                    index = indarray[:, 1]
+                    index_array = np.c_[index, qvals]
+
             # Sort indexed array
             sorted_qvals = index_array[index_array[:, 0].argsort()]
-            kobj.qvals = sorted_qvals[:, 1:]
+            kobj.qvals = sorted_qvals[:, 1:].astype(np.float64)
 
     def _parse_popfile(self, popfile):
         """
@@ -593,6 +598,7 @@ class PlotList(AuxSanity):
                 else:
                     # Sort the individuals alphabetically per population if no
                     # order column was provided
+                    self._sort_qvals_pop(indarray=indarray)
                     indarray = indarray[indarray[:, 1].argsort()]
 
                 # Set self.pops attribute
