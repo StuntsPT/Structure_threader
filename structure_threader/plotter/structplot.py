@@ -601,6 +601,9 @@ class PlotList(AuxSanity):
                     self._sort_qvals_pop(indarray=indarray)
                     indarray = indarray[indarray[:, 1].argsort()]
 
+                self.indv = indarray[:, 0]
+                self.number_indv = len(self.indv)
+
                 # Set self.pops attribute
                 pop_counts = Counter(indarray[:, 1])
                 pop_sums = np.cumsum([np.count_nonzero(indarray == x)
@@ -797,13 +800,15 @@ class PlotList(AuxSanity):
         with open(filepath, "w") as fh:
             fh.write(ploty_html(pdiv))
 
-    def plotk_static(self, kval, output_dir, bw=False):
+    def plotk_static(self, kval, output_dir, bw=False, use_ind=False):
         """
         Generates a structure plot in svg format.
         :param kval: (int) Must match the K value from self.kvals
         :param output_dir: (string) Path of the plot file
-        :param bw: If True, plots will be generated with patterns instead of
+        :param bw: (bool) If True, plots will be generated with patterns instead of
         colors to distinguish k groups.
+        :param show_ind: (bool) If True, and if individual labels were provided
+        with the --ind option, use those labels instead of population labels
         """
 
         qvalues = self.kvals[kval].qvals
@@ -854,8 +859,7 @@ class PlotList(AuxSanity):
                 former_q = former_q + qvalues[:, i]
 
         # Annotate population info
-        if self.pops:
-
+        if self.pops and not use_ind:
             pop_lines = list(OrderedDict.fromkeys(
                 [x for y in self.pops_xrange for x in y]))[1:-1]
 
@@ -872,7 +876,7 @@ class PlotList(AuxSanity):
 
             for pos in range(self.number_indv):
                 axe.text(pos, -0.05, self.indv[pos],
-                         rotation=45, va="top", ha="right", fontsize=10)
+                         rotation=45, va="top", ha="right", fontsize=8)
 
         for axis in ["top", "bottom", "left", "right"]:
             axe.spines[axis].set_linewidth(2)
@@ -897,7 +901,7 @@ class PlotList(AuxSanity):
 
 
 def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
-         filter_k=None, bw=False):
+         filter_k=None, bw=False, use_ind=False):
     """
     Wrapper function that generates one plot for each K value.
     :return:
@@ -919,7 +923,7 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
 
         if k >= 1 and k in filter_k:
             klist.plotk([k], outdir)
-            klist.plotk_static(k, outdir, bw=bw)
+            klist.plotk_static(k, outdir, bw=bw, use_ind=use_ind)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot

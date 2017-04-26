@@ -254,7 +254,7 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
                      for i in plt_list]
 
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
-            indfile=arg.indfile, bw=arg.blacknwhite)
+            indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)
 
 
 def maverick_merger(outdir, k_list, no_tests):
@@ -428,6 +428,11 @@ def argument_parser(args):
                             action="store_const", const=True,
                             help="Set this flag to draw greyscale plots"
                                  " instead of colored ones.")
+    plot_opts.add_argument("--use-ind-labels", dest="use_ind",
+                           action="store_const", const=True,
+                           help="Use the individual labels in the "
+                                "structure plot instead of population"
+                                " labels")
 
     # ####################### PLOT ARGUMENTS ##################################
     # Group definitions
@@ -463,6 +468,11 @@ def argument_parser(args):
                             action="store_const", const=True,
                             help="Set this flag to draw greyscale plots"
                                  " instead of colored ones.")
+    extra_opts.add_argument("--use-ind-labels", dest="use_ind",
+                            action="store_const", const=True,
+                            help="Use the individual labels in the "
+                                 "structure plot instead of population"
+                                 " labels")
 
     sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
                               required=False,
@@ -607,7 +617,8 @@ def main():
         bestk = [int(x) for x in arg.bestk]
 
         sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
-                indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite)
+                indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite,
+                use_ind=arg.use_ind)
 
 
 if __name__ == "__main__":
