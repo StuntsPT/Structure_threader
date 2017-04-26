@@ -254,7 +254,7 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
                      for i in plt_list]
 
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
-            indfile=arg.indfile)
+            indfile=arg.indfile, bw=arg.blacknwhite)
 
 
 def maverick_merger(outdir, k_list, no_tests):
@@ -424,11 +424,16 @@ def argument_parser(args):
                            help="Override 'K' values from the given list"
                            " to be ploteted in the combined figure.",
                            metavar="'2 4 5'", default=None)
+    plot_opts.add_argument("-bw", dest="blacknwhite",
+                            action="store_const", const=True,
+                            help="Set this flag to draw greyscale plots"
+                                 " instead of colored ones.")
 
     # ####################### PLOT ARGUMENTS ##################################
     # Group definitions
 
     main_opts = plot_parser.add_argument_group("Main plotting options")
+    extra_opts = plot_parser.add_argument_group("Extra plotting options")
     sort_opts = plot_parser.add_argument_group("Plot sorting options")
 
     # Group options
@@ -453,6 +458,11 @@ def argument_parser(args):
                                 " generated. If it is not provided,"
                                 " the current working directory"
                                 " will be used.")
+
+    extra_opts.add_argument("-bw", dest="blacknwhite",
+                            action="store_const", const=True,
+                            help="Set this flag to draw greyscale plots"
+                                 " instead of colored ones.")
 
     sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
                               required=False,
@@ -597,7 +607,7 @@ def main():
         bestk = [int(x) for x in arg.bestk]
 
         sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
-                indfile=arg.indfile, filter_k=bestk)
+                indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite)
 
 
 if __name__ == "__main__":

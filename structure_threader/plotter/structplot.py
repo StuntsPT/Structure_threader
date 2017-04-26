@@ -797,9 +797,13 @@ class PlotList(AuxSanity):
         with open(filepath, "w") as fh:
             fh.write(ploty_html(pdiv))
 
-    def plotk_static(self, kval, output_dir):
+    def plotk_static(self, kval, output_dir, bw=False):
         """
-
+        Generates a structure plot in svg format.
+        :param kval: (int) Must match the K value from self.kvals
+        :param output_dir: (string) Path of the plot file
+        :param bw: If True, plots will be generated with patterns instead of
+        colors to distinguish k groups.
         """
 
         qvalues = self.kvals[kval].qvals
@@ -817,19 +821,36 @@ class PlotList(AuxSanity):
         axe = fig.add_subplot(111, xlim=(-.5, numinds - .5), ylim=(0, 1))
 
         for i in range(qvalues.shape[1]):
-            # Get bar color. If K exceeds the 12 colors, generate random color
-            try:
-                clr = clist[i]
-            except IndexError:
-                clr = np.random.rand(3, 1)
+
+            # Determine color/pattern arguments
+            kwargs = {}
+
+            # Use colors todistinguish k groups
+            if not bw:
+                # Get bar color. If K exceeds the 12 colors, generate random
+                # color
+                try:
+                    clr = clist[i]
+                except IndexError:
+                    clr = np.random.rand(3, 1)
+
+                kwargs["facecolor"] = clr
+                kwargs["edgecolor"] = "grey"
+
+            else:
+                grey_rgb = [(float((i + 1)) / (float(qvalues.shape[1]) + 1))
+                            for _ in range(3)]
+
+                kwargs["facecolor"] = grey_rgb
+                kwargs["edgecolor"] = "white"
 
             if i == 0:
-                axe.bar(range(numinds), qvalues[:, i], facecolor=clr,
-                        edgecolor="grey", width=1)
+                axe.bar(range(numinds), qvalues[:, i],
+                        width=1, label="K {}".format(i + 1), **kwargs)
                 former_q = qvalues[:, i]
             else:
                 axe.bar(range(numinds), qvalues[:, i], bottom=former_q,
-                        facecolor=clr, edgecolor="grey", width=1)
+                        width=1, label="K {}".format(i + 1), **kwargs)
                 former_q = former_q + qvalues[:, i]
 
         # Annotate population info
@@ -860,15 +881,23 @@ class PlotList(AuxSanity):
         plt.yticks([])
         plt.xticks([])
 
+        # Add k legend
+        legend = plt.legend(bbox_to_anchor=(1.2, .5), loc=7, borderaxespad=0.)
+        legend.get_frame().set_facecolor("white")
+
         kfile = self.kvals[kval].file_path
         filename = splitext(basename(kfile))[0]
         filepath = join(output_dir, filename)
 
         plt.savefig("{}.svg".format(filepath), bbox_inches="tight")
 
+        # Clear plot object
+        plt.clf()
+        plt.close()
+
 
 def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
-         filter_k=None):
+         filter_k=None, bw=False):
     """
     Wrapper function that generates one plot for each K value.
     :return:
@@ -890,7 +919,7 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
 
         if k >= 1 and k in filter_k:
             klist.plotk([k], outdir)
-            klist.plotk_static(k, outdir)
+            klist.plotk_static(k, outdir, bw=bw)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot
