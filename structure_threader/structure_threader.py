@@ -425,9 +425,9 @@ def argument_parser(args):
                            " to be ploteted in the combined figure.",
                            metavar="'2 4 5'", default=None)
     plot_opts.add_argument("-bw", dest="blacknwhite",
-                            action="store_const", const=True,
-                            help="Set this flag to draw greyscale plots"
-                                 " instead of colored ones.")
+                           action="store_const", const=True,
+                           help="Set this flag to draw greyscale plots"
+                           " instead of colored ones.")
     plot_opts.add_argument("--use-ind-labels", dest="use_ind",
                            action="store_const", const=True,
                            help="Use the individual labels in the "
@@ -448,8 +448,8 @@ def argument_parser(args):
                            help="The prefix of the output meanQ files."
                                 "The current directory will be scanned"
                                 " and all files that match the prefix.")
-    main_opts.add_argument("-f", dest="format", type=str, required=True,
-                           choices=["structure", "fastStructure",
+    main_opts.add_argument("-f", dest="program", type=str, required=True,
+                           choices=["structure", "faststructure",
                                     "maverick"],
                            help="The format of the result files.")
     main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
@@ -506,7 +506,7 @@ def argument_parser(args):
         if "-mv" in sys.argv and arguments.params is None:
             parser.error("-mv requires --params.")
     else:
-        if arguments.format == "faststructure" and arguments.popfile is None\
+        if arguments.program == "faststructure" and arguments.popfile is None\
                 and arguments.indfile is None:
             parser.error("fastStructure plots require either --pop or --ind.")
 
@@ -596,10 +596,10 @@ def main():
     if arg.main_op == "plot":
 
         # Get all files matching the provided prefix
-        if arg.format == "fastStructure":
+        if arg.program == "faststructure":
             infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
                        and x.endswith(".meanQ")]
-        elif arg.format == "structure":
+        elif arg.program == "structure":
             infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
                        and "rep1_" in x]
         else:
@@ -616,7 +616,7 @@ def main():
 
         bestk = [int(x) for x in arg.bestk]
 
-        sp.main(infiles, arg.format, arg.outpath, bestk, popfile=arg.popfile,
+        sp.main(infiles, arg.program, arg.outpath, bestk, popfile=arg.popfile,
                 indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite,
                 use_ind=arg.use_ind)
 
