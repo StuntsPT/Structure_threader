@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-import plotly.plotly as py
 from plotly.offline import plot
 import plotly.graph_objs as go
 from plotly import tools
@@ -643,7 +642,16 @@ class PlotList(AuxSanity):
         """
 
         # Get number of plots (confirm the kvals are valid before)
-        nplots = len([x for x in kvals if int(x) in self.kvals])
+        nplots = len([x for x in kvals if int(x) in self.kvals if x >= 1])
+
+        # If no valid plots, issue an error
+        if not nplots:
+            logging.error("There are no valid K values to plot. \n\n"
+                          "Valid kvals: {}\n"
+                          "Provided kvals: {}\n"
+                          "Exiting.".format(self.kvals.keys(),
+                                            kvals))
+            raise SystemExit(1)
 
         # Set the figure object with the subplots and their titles already
         # specified
@@ -859,7 +867,7 @@ class PlotList(AuxSanity):
                 former_q = former_q + qvalues[:, i]
 
         # Annotate population info
-        if self.pops and not use_ind:
+        if self.pops:
             pop_lines = list(OrderedDict.fromkeys(
                 [x for y in self.pops_xrange for x in y]))[1:-1]
 
@@ -868,12 +876,13 @@ class PlotList(AuxSanity):
                 # Add population delimiting lines
                 plt.axvline(x=pl - 0.5, linewidth=1.5, color="black")
 
-            for p, pos in enumerate(self.pops_xpos):
-                axe.text(pos, -0.05, self.pops[p],
-                         rotation=45, va="top", ha="right", fontsize=16,
-                         weight="bold")
-        else:
+            if not use_ind:
+                for p, pos in enumerate(self.pops_xpos):
+                    axe.text(pos, -0.05, self.pops[p],
+                             rotation=45, va="top", ha="right", fontsize=16,
+                             weight="bold")
 
+        if use_ind or not self.pops:
             for pos in range(self.number_indv):
                 axe.text(pos, -0.05, self.indv[pos],
                          rotation=45, va="top", ha="right", fontsize=8)
