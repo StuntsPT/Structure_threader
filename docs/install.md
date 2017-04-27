@@ -1,7 +1,7 @@
 # Installation
 In order to install and use *Structure_threader* you need [Python 3](https://www.python.org/). If you don't already have it installed, that is the first thing you should do.
 Python for windows comes bundled with `pip`, which is the preferred way to install *Structure_threader*. On other platforms, you can either use the OS's builtin package manager to install it (on Ubuntu and other Debian based Linux distributions you can get it by installing the package `python3-pip`) or by following the instructions on the
-[pip website](https://pip.pypa.io/en/stable/installing
+[pip website](https://pip.pypa.io/en/stable/installing)
 
 
 ## Preferred method
@@ -86,7 +86,7 @@ command:
 sudo apt-get install cython python-numpy python-scipy gsl-bin
 ```
 
-###Important note:
+### Important note:
 If you are relying on the GNU Scientific Library that was installed using the
 `install_faststructure` script, you will need to make your system aware of
 where these libraries are.
@@ -101,7 +101,7 @@ Where `$install_dir` is the directory defined in `install_faststructure.sh`.
 
 
 ### install_maverick.sh
-This script will download and install MavericK.
+This script will download, compile and install MavericK.
 
 
 #### Requirements:
