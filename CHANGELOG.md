@@ -4,7 +4,8 @@
 
 ### Bug fixes:
 * Fixed issue when best K is 1
-* Fixed missing population separators on static .svg plots when using --use-ind-labels
+* Fixed missing population separators on static `.svg` plots when using --use-ind-labels
+* Changed a variable name to avoid conflicts, despite being in a different namespace.
 
 ## Changes since v0.4.3:
 
