@@ -97,7 +97,7 @@ class PlotK:
         self.indv = []
 
         parse_methods = {"structure": self._parse_structure,
-                         "fastStructure": self._parse_faststructure,
+                         "faststructure": self._parse_faststructure,
                          "maverick": self._parse_maverick}
 
         # Let the parsing begin

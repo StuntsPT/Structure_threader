@@ -5,6 +5,7 @@
 ### Bug fixes:
 * Fixed issue when best K is 1
 * Fixed missing population separators on static .svg plots when using --use-ind-labels
+* Fixed key error when providing faststructure format in plot mode
 
 ## Changes since v0.4.3:
 
