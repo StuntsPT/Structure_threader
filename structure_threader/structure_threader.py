@@ -205,7 +205,7 @@ def structure_harvester(resultsdir, wrapped_prog):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
-    if wrapped_prog == "fastStructure":
+    if wrapped_prog == "faststructure":
         try:
             import evanno.fastChooseK as sh
         except ImportError:
@@ -543,7 +543,7 @@ def main():
 
         # Figure out which program we are wrapping
         if "-fs" in sys.argv:
-            wrapped_prog = "fastStructure"
+            wrapped_prog = "faststructure"
         elif "-mv" in sys.argv:
             wrapped_prog = "maverick"
         elif "-st" in sys.argv:
