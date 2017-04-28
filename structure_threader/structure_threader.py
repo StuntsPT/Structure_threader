@@ -228,8 +228,6 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
     :param resultsdir: path to results directory
     """
 
-    plt_list = [x for x in Ks if x != 1]  # Don't plot K=1
-
     outdir = os.path.join(resultsdir, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
@@ -243,15 +241,15 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
             file_to_plot = str(randrange(1, arg.replicates + 1))
         plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
-                     for i in plt_list]
+                     for i in Ks]
     elif wrapped_prog == "maverick":
         plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
-                     for i in plt_list]
+                     for i in Ks]
 
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
-                     for i in plt_list]
+                     for i in Ks]
 
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)

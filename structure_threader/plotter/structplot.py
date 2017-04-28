@@ -642,7 +642,7 @@ class PlotList(AuxSanity):
         """
 
         # Get number of plots (confirm the kvals are valid before)
-        nplots = len([x for x in kvals if int(x) in self.kvals if x >= 1])
+        nplots = len([x for x in kvals if int(x) in self.kvals])
 
         # If no valid plots, issue an error
         if not nplots:
@@ -681,8 +681,15 @@ class PlotList(AuxSanity):
             # Fetch PlotK object that will be plotted
             kobj = self.kvals[k]
 
+            # Transforms the qvals matrix when K = 1. If K > 2, use the
+            # original matrix
+            if len(kobj.qvals.shape) == 1:
+                qvals = [kobj.qvals.T]
+            else:
+                qvals = kobj.qvals.T
+
             # Iterate over each meanQ column (corresponding to each cluster)
-            for p, i in enumerate(kobj.qvals.T):
+            for p, i in enumerate(qvals):
 
                 # Create Bar trace for each cluster
                 current_bar = go.Bar(
@@ -819,8 +826,6 @@ class PlotList(AuxSanity):
         with the --ind option, use those labels instead of population labels
         """
 
-        qvalues = self.kvals[kval].qvals
-
         plt.style.use("ggplot")
 
         numinds = self.number_indv
@@ -833,7 +838,16 @@ class PlotList(AuxSanity):
         fig = plt.figure()
         axe = fig.add_subplot(111, xlim=(-.5, numinds - .5), ylim=(0, 1))
 
-        for i in range(qvalues.shape[1]):
+        # Transforms the qvals matrix when K = 1. If K > 2, use the
+        # original matrix
+        if len(self.kvals[kval].qvals.shape) == 1:
+            # This list comprehension ensures that the shape of the array
+            # is (i, 1), where i is the number of samples
+            qvalues = np.array([[x] for x in self.kvals[kval].qvals])
+        else:
+            qvalues = self.kvals[kval].qvals
+
+        for i in range(kval):
 
             # Determine color/pattern arguments
             kwargs = {}
@@ -894,10 +908,6 @@ class PlotList(AuxSanity):
         plt.yticks([])
         plt.xticks([])
 
-        # Add k legend
-        legend = plt.legend(bbox_to_anchor=(1.2, .5), loc=7, borderaxespad=0.)
-        legend.get_frame().set_facecolor("white")
-
         kfile = self.kvals[kval].file_path
         filename = splitext(basename(kfile))[0]
         filepath = join(output_dir, filename)
@@ -930,12 +940,11 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
     # Plot all K files individually
     for k, kobj in klist:
 
-        if k >= 1 and k in filter_k:
+        if k in filter_k:
             klist.plotk([k], outdir)
             klist.plotk_static(k, outdir, bw=bw, use_ind=use_ind)
 
     # If a sequence of multiple bestk is provided, plot all files in a single
     # plot
     if bestk:
-        bestk = [x for x in bestk if x >= 1]
         klist.plotk(bestk, outdir)
