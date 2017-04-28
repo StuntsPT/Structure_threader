@@ -1,5 +1,11 @@
 # *Structure_threader* changelog
 
+## Changes since v1.0.0:
+
+### Bug fixes:
+* Fixed issue when best K is 1
+* Fixed missing population separators on static .svg plots when using --use-ind-labels
+
 ## Changes since v0.4.3:
 
 ### New features:

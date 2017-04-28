@@ -65,6 +65,7 @@ Using the `plot` mode, the program currently takes the following arguments:
     * Path to indfile (--ind) [See below for more information]
 * Extra plotting options:
     * Do not use colors when drawing the plots (-bw)
+    * Use individual sample labels even when population labels are available (--use-ind-labels)
 
 Example run:
 
