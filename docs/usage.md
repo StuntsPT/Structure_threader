@@ -39,7 +39,7 @@ Using the `run` mode, the program currently takes the following arguments:
 Example run:
 
 ```
-structure_threader.py run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
+structure_threader run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
 ```
 
 Where -K is the number of "Ks" to run, -R is the number of replicate runs for
@@ -70,7 +70,7 @@ Using the `plot` mode, the program currently takes the following arguments:
 Example run:
 
 ```
-structure_threader.py plot -i fS_run -f fastStructure -K 2 3 4 -o 2_4_plots --ind indfile.txt
+structure_threader plot -i fS_run -f fastStructure -K 2 3 4 -o 2_4_plots --ind indfile.txt
 ```
 
 Here, *Structure_threader* will search the current directory for all FastStructure output files that start with the "fS_run" string, as specified by the "-i" option. The "-f" option specified the fastStructure format of the output files. The "-K" option specified which K values should be plotted (Note: If any of the provided K values do not exist, they are ignored). Using the "-o" option the plots will be generated into the "2_4_plots" directory. Finally, we also provide an "indfile" using the "--ind" option.
