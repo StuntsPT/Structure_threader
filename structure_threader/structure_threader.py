@@ -311,6 +311,49 @@ def maverick_merger(outdir, k_list, no_tests):
         return bestk
 
 
+def plots_only(arg):
+    """
+    Handles arrugments and wraps things up for drawing the plots without Running
+    any wrapped programs.
+    """
+    # Get all files matching the provided prefix
+    prefix_dir, prefix_name = os.path.split(arg.prefix)
+
+    # TODO: Implement sanity checks on the inputs.
+    if prefix_dir == "":
+        prefix_dir = "."
+
+    if arg.program == "faststructure":
+        infiles = [os.path.join(prefix_dir, x)
+                   for x in os.listdir(prefix_dir) if
+                   x.startswith(prefix_name) and
+                   x.endswith(".meanQ")]
+    elif arg.program == "structure":
+        infiles = [os.path.join(prefix_dir, x)
+                   for x in os.listdir(prefix_dir) if
+                   x.startswith(prefix_name) and
+                   "rep1_" in x]
+    else:
+        infiles = [os.path.join(prefix_dir, x)
+                   for x in os.listdir(prefix_dir) if
+                   x.startswith(prefix_name) and
+                   x.endswith(".csv")]
+
+    if not infiles:
+        logging.error("No input files that match the provided prefix. "
+                      "Aborting.")
+        raise SystemExit
+
+    if not os.path.exists(arg.outpath):
+        os.makedirs(arg.outpath)
+
+    bestk = [int(x) for x in arg.bestk]
+
+    sp.main(infiles, arg.program, arg.outpath, bestk, popfile=arg.popfile,
+            indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite,
+            use_ind=arg.use_ind)
+
+
 def argument_parser(args):
     """
     Parses the list of arguments as implemented in argparse.
@@ -593,30 +636,7 @@ def main():
     # Perform only plotting operation
     if arg.main_op == "plot":
 
-        # Get all files matching the provided prefix
-        if arg.program == "faststructure":
-            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
-                       and x.endswith(".meanQ")]
-        elif arg.program == "structure":
-            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
-                       and "rep1_" in x]
-        else:
-            infiles = [x for x in os.listdir(".") if x.startswith(arg.prefix)
-                       and x.endswith(".csv")]
-
-        if not infiles:
-            print("ERROR: There are no input files that match the"
-                  " provided prefix")
-            raise SystemExit
-
-        if not os.path.exists(arg.outpath):
-            os.makedirs(arg.outpath)
-
-        bestk = [int(x) for x in arg.bestk]
-
-        sp.main(infiles, arg.program, arg.outpath, bestk, popfile=arg.popfile,
-                indfile=arg.indfile, filter_k=bestk, bw=arg.blacknwhite,
-                use_ind=arg.use_ind)
+        plots_only(arg)
 
 
 if __name__ == "__main__":
