@@ -487,8 +487,9 @@ def argument_parser(args):
 
     main_opts.add_argument("-i", dest="prefix", type=str, required=True,
                            help="The prefix of the output meanQ files."
-                                "The current directory will be scanned"
-                                " and all files that match the prefix.")
+                                "You can provide a full path or just the "
+                                "prefix. Passing just the prefix will assume "
+                                "the current working diretory.")
     main_opts.add_argument("-f", dest="program", type=str, required=True,
                            choices=["structure", "faststructure",
                                     "maverick"],
