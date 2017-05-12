@@ -1,1 +1,0 @@
-../../TestData/parameters.txt

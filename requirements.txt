@@ -1,6 +1,0 @@
-# Unversioned
-numpy
-pytest
-
-# Version required
-matplotlib >= 1.5
