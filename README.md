@@ -1,5 +1,5 @@
 # Structure_threader
-A program to parallelize the runs of [Structure](http://pritchardlab.stanford.edu/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/) and
+A program to parallelize the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/) and
 [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) software.
 
 [![Build Status](https://travis-ci.org/StuntsPT/Structure_threader.svg?branch=master)](https://travis-ci.org/StuntsPT/Structure_threader) [![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](http://structure-threader.readthedocs.io/en/latest/?badge=latest)
