@@ -136,7 +136,7 @@ The individuals of "PopB" will appear first, and then the individuals of "PopA".
 ## fastStrucutre Warning:
 Keep in mind that *fastStructure* can take input in two distinct file formats:
 [Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
-[structure](http://pritchardlab.stanford.edu/software/structure-data_v.2.3.1.html).
+[structure](http://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
 In order to use the PLINK format, three files are required:
 
 * `file.bed`

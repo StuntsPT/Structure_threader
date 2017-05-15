@@ -21,7 +21,7 @@ They should be forward compatible with later OSX releases.
 ## STRUCTURE
 
 STRUCTURE is relatively simple to build. Source code can be obtained from the
- [STRUCTURE website](http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz). To build the binary, we used our helper
+ [STRUCTURE website](http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz). To build the binary, we used our helper
  script "install_structure.sh". The binary version is 2.3.4.
 
 

@@ -2,7 +2,7 @@
 
 ## Description
 
-A program to parallelize and automate the runs of [Structure](http://pritchardlab.stanford.edu/structure.html) and [fastStructure](https://rajanil.github.io/fastStructure/) software.
+A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html) and [fastStructure](https://rajanil.github.io/fastStructure/) software.
 
 
 ## Requirements

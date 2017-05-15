@@ -19,7 +19,7 @@
     <Status>Verified</Status>
     <ExternalDependencies>build-essential</ExternalDependencies>
     <EnvironmentSize>1.0</EnvironmentSize>
-    <ProjectURL>http://pritchardlab.stanford.edu/structure.html</ProjectURL>
+    <ProjectURL>http://web.stanford.edu/group/pritchardlab/structure.html</ProjectURL>
     <Maintainer>Francisco Pina-Martins</Maintainer>
   </TestProfile>
 </PhoronixTestSuite>

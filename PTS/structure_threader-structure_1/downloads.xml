@@ -9,7 +9,7 @@
       <FileName>v0.1-rc3.tar.gz</FileName>
   </Package>
   <Package>
-    <URL>http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz</URL>
+    <URL>http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz</URL>
     <MD5>4e0591678cdbfe79347d272b5dceeda1</MD5>
     <FileSize>66375</FileSize>
   </Package>

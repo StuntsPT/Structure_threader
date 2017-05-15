@@ -26,7 +26,7 @@ tempdir=/tmp/$USER
 mkdir -p $tempdir
 
 # Download structure sources into temp dir
-wget http://pritchardlab.stanford.edu/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz -O ${tempdir}/structure_kernel_source.tar.gz
+wget http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz -O ${tempdir}/structure_kernel_source.tar.gz
 
 # Extract tarball, enter src dir, build binary and place it in the install dir
 cd ${tempdir}
