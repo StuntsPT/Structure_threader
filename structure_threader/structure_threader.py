@@ -339,8 +339,8 @@ def plots_only(arg):
                    x.endswith(".csv")]
 
     for filename in infiles:
-        sanity.file_checker(filename, "There was a problem with the deducted "
-                                      " file '{}'. Please check "
+        sanity.file_checker(filename, "There was a problem with the deduced "
+                                      "filename '{}'. Please check "
                                       "it.".format(filename))
 
     if not infiles:
