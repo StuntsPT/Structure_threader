@@ -18,13 +18,17 @@
 import os
 import logging
 
+try:
+    import colorer.colorer as colorer
+except ImportError:
+    import structure_threader.colorer.colorer as colorer
+
 from collections import Counter
 
 import numpy as np
 
 # Set default log level and format
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
-
 
 class AuxSanity(object):
 
@@ -156,10 +160,11 @@ def cpu_checker(asked_threads):
     Returns the "ideal" number of threads to use."""
     try:
         if int(asked_threads) > os.cpu_count():
-            print("WARNING: Number of specified threads is higher than the "
-                  "available ones. Adjusting number of threads to {}, "
-                  "which is the total number of CPUs (physical and logical) on "
-                  "this machine.".format(os.cpu_count()))
+            logging.warning("Number of specified threads is higher than the "
+                            "available ones. Adjusting number of threads to "
+                            "{}, which is the total number of CPUs (physical "
+                            "and logical) on this "
+                            "machine.".format(os.cpu_count()))
             threads = os.cpu_count()
         else:
             threads = asked_threads
@@ -181,22 +186,22 @@ def file_checker(path, msg=None, is_file=True):
                 os.makedirs(path)
             except FileExistsError:
                 if not msg:
-                    print("ERROR: '{}' should be the path to a directory, not "
-                          "to a file.'".format(path))
+                    logging.error("'{}' should be the path to a directory, not "
+                                  "to a file.'".format(path))
                 else:
-                    print("ERROR: {}".format(msg))
+                    logging.error("{}".format(msg))
                 raise SystemExit(1)
     else:
         if os.path.isdir(path):
             if not msg:
-                print("ERROR: '{}' should be the path to a file, not to a "
-                      "directory.'".format(path))
+                logging.error("'{}' should be the path to a file, not to a "
+                              "directory.'".format(path))
             else:
-                print("ERROR: {}".format(msg))
+                logging.error("{}".format(msg))
             raise SystemExit(1)
         elif not os.path.exists(path):
             if not msg:
-                print("ERROR: Path '{}' does not exist".format(path))
+                logging.error("Path '{}' does not exist".format(path))
             else:
-                print("ERROR: {}".format(msg))
+                logging.error("{}".format(msg))
             raise SystemExit(1)
