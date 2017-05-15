@@ -319,7 +319,6 @@ def plots_only(arg):
     # Get all files matching the provided prefix
     prefix_dir, prefix_name = os.path.split(arg.prefix)
 
-    # TODO: Implement sanity checks on the inputs.
     if prefix_dir == "":
         prefix_dir = "."
 
@@ -338,6 +337,11 @@ def plots_only(arg):
                    for x in os.listdir(prefix_dir) if
                    x.startswith(prefix_name) and
                    x.endswith(".csv")]
+
+    for filename in infiles:
+        sanity.file_checker(filename, "There was a problem with the deducted "
+                                      " file '{}'. Please check "
+                                      "it.".format(filename))
 
     if not infiles:
         logging.error("No input files that match the provided prefix. "
