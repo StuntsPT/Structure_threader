@@ -1,5 +1,18 @@
 # *Structure_threader* changelog
 
+## Changes since v1.0.1:
+
+### Bug fixes:
+* Fixed a broken link in the docs (Thanks to @briantrice for finding it).
+* Fixed a bug with the file prefixes for drawing plots that required the user to be in the directory where the meanQ files were located.
+* Corrected a bug with the way "fastStructure" was spelled
+* Corrected a bug with population delimiters.
+
+### New features:
+* Sanity checks errors and warnings are now also colored.
+
+---
+
 ## Changes since v1.0.0:
 
 ### Bug fixes:
@@ -8,6 +21,8 @@
 * Changed a variable name to avoid conflicts, despite being in a different namespace.
 * Fixed missing population separators on static .svg plots when using --use-ind-labels
 * Fixed key error when providing faststructure format in plot mode
+
+---
 
 ## Changes since v0.4.3:
 
