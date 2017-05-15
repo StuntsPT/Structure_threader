@@ -71,8 +71,8 @@ setup(
                       "colorlover",
                       "numpy",
                       "matplotlib"],
-    description=("A program to parallelize runs of 'Structure' and "
-                 "'fastStructure'."),
+    description=("A program to parallelize runs of 'Structure', "
+                 "'fastStructure' and 'MavericK'."),
     url=URL,
     download_url="{0}/archive/v{1}.tar.gz".format(URL, VERSION),
     author="Francisco Pina-Martins",
