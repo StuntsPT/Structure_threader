@@ -15,7 +15,7 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 ## Where to get it
 
 * Source code - [Structure_threader on github](https://github.com/StuntsPT/Structure_threader)
-* Binary distribution - [Sturcture_threader on Pypi](https://pypi.python.org/pypi/structure_threader/)
+* Source distribution with platform binaries for wrapped programs - [Sturcture_threader on Pypi](https://pypi.python.org/pypi/structure_threader/)
     * You can install this version easily by issuing the command `pip3 install structure_threader`
 
 
