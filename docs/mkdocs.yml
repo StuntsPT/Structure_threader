@@ -3,6 +3,7 @@ site_name: 'Structure_threader manual'
 pages:
     - 'Introduction': 'index.md'
     - 'Installation & dependencies': 'install.md'
+    - 'External programs' : 'external.md'
     - 'Usage': 'usage.md'
     - 'Output': 'output.md'
     - 'Test Data': 'test_data.md'

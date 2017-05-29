@@ -1,27 +1,34 @@
 # Installation
-In order to install and use *Structure_threader* you need [Python 3](https://www.python.org/). If you don't already have it installed, that is the first thing you should do.
-Python for windows comes bundled with `pip`, which is the preferred way to install *Structure_threader*. On other platforms, you can either use the OS's builtin package manager to install it (on Ubuntu and other Debian based Linux distributions you can get it by installing the package `python3-pip`) or by following the instructions on the
-[pip website](https://pip.pypa.io/en/stable/installing)
+Due to the way different Operating Systems handle dependencies specific instructions for the preferred installation method are provided for each of the most used OS's "GNU/Linux", "MacOS" and "Windows".
+
+## Preferred method, by platform
+
+### GNU/Linux
+
+1. Install python 3. Although python 3 is already installed by default in most modern Linux distributions, sometimes it may not be available (you can type `python3 --version` from a terminal to see if python 3 is installed). In "Debian based" distributions (such as Ubuntu) you can do so by opening a terminal an running the command `sudo apt-get install python3`. In other Linux distributions you can similarly use your package manger to install python 3. If you do not have administration privileges in your environment, please ask your sysadmin to install python 3 for you. This is the only step that has a hard requirement on administrative privileges.
+2. Install `pip`. `pip` is a [package manager for python](https://en.wikipedia.org/wiki/Pip_(package_manager)). If `pip` is not already installed in  your system, you can follow the official instructions on how to get it [here](https://pip.pypa.io/en/stable/installing/). **Make sure you run get-pip.py using python 3 in order to be able to use *structure_threader*:** `python3 get-pip.py`
+3. Install *Structure_threader*. Now that you have python 3 and `pip` installed, installing *Structure_threader* is just one command away: `pip3 install structure_threader --user`. The `--user` option installs the software to a local directory, ensuring you do not need administration privileges to perform the installation.
+4. Using *Structure_threader*. Running the command from step 3 will install the program to `~/.local/bin`. You can either run it by calling it directly `~/.local/bin/structure_threader` or by adding the location `~/.local/bin` to your shell `$PATH` ([here is a good guide on how to do it](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path))and just calling `structure_threader`. Also note that on GNU/Linux installing *Structure_threader* will also automatically install binaries for *STRUCTURE*, *fastStructure* and *MavericK*, which will also be placed under `~/.local/bin`.
+
+### MacOS
+
+1. Install python 3. MacOS comes with python 2.7 installed by default, but in order do run *Structure_threader* you will need python 3.4 or above. You can [follow this comprehensive guide to do it](http://python-guide-pt-br.readthedocs.io/en/latest/starting/install3/osx/).
+2. Install `pip`. `pip` is a [package manager for python](https://en.wikipedia.org/wiki/Pip_(package_manager)). You can use the guide from step 1 to install it on your system.
+3. Install *Structure_threader*. Now that you have python 3 and `pip` installed, installing *Structure_threader* is just one command away: `pip3 install structure_threader --user`. The `--user` option installs the software to a local directory, ensuring you do not need administration privileges to perform the installation.
+4. Using *Structure_threader*. Running the command from step 3 will install the program to `~/.local/bin`. You can either run it by calling it directly `~/.local/bin/structure_threader` or by adding the location `~/.local/bin` to your shell `$PATH` ([here is a good guide on how to do it](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path))and just calling `structure_threader`. Also note that on MacOS installing *Structure_threader* will also automatically install binaries for *STRUCTURE*, *fastStructure* and *MavericK*, which will also be placed under `~/.local/bin`.
+
+### Windows
+
+1. Install python 3. No version of Windows comes with python installed by default, but you can install it from [here](https://www.python.org/downloads/). If you need help installing python 3 for windows, here is [the official guide](https://docs.python.org/3/using/windows.html).
+2. Install `pip`.  `pip` is a [package manager for python](https://en.wikipedia.org/wiki/Pip_(package_manager)). Using the instructions from the guide from step 1 will install `pip` for you.
+3. Install *Structure_threader*. Now that you have python 3 and `pip` installed, installing *Structure_threader* is just one command away: `C:\Python3.6\python.exe -m pip install structure_threader`. Don't forget to change the path "python3.6" to whatever version of python 3 you have installed.
+4. Using *Structure_threader*. Running the command from step 3 will install the program to `C:\Python3.6/Scripts`. You can run it by calling it directly `C:\Python3.6/Scripts/structure_threader.exe`. Please note that on Windows installing the programs wrapped by *Structure_threader*, *STRUCTURE*, *fastStructure* and *MavericK*, is not done automatically. You will have to do so yourself.
 
 
-## Preferred method
-Since v0.1.8 *Structure_threader* is available in
-[Pypi](https://pypi.python.org/pypi/structure_threader/), which means that
-currently, installing *Structure_threader* is as simple as following these steps (This guide assumes `python 3` and `pip` are already installed in your system):
-
-1. Open a terminal (or `powershell` on Windows)
-2. Type `sudo pip3 install structure_threader` in the terminal is you are on any OS that is not Windows.
-2. If you are on Windows, type `pip install structure_threader`.
-3. You're done.
-
-If you are not on a Windows OS and can't or don't want to install the package with `root` permission, type instead: `pip3 install structure_threader --user`.
-Also, on non Windows platforms, the binaries for *Structure_threader*, STRUCTURE, fastStructure and *MavericK* are placed under `~/.local/bin/` if you install without `root` permissions and under `/usr/local/bin/` if you install as `root`.
-
-
-## Alternative methods
+## Alternative methods (AKA 'expert mode')
 You can also run *Structure_threader* by simply cloning the repository (or
 downloading one of the releases), and placing the contents of the directory
-"structure_threader", on any location on your `$PATH` env var.
+"structure_threader", on any location on your `$PATH` environment variable var.
 
 Another alternative, that can be used since version 0.1.6 is the `setup.py`
 method. This can be used either by running `python3 setup.py install` (or even
@@ -30,7 +37,7 @@ better, `pip3 install .`) from the distribution's root directory (where
 
 Please note that while dependencies like numpy and matplotlib are handled by
 this method, the preferred method for installing via Pypi will also install
-binary versions of STRUCTURE, fastStructure and MavericK for your platform.
+binary versions of *STRUCTURE*, *fastStructure* and *MavericK* for your platform (except for the Windows platform).
 These binaries are installed in the "standard" `setup.py`
 [locations](https://docs.python.org/2/install/), eg. `/usr/bin/` if installed
 with `sudo` or `~/.local/bin/` if installed with the option `--user`, etc...
@@ -38,82 +45,6 @@ with `sudo` or `~/.local/bin/` if installed with the option `--user`, etc...
 If you wish to compile your own binaries for these programs, you may wish to
 rely on our
 ["helper_scripts"](https://github.com/StuntsPT/Structure_threader/tree/master/helper_scripts)
-which contain commands to compile and install *MavericK*, *Structure* **and**
-*fastStructure* (along with any required dependencies). For more details check
-the next few sections.
+which contain commands to compile and install *Structure*, *fastStructure* **and** *MavericK* (along with any required dependencies). For more details check the next few sections.
 
-
-## Structure_threader helper scripts
-The directory "helper_scripts" contains two scripts that will install STRUCTURE and fastStructre, respectively in a *semi* automatic way.
-
-Both scripts default the programs' install locations to ~/Software/<program_name>. You can change this in the scripts themselves should you wish to change this location.
-
-
-### install_structure.sh
-This script will download and install STRUCTURE.
-
-
-#### Requirements:
-* a C compiler, such as GCC, with fortran support.
-* Cmake is required to build LAPACK
-
-This should be available in every HPC environment.
-
-In Ubuntu, all you should need is the package "build-essential" (if it is not
-already installed for some reason). It can be installed like this:
-
-```
-sudo apt-get install build-essential
-```
-
-In other distros, the package name should be similar.
-
-### install_faststructure.sh
-This script will download and install fastStructure and its dependencies.
-
-fastStructure depends on quite a few software packages:
-* cython
-* numpy
-* scipy
-* GNU scientific library
-
-If these are already installed in your system, feel free to comment the script
-section that will install them. Otherwise it will install a new local copy of
-these programs. You can install these packages in Ubuntu with the following
-command:
-
-```
-sudo apt-get install cython python-numpy python-scipy gsl-bin
-```
-
-### Important note:
-If you are relying on the GNU Scientific Library that was installed using the
-`install_faststructure` script, you will need to make your system aware of
-where these libraries are.
-for that, add the following to your `~/.bashrc`:
-
-```bash
-LD_LIBRARY_PATH=$install_dir/lib
-export LD_LIBRARY_PATH
-```
-
-Where `$install_dir` is the directory defined in `install_faststructure.sh`.
-
-
-### install_maverick.sh
-This script will download, compile and install MavericK.
-
-
-#### Requirements:
-* a recent C compiler, such as GCC 6.1 and above.
-
-This should be available in every HPC environment.
-
-In Ubuntu, all you should need is the package "build-essential" (if it is not
-already installed for some reason). It can be installed like this:
-
-```
-sudo apt-get install build-essential
-```
-
-In other distros, the package name should be similar.
+If you wish to compile your own binaries for the extrnal programs, the manual section [Extrenal programs](external.md) describes how the distributed binaries were built. Instructions and a build script are provided for *Structure*, *fastStructure* and *MavericK*.
