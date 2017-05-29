@@ -32,6 +32,12 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 * [FAQ](faq.md)
 
 
+## A word of caution
+
+*structure_threader* can be quite useful in automating and speeding up your analyses, however, in order to use it effectively you **really** should learn and understand how the wrapped programs work. It is **highly** recommended that you first learn to use the wrapped programs in their default implementations. And by "learning", we don't just mean "I know how to make it run.", but rather "I understand what each of the chosen parameters does, and why I selected each of them.".
+The [documentation for *MavericK*](http://www.bobverity.com/home/maverick/additional-files/), for instance, is quite comprehensive and is a good starting point to learn about MCMC chain mixing.
+
+
 ## Other works
 
 The script "fastChooseK.py" was taken from [the original fastStructure repository](https://github.com/rajanil/fastStructure), ported to python 3, largely modified to work as a module for the main script and re-licensed as GPLv3.
@@ -39,6 +45,7 @@ The script "fastChooseK.py" was taken from [the original fastStructure repositor
 The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the original structureHarverster repository](https://github.com/dentearl/structureHarvester), ported to python 3, and slightly modified to work as a module for the main script. Please see the "Citation" part of the README to know what to cite, should you use this module.
 
 Binaries for [fastStructure](https://github.com/rajanil/fastStructure), [STRUCTURE](http://web.stanford.edu/group/pritchardlab/structure.html) and [MavericK](https://github.com/bobverity/MavericK) are distributed in the pypi hosted version.
+
 
 ## Bug reporting
 
