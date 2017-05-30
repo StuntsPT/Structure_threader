@@ -82,9 +82,13 @@ def runprogram(wrapped_prog, iterations, arg):
             os.mkdir(output_dir)
         except FileExistsError:
             pass
+        if os.name == "nt":
+            root_dir = ""
+        else:
+            root_dir = "/"
         cli = [arg.external_prog, "-Kmin", str(K), "-Kmax", str(K), "-data",
-               arg.infile, "-outputRoot", output_dir, "-masterRoot", "/",
-               "-parameters", arg.params]
+               arg.infile, "-outputRoot", output_dir, "-masterRoot",
+               root_dir, "-parameters", arg.params]
         if arg.notests is True:
             cli += ["-thermodynamic_on", "f"]
 
@@ -551,6 +555,8 @@ def argument_parser(args):
             arguments.params = os.path.abspath(arguments.params)
         if "-mv" in sys.argv and arguments.params is None:
             parser.error("-mv requires --params.")
+        elif "-mv" in sys.argv:
+            sanity.file_checker(os.path.abspath(arguments.params))
     else:
         if arguments.program == "faststructure" and arguments.popfile is None\
                 and arguments.indfile is None:
