@@ -382,6 +382,8 @@ def argument_parser(args):
                                        " run of structure_threader.")
     plot_parser = subparsers.add_parser("plot", help="Performs only the"
                                         " plotting operations.")
+    param_parser = subparsers.add_parser("params", help="Generates mainparams "
+                                         "and extraparams files.")
 
     # ####################### RUN ARGUMENTS ###################################
     # Group definition
@@ -533,6 +535,16 @@ def argument_parser(args):
                               help="File with individual information.",
                               metavar="indfile", default=None)
 
+    # ####################### RUN ARGUMENTS ###################################
+    # Group definition
+    io_opts = param_parser.add_argument_group("Input/Output options")
+
+    # Group options
+    io_opts.add_argument("-o", dest="outpath", type=str, required=True,
+                         help="Directory where the parameter files will be "
+                         "written.\n",
+                         metavar="output_directory")
+
     # ##################### Sanity checks ################################
     arguments = parser.parse_args(args)
 
@@ -557,7 +569,7 @@ def argument_parser(args):
             parser.error("-mv requires --params.")
         elif "-mv" in sys.argv:
             sanity.file_checker(os.path.abspath(arguments.params))
-    else:
+    elif arguments.main_op == "plot":
         if arguments.program == "faststructure" and arguments.popfile is None\
                 and arguments.indfile is None:
             parser.error("fastStructure plots require either --pop or --ind.")
@@ -576,17 +588,18 @@ def main():
         sys.argv += ["-h"]
     arg = argument_parser(sys.argv[1:])
 
-    # Check the existance of several files:
-    # Popfile
-    if arg.popfile is not None:
-        sanity.file_checker(arg.popfile,
-                            "The specified popfile '{}' does not "
-                            "exist.".format(arg.popfile))
-    # Indfile
-    if arg.indfile is not None:
-        sanity.file_checker(arg.indfile,
-                            "The specified indfile '{}' does not "
-                            "exist.".format(arg.indfile))
+    if arg.main_op == "run" or arg.main_op == "plot":
+        # Check the existance of several files:
+        # Popfile
+        if arg.popfile is not None:
+            sanity.file_checker(arg.popfile,
+                                "The specified popfile '{}' does not "
+                                "exist.".format(arg.popfile))
+        # Indfile
+        if arg.indfile is not None:
+            sanity.file_checker(arg.indfile,
+                                "The specified indfile '{}' does not "
+                                "exist.".format(arg.indfile))
 
     # Perform usual structure_threader run
     if arg.main_op == "run":
@@ -646,8 +659,22 @@ def main():
 
     # Perform only plotting operation
     if arg.main_op == "plot":
-
         plots_only(arg)
+
+    # Write skeleton parameter files
+    elif arg.main_op == "params":
+        try:
+            import structure_threader.skeletons.stparams as parameters
+        except ImportError:
+            import skeletons.stparams as parameters
+
+        sanity.file_checker(arg.outpath, is_file=False)
+        main_file = os.path.join(arg.outpath, "mainparams")
+        with open(main_file, 'w') as fhandle:
+            fhandle.write(parameters.MAINPARAMS)
+        extra_file = os.path.join(arg.outpath, "extraparams")
+        with open(extra_file, 'w') as fhandle:
+            fhandle.write(parameters.EXTRAPARAMS)
 
 
 if __name__ == "__main__":
