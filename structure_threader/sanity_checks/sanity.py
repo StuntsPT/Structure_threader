@@ -50,7 +50,7 @@ class AuxSanity(object):
 
         for k, kobj in kvals.items():
             if exp_array.shape[0] != kobj.qvals.shape[0]:
-                mismatch.append("{}: {} individuas (expected from "
+                mismatch.append("{}: {} individuals (expected from "
                                 "popfile: {})".format(kobj.file_path,
                                                       kobj.qvals.shape[0],
                                                       exp_array.shape[0]))
