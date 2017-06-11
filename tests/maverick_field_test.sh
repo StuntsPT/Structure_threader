@@ -23,7 +23,7 @@ NoColor='\033[0m'
 echo "Runnig MavericK 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=$(pwd)
-maverick_bin=`which MavericK`
+maverick_bin=$(which MavericK)
 
 ~/virtualenv/python3.5/bin/structure_threader run -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -mv ${maverick_bin} -K 3 -t 4 --params ${git_dir}/tests/smalldata/parameters.txt
 

@@ -89,7 +89,7 @@ tar xfvz v0.1-rc3.tar.gz
 # Create launcher script
 
 echo "#!/bin/bash
-workdir=`pwd`
+workdir=$(pwd)
 cd Structure_threader-0.1-rc3/
 python3 structure_threader.py \$@ -fs \${workdir}/fastStructure-1.0/structure.py > \$LOG_FILE 2>&1
 " > structure_threader-faststructure
