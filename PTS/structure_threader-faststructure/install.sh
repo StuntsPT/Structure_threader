@@ -3,7 +3,7 @@
 set -e
 
 # Define test dir
-testdir=`pwd`
+testdir=$(pwd)
 
 # Get LDFAGS
 _OLD_LDFLAGS=$LDFLAGS
