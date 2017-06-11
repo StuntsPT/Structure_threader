@@ -41,14 +41,14 @@ class AuxSanity(object):
                       " the plotting operation of structure_threader "
                       "with the following command:\n\n"
                       "structure_threader plot <opts>".format(
-            f1=aux, f2=msg))
+                          f1=aux, f2=msg))
         raise SystemExit
 
     def ind_mismatch(self, exp_array, kvals):
 
         mismatch = []
 
-        for k, kobj in kvals.items():
+        for kobj in kvals.values():
             if exp_array.shape[0] != kobj.qvals.shape[0]:
                 mismatch.append("{}: {} individuals (expected from "
                                 "popfile: {})".format(kobj.file_path,
@@ -66,8 +66,8 @@ class AuxSanity(object):
                                             ("nind", int),
                                             ("original_order", int)],
                                      loose=False)
-        except ValueError as e:
-            self.log_error(e, "pop")
+        except ValueError as exc:
+            self.log_error(exc, "pop")
 
         index = poparray["original_order"]
 
@@ -90,16 +90,16 @@ class AuxSanity(object):
 
         # Expand poprarray matrix with the frequency of each population
         exp_array = None
-        for i in range(len(poparray)):
+        for idx, val in enumerate(poparray):
             if exp_array is None:
-                exp_array = np.repeat(poparray[i:i + 1, np.newaxis],
-                                      poparray[i][1],
+                exp_array = np.repeat(poparray[idx:idx + 1, np.newaxis],
+                                      val[1],
                                       0)
             else:
                 exp_array = np.vstack(
                     [exp_array,
-                     np.repeat(poparray[i:i + 1, np.newaxis],
-                               poparray[i][1],
+                     np.repeat(poparray[idx:idx + 1, np.newaxis],
+                               val[1],
                                0)])
 
         # For each PlotK object, check if the poparray shape is compliant with
@@ -116,8 +116,8 @@ class AuxSanity(object):
 
         try:
             indarray = np.genfromtxt(indfile, dtype="|U20")
-        except ValueError as e:
-            self.log_error(e, "ind")
+        except ValueError as exc:
+            self.log_error(exc, "ind")
 
         # The indfile may have between 1 to 3 columns. Depending on the number
         # of columns provided, the checks can vary.
@@ -140,10 +140,10 @@ class AuxSanity(object):
                 # Check if third column is convertable into int
                 try:
                     index = indarray[:, 2].astype(np.int64)
-                except ValueError as e:
+                except ValueError as exc:
                     self.log_error("The elements of the third column in"
                                    " the indfile must be integers:\n{}"
-                                   "".format(e), "ind")
+                                   "".format(exc), "ind")
                 # Check if there is no gap in the range of the ordering
                 missing = [str(x) for x in range(max(index)) if
                            x != 0 and x not in index]
