@@ -58,7 +58,9 @@ class AuxSanity(object):
         return mismatch
 
     def check_popfile(self, filepath, kvals, **kwargs):
-
+        """
+        Check if the popfile" is valid.
+        """
         # Try to load array from popfile
         try:
             poparray = np.genfromtxt(filepath,
@@ -113,7 +115,9 @@ class AuxSanity(object):
                                "\n".join(mismatch)), "pop")
 
     def check_indfile(self, indfile, kvals):
-
+        """
+        Check if the "indfile" is valid.
+        """
         try:
             indarray = np.genfromtxt(indfile, dtype="|U20")
         except ValueError as exc:
@@ -131,7 +135,7 @@ class AuxSanity(object):
         mismatch = self.ind_mismatch(single_array, kvals)
         if mismatch:
             self.log_error("The number of individuals specified in"
-                           " the popfile does not match the number of"
+                           " the indfile does not match the number of"
                            " individuals in the meanQ files:\n{}".format(
                                "\n".join(mismatch)), "ind")
 
@@ -150,7 +154,7 @@ class AuxSanity(object):
                 if missing:
                     self.log_error(
                         "The order values in the third column of the"
-                        " popfile must be in consecutive order."
+                        " indfile must be in consecutive order."
                         " The following index(es) is(are) missing:"
                         " {}".format(" ".join(missing)), "ind")
 
