@@ -6,7 +6,7 @@
 * Corrected a few typos in some of the printed messages
 
 ### New features:
-* Added option to generate skeleton parameter files (mainparams and extraparams) for *STRUCTURE*.
+* Added option to generate skeleton parameter files (`mainparams` and `extraparams`) for *STRUCTURE*.
 
 
 ## Changes since v1.0.1:
