@@ -374,7 +374,7 @@ def argument_parser(args):
 
     # Create subparsers for each main structure_threader  operation
     subparsers = parser.add_subparsers(
-        help="Select which structure_threader command you wish to"
+        help="Select which structure_threader command you wish to "
              "execute.",
         dest="main_op")
 

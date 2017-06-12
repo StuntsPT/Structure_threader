@@ -29,7 +29,7 @@ Using the `run` mode, the program currently takes the following arguments:
 * Q-matrix plotting options:
   * Disable plot drawing (--no_plots)
   * Force plotting the given values together (--override_bestk)
-  * Draw the plots only in grey-scale (-bw)
+  * Draw the plots only in grayscale (-bw)
 * Other options                
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
