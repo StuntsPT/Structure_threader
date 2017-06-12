@@ -1,5 +1,14 @@
 # *Structure_threader* changelog
 
+## Changes since v1.1.0:
+
+### Bug fixes
+* Corrected a few typos in some of the printed messages
+
+### New features:
+* Added option to generate skeleton parameter files (mainparams and extraparams) for *STRUCTURE*.
+
+
 ## Changes since v1.0.1:
 
 ### Bug fixes:

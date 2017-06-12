@@ -13,11 +13,11 @@ Using the `run` mode, the program currently takes the following arguments:
 * I/O arguments:
     * Input file (-i)
     * Output directory (-o)
-    * Path to parameters_file (--params)
+    * Path to parameters_file (path to `mainparams` [will also assume `extraparams`] or `parameters.txt`; --params)
 * Individual/Population identification options:
     * Path to popfile (--pop) [See below for more information]
     * Path to indfile (--ind) [See below for more information]
-* Extrnal program location - you have to pass one and only one of the following arguments:
+* External program location - you have to pass one and only one of the following arguments:
     * *STRUCTURE* location (if you want to run *STRUCTURE*; -st)
     * *fastStructure* location (if you want to run *fastStructure*; -fs)
     * *MavericK* location (if you want to run *MavericK*; -mv)
@@ -29,7 +29,7 @@ Using the `run` mode, the program currently takes the following arguments:
 * Q-matrix plotting options:
   * Disable plot drawing (--no_plots)
   * Force plotting the given values together (--override_bestk)
-  * Draw the plots only in grayscale (-bw)
+  * Draw the plots only in grey-scale (-bw)
 * Other options                
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
@@ -47,7 +47,7 @@ each value of "K", -i is the input file for *STRUCTURE*, -o is the directory whe
 -t is the number of threads to use and -p the path for the *STRUCTURE* binary.
 
 The program should be run in the same directory where the files "mainparams" and
-"extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this.
+"extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this. Alternatively, you can specify the path to where your parameter files (`mainparams` and `extraparams` or `parameters.txt`) and *Structure_threader* will read parameters from the specified location. This can be achieved using the `--params` switch.
 
 ### `plot` mode
 
@@ -74,6 +74,13 @@ structure_threader plot -i fS_run -f fastStructure -K 2 3 4 -o 2_4_plots --ind i
 ```
 
 Here, *Structure_threader* will search the current directory for all FastStructure output files that start with the "fS_run" string, as specified by the "-i" option. The "-f" option specified the fastStructure format of the output files. The "-K" option specified which K values should be plotted (Note: If any of the provided K values do not exist, they are ignored). Using the "-o" option the plots will be generated into the "2_4_plots" directory. Finally, we also provide an "indfile" using the "--ind" option.
+
+### `params` mode
+
+Using the `params` mode, *Structure_threader* generate a skeleton `mainparams` and `extraparams` that you should edit to facilitate *STRUCTURE* runs. Most options have been preset to a commonly used default value, but some of them are set to "CHANGEME" since providing a default value here makes no sense, since it depends on each dataset.
+The `params` mode takes only one option:
+
+* Output directory (path to where the skeleton parameter files should be written; -o)
 
 ## Using a "popfile"
 *Structure_threader* can build your structure plots with labels and in a specified order. For that you have to provide a "popfile" (--pop option). This file consists of the following 3 columns: "Population name", "Number of individuals in the population", "Order of the population in the plot file".
