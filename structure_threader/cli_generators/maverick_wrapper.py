@@ -44,6 +44,8 @@ def mav_cli_generator(arg, k_val):
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
 
+    mav_params_parser(arg)
+
     return cli
 
 
