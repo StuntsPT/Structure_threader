@@ -78,7 +78,7 @@ def runprogram(wrapped_prog, iterations, arg):
             cli += arg.params
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        cli = mw(arg, K)
+        cli = mw.mav_cli_generator(arg, K)
 
     else:  # Run fastStructure
         # Keeps correct directory separator across OS's
