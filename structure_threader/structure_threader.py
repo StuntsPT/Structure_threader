@@ -32,7 +32,7 @@ try:
     import plotter.structplot as sp
     import sanity_checks.sanity as sanity
     import colorer.colorer as colorer
-    import maverick_wrapper as mw
+    import cli_generators.maverick_wrapper as mw
 except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
