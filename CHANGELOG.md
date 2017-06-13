@@ -4,9 +4,11 @@
 
 ### Bug fixes
 * Corrected a few typos in some of the printed messages
+* Fixed a bug with a nonsensical leading "/" on the windows version.
 
 ### New features:
 * Added option to generate skeleton parameter files (`mainparams` and `extraparams`) for *STRUCTURE*.
+* If wrapping *MavericK* with TI option turned off, bestK tests are now skipped.
 
 
 ## Changes since v1.0.1:

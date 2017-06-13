@@ -32,10 +32,12 @@ try:
     import plotter.structplot as sp
     import sanity_checks.sanity as sanity
     import colorer.colorer as colorer
+    import maverick_wrapper as mw
 except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
     import structure_threader.colorer.colorer as colorer
+    import structure_threader.cli_generators.maverick_wrapper as mw
 
 # Where are we?
 CWD = os.getcwd()
@@ -76,21 +78,7 @@ def runprogram(wrapped_prog, iterations, arg):
             cli += arg.params
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        # MavericK requires a trailing "/" (or "\" if on windows)
-        output_dir = os.path.join(arg.outpath, "mav_K" + str(K)) + os.path.sep
-        try:
-            os.mkdir(output_dir)
-        except FileExistsError:
-            pass
-        if os.name == "nt":
-            root_dir = ""
-        else:
-            root_dir = "/"
-        cli = [arg.external_prog, "-Kmin", str(K), "-Kmax", str(K), "-data",
-               arg.infile, "-outputRoot", output_dir, "-masterRoot",
-               root_dir, "-parameters", arg.params]
-        if arg.notests is True:
-            cli += ["-thermodynamic_on", "f"]
+        cli = mw(arg, K)
 
     else:  # Run fastStructure
         # Keeps correct directory separator across OS's
