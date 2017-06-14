@@ -44,22 +44,24 @@ def mav_cli_generator(arg, k_val):
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
 
-    mav_params_parser(arg)
-
     return cli
 
 
-def mav_params_parser(arg):
+def mav_params_parser(parameter_filename):
     """
     Parses MavericK's parameter file and switches some options if necessary.
     """
-    param_file = open(arg.params, "r")
+    param_file = open(parameter_filename, "r")
+    use_ti = True
     for lines in param_file:
         if lines.startswith("thermodynamic_on"):
             ti_status = lines.split()[1].lower()
             if ti_status in ("f", "false", "0"):
-                arg.no_tests = True
-                logging.error("Thermodynamic integration is turned OFF."
-                              "BestK tests will be skipped.")
+                use_ti = False
+                logging.error("Thermodynamic integration is turned OFF. "
+                              "Using STRUCTURE criteria for bestK estimation.")
+                break
 
     param_file.close()
+
+    return use_ti

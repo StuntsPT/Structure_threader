@@ -67,7 +67,7 @@ setup(
               "structure_threader.plotter",
               "structure_threader.sanity_checks",
               "structure_threader.colorer",
-              "structure_threader.cli_generators"],
+              "structure_threader.wrappers"],
     install_requires=["plotly",
                       "colorlover",
                       "numpy",
