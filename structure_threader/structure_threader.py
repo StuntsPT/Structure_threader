@@ -247,14 +247,14 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
             indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)
 
 
-def maverick_merger(outdir, k_list, no_tests):
+def maverick_merger(outdir, k_list, params, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir, exist_ok=True)
-    log_evidence_ti = {}
+    log_evidence_mv = {}
 
     def _mav_output_parser(filename, get_header):
         """
@@ -271,13 +271,13 @@ def maverick_merger(outdir, k_list, no_tests):
 
         return data
 
-    def _ti_test(outdir, log_evidence_ti):
+    def _ti_test(outdir, log_evidence_mv):
         """
         Write a bestK result based in TI results.
         """
         bestk_dir = os.path.join(outdir, "bestK")
         os.makedirs(bestk_dir, exist_ok=True)
-        bestk = max(log_evidence_ti, key=log_evidence_ti.get).replace("K", "1")
+        bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
         output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
                        "that the best value of 'K' is: {}\n".format(bestk))
@@ -287,19 +287,24 @@ def maverick_merger(outdir, k_list, no_tests):
 
     for filename in files_list:
         header = True
+        if mw.mav_params_parser(params) is True:
+            column_num = -2
+        else:
+            column_num = -4
         outfile = open(os.path.join(mrg_res_dir, filename), "w")
         for i in k_list:
             data_dir = os.path.join(outdir, "mav_K" + str(i))
             data = _mav_output_parser(os.path.join(data_dir, filename), header)
             header = False
             if filename == "outputEvidence.csv":
-                log_evidence_ti[data.split(",")[0]] = float(data.split(",")[-2])
+                log_evidence_mv[data.split(",")[0]] = float(
+                    data.split(",")[column_num])
             outfile.write(data)
 
         outfile.close()
 
     if no_tests is False:
-        bestk = _ti_test(outdir, log_evidence_ti)
+        bestk = _ti_test(outdir, log_evidence_mv)
         return bestk
 
 
@@ -634,7 +639,7 @@ def main():
         structure_threader(Ks, replicates, threads, wrapped_prog, arg)
 
         if wrapped_prog == "maverick":
-            bestk = maverick_merger(arg.outpath, Ks, arg.notests)
+            bestk = maverick_merger(arg.outpath, Ks, arg.params, arg.notests)
             arg.notests = True
 
         if arg.notests is False:
