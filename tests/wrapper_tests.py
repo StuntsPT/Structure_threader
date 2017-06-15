@@ -60,3 +60,11 @@ def test_mav_cli_generator(tmpdir):
                                                 "-masterRoot", "/",
                                                 "-parameters", "PA",
                                                 "-thermodynamic_on", "f"]
+
+
+def test_mav_params_parser():
+    """
+    Tests if mav_params_parser() is working correctlly.
+    """
+    assert mw.mav_params_parser("smalldata/parameters.txt") is True
+    assert mw.mav_params_parser("smalldata/parameters_f.txt") is False
