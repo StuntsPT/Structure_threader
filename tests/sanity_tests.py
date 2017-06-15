@@ -15,10 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-import pytest
 import os
+import pytest
 import structure_threader.sanity_checks.sanity as sc
-
 
 
 def test_cpu_checker():
