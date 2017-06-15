@@ -24,10 +24,10 @@ class Arguments():
     """
     Bogus class to work a mock for the "args" attributes from argparse.
     """
-    def __init__(self, temp_dir):
+    def __init__(self):
         self.external_prog = "EP"
         self.infile = "IF"
-        self.outpath = temp_dir
+        self.outpath = ""
         self.params = "PA"
         self.notests = False
 
@@ -37,16 +37,15 @@ def test_mav_cli_generator(tmpdir):
     Tests if mav_cli_generator() is working correctlly.
     """
     # Define arguments
-    arg = Arguments(tmpdir)
+    arg = Arguments()
     k_val = 4
-    print(tmpdir)
 
     # Perform test with TI
     assert mw.mav_cli_generator(arg, k_val) == ["EP", "-Kmin",
                                                 str(k_val), "-Kmax",
                                                 str(k_val), "-data", "IF",
                                                 "-outputRoot",
-                                                str(tmpdir) + "/mav_K4/",
+                                                "mav_K4/",
                                                 "-masterRoot", "/",
                                                 "-parameters", "PA"]
 
@@ -56,7 +55,7 @@ def test_mav_cli_generator(tmpdir):
                                                 str(k_val), "-Kmax",
                                                 str(k_val), "-data", "IF",
                                                 "-outputRoot",
-                                                str(tmpdir) + "/mav_K4/",
+                                                "mav_K4/",
                                                 "-masterRoot", "/",
                                                 "-parameters", "PA",
                                                 "-thermodynamic_on", "f"]
