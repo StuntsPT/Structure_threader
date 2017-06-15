@@ -37,7 +37,7 @@ def test_maverick_merger():
 
         return hashes
 
-    st.maverick_merger("files", [1, 2, 3], False)
+    st.maverick_merger("files", [1, 2, 3], "smalldata/parameters.txt", False)
     known_hashes = _hash_function("files/test_merged")
     generated_hashes = _hash_function("files/merged")
 
