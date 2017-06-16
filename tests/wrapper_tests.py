@@ -47,7 +47,7 @@ def test_mav_cli_generator():
                                                 "-outputRoot",
                                                 "mav_K4/",
                                                 "-masterRoot", "/",
-                                                "-parameters", "PA"], "mav_K4"
+                                                "-parameters", "PA"], "mav_K4/"
 
     # Perform test without TI
     arg.notests = True
@@ -59,7 +59,7 @@ def test_mav_cli_generator():
                                                 "-masterRoot", "/",
                                                 "-parameters", "PA",
                                                 "-thermodynamic_on",
-                                                "f"], "mav_K4"
+                                                "f"], "mav_K4/"
 
 
 def test_mav_params_parser():
