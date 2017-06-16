@@ -32,7 +32,7 @@ class Arguments():
         self.notests = False
 
 
-def test_mav_cli_generator(tmpdir):
+def test_mav_cli_generator():
     """
     Tests if mav_cli_generator() is working correctlly.
     """
