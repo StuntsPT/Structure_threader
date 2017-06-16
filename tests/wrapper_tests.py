@@ -40,26 +40,19 @@ def test_mav_cli_generator():
     arg = Arguments()
     k_val = 4
 
-    # Perform test with TI
-    assert mw.mav_cli_generator(arg, k_val) == ["EP", "-Kmin",
-                                                str(k_val), "-Kmax",
-                                                str(k_val), "-data", "IF",
-                                                "-outputRoot",
-                                                "mav_K4/",
-                                                "-masterRoot", "/",
-                                                "-parameters", "PA"], "mav_K4/"
+    mock_cli = ["EP", "-Kmin", str(k_val), "-Kmax", str(k_val), "-data",
+                "IF", "-outputRoot", "mav_K4/", "-masterRoot", "/",
+                "-parameters", "PA"]
 
-    # Perform test without TI
-    arg.notests = True
-    assert mw.mav_cli_generator(arg, k_val) == ["EP", "-Kmin",
-                                                str(k_val), "-Kmax",
-                                                str(k_val), "-data", "IF",
-                                                "-outputRoot",
-                                                "mav_K4/",
-                                                "-masterRoot", "/",
-                                                "-parameters", "PA",
-                                                "-thermodynamic_on",
-                                                "f"], "mav_K4/"
+    # Perform test with and without TI
+    for ti_value in (False, True):
+        arg.notests = ti_value
+        if arg.notests is True:
+            mock_cli += ["-thermodynamic_on", "f"]
+
+        returned_cli, out_dir = mw.mav_cli_generator(arg, k_val)
+        assert returned_cli == mock_cli
+        assert out_dir == "mav_K4/"
 
 
 def test_mav_params_parser():
