@@ -279,7 +279,7 @@ def maverick_merger(outdir, k_list, params, no_tests):
         os.makedirs(bestk_dir, exist_ok=True)
         bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
         bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
-        output_text = ("MavericK's 'Thermodynamic Integration' test revealed "
+        output_text = ("MavericK's estimation test revealed "
                        "that the best value of 'K' is: {}\n".format(bestk))
         bestk_file.write(output_text)
         bestk_file.close()
