@@ -65,3 +65,41 @@ def mav_params_parser(parameter_filename):
     param_file.close()
 
     return use_ti
+
+def mav_alpha_failsafe(parameter_filename, k_list):
+    """
+    Parses MavericK's parameter file and implements a failsafe for multiple
+    alpha values.
+    """
+    param_file = open(parameter_filename, "r")
+    for lines in param_file:
+        if lines.lower().startswith("alpha"):
+            alpha = lines.split()[1].split(",")
+        elif lines.lower().startswith("alphapropsd"):
+            alphapropsd = lines.split()[1].split(",")
+        # elif lines.lower().startswith("-fixAlpha_on"):
+        #     fix_alpha = lines.split()[1]
+
+    param_file.close()
+
+    if len(alpha) > 1:
+        if len(alpha) != len(k_list):
+            logging.fatal("The number of values provided for the Alpha "
+                          "parameter are not the same as the number of 'Ks' "
+                          "provided. Please correct this.")
+            quit()
+        elif len(alphapropsd) != len(k_list):
+            logging.fatal("The number of values provided for the AlphaPropSD "
+                          "parameter are not the same as the number of 'Ks' "
+                          "provided. Please correct this.")
+            quit()
+        else:
+            alpha_matching = {}
+            alphapropsd_matching = {}
+            for i, j, k in zip(k_list, alpha, alphapropsd):
+                alpha_matching[i] = j
+                alphapropsd_matching[i] = k
+            multi_alpha = True
+            # TODO: Corner case - scalar alpha and list of alphapropsd
+
+    return multi_alpha, multi_alphapropsd
