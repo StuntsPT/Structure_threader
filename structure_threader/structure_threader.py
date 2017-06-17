@@ -629,10 +629,7 @@ def main():
                             "directory.".format(arg.outpath), False)
 
         # Number of Ks
-        if isinstance(arg.Ks, int):
-            Ks = range(1, arg.Ks + 1)
-        else:
-            Ks = arg.Ks
+        Ks = arg.Ks
 
         # Number of replicates
         replicates = range(1, arg.replicates + 1)
