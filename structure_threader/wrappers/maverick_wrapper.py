@@ -17,6 +17,7 @@
 
 import os
 import logging
+import sys
 
 try:
     import colorer.colorer as colorer
@@ -66,40 +67,34 @@ def mav_params_parser(parameter_filename):
 
     return use_ti
 
+
 def mav_alpha_failsafe(parameter_filename, k_list):
     """
     Parses MavericK's parameter file and implements a failsafe for multiple
     alpha values.
     """
+    parsed_data = {}
+    sorted_data = {"alpha": False, "alphapropsd": False}
+
     param_file = open(parameter_filename, "r")
     for lines in param_file:
-        if lines.lower().startswith("alpha"):
-            alpha = lines.split()[1].split(",")
-        elif lines.lower().startswith("alphapropsd"):
-            alphapropsd = lines.split()[1].split(",")
-        # elif lines.lower().startswith("-fixAlpha_on"):
-        #     fix_alpha = lines.split()[1]
+        if lines.lower().startswith("alpha\t"):
+            parsed_data["alpha"] = lines.split()[1].split(",")
+        elif lines.lower().startswith("alphapropsd\t"):
+            parsed_data["alphapropsd"] = lines.split()[1].split(",")
 
     param_file.close()
 
-    if len(alpha) > 1:
-        if len(alpha) != len(k_list):
-            logging.fatal("The number of values provided for the Alpha "
-                          "parameter are not the same as the number of 'Ks' "
-                          "provided. Please correct this.")
-            quit()
-        elif len(alphapropsd) != len(k_list):
-            logging.fatal("The number of values provided for the AlphaPropSD "
-                          "parameter are not the same as the number of 'Ks' "
-                          "provided. Please correct this.")
-            quit()
-        else:
-            alpha_matching = {}
-            alphapropsd_matching = {}
-            for i, j, k in zip(k_list, alpha, alphapropsd):
-                alpha_matching[i] = j
-                alphapropsd_matching[i] = k
-            multi_alpha = True
-            # TODO: Corner case - scalar alpha and list of alphapropsd
+    for param, val in parsed_data.items():
+        if len(val) > 1:
+            if len(val) != len(k_list):
+                logging.fatal("The number of values provided for the %s "
+                              "parameter are not the same as the number of "
+                              "'Ks' provided. Please correct this.", param)
+                sys.exit(0)
+            else:
+                sorted_data[param] = {}
+                for i, j in zip(k_list, val):
+                    sorted_data[param][i] = j
 
-    return multi_alpha, multi_alphapropsd
+    return sorted_data
