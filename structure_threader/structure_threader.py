@@ -567,6 +567,11 @@ def argument_parser(args):
                 and arguments.indfile is None:
             parser.error("fastStructure plots require either --pop or --ind.")
 
+    # #################### Agrument modifications ##########################
+    # Number of Ks
+    if isinstance(arguments.Ks, int):
+        arguments.Ks = range(1, arguments.Ks + 1)
+
     return arguments
 
 

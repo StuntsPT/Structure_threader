@@ -44,6 +44,10 @@ def mav_cli_generator(arg, k_val):
            root_dir, "-parameters", arg.params]
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
+    failsafe = mav_alpha_failsafe(arg.params, arg.Ks)
+    for param in failsafe:
+        if failsafe[param] is not False:
+            cli += ["-" + param, failsafe[param][k_val]]
 
     return cli, output_dir
 
@@ -81,7 +85,7 @@ def mav_alpha_failsafe(parameter_filename, k_list):
         if lines.lower().startswith("alpha\t"):
             parsed_data["alpha"] = lines.split()[1].split(",")
         elif lines.lower().startswith("alphapropsd\t"):
-            parsed_data["alphapropsd"] = lines.split()[1].split(",")
+            parsed_data["alphaPropSD"] = lines.split()[1].split(",")
 
     param_file.close()
 
