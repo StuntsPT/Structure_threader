@@ -28,7 +28,7 @@ class Arguments():
         self.external_prog = "EP"
         self.infile = "IF"
         self.outpath = ""
-        self.params = "PA"
+        self.params = "smalldata/parameters.txt"
         self.notests = False
         self.Ks = [2, 3, 4, 5]
 
@@ -43,7 +43,7 @@ def test_mav_cli_generator():
 
     mock_cli = ["EP", "-Kmin", str(k_val), "-Kmax", str(k_val), "-data",
                 "IF", "-outputRoot", "mav_K4/", "-masterRoot", "/",
-                "-parameters", "PA"]
+                "-parameters", "smalldata/parameters.txt"]
 
     # Perform test with and without TI
     for ti_value in (False, True):
