@@ -30,7 +30,7 @@ class Arguments():
         self.outpath = ""
         self.params = "smalldata/parameters.txt"
         self.notests = False
-        self.Ks = [2, 3, 4, 5]
+        self.k_list = [2, 3, 4, 5]
 
 
 def test_mav_cli_generator():

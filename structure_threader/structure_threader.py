@@ -137,7 +137,7 @@ def runprogram(wrapped_prog, iterations, arg):
     return worker_status
 
 
-def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
+def structure_threader(k_list, replicates, threads, wrapped_prog, arg):
     """
     Do the threading book-keeping to spawn jobs at the asked rate.
     """
@@ -158,7 +158,7 @@ def structure_threader(Ks, replicates, threads, wrapped_prog, arg):
                 touch.close()
             arg.params = ["-m", mainparams, "-e", extraparams]
 
-    jobs = list(itertools.product(Ks, replicates))[::-1]
+    jobs = list(itertools.product(k_list, replicates))[::-1]
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
@@ -214,7 +214,7 @@ def structure_harvester(resultsdir, wrapped_prog):
     return bestk
 
 
-def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
+def create_plts(resultsdir, wrapped_prog, k_list, bestk, arg):
     """
     Create plots from result dir.
     :param resultsdir: path to results directory
@@ -233,15 +233,15 @@ def create_plts(resultsdir, wrapped_prog, Ks, bestk, arg):
             file_to_plot = str(randrange(1, arg.replicates + 1))
         plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
-                     for i in Ks]
+                     for i in k_list]
     elif wrapped_prog == "maverick":
         plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
-                     for i in Ks]
+                     for i in k_list]
 
     else:
         plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
-                     for i in Ks]
+                     for i in k_list]
 
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)
@@ -411,9 +411,11 @@ def argument_parser(args):
                               help="Location of the MavericK executable "
                               "in your environment.")
 
-    k_opts.add_argument("-K", dest="Ks", type=int,
-                        help="Number of Ks to calculate.\n", metavar="int")
-    k_opts.add_argument("-Klist", dest="Ks", nargs="+", type=int,
+    k_opts.add_argument("-K", dest="k_list", type=int,
+                        help="Number of Ks to calculate.\n",
+                        metavar="int")
+    k_opts.add_argument("-Klist", dest="k_list", nargs="+",
+                        type=int,
                         help="List of Ks to calculate.\n",
                         metavar="'2 4 6'")
 
@@ -569,8 +571,8 @@ def argument_parser(args):
 
     # #################### Agrument modifications ##########################
     # Number of Ks
-    if isinstance(arguments.Ks, int):
-        arguments.Ks = range(1, arguments.Ks + 1)
+    if isinstance(arguments.k_list, int):
+        arguments.k_list = range(1, arguments.k_list + 1)
 
     return arguments
 
@@ -629,7 +631,7 @@ def main():
                             "directory.".format(arg.outpath), False)
 
         # Number of Ks
-        Ks = arg.Ks
+        k_list = arg.k_list
 
         # Number of replicates
         replicates = range(1, arg.replicates + 1)
@@ -638,19 +640,19 @@ def main():
 
         signal.signal(signal.SIGINT, gracious_exit)
 
-        structure_threader(Ks, replicates, threads, wrapped_prog, arg)
+        structure_threader(k_list, replicates, threads, wrapped_prog, arg)
 
         if wrapped_prog == "maverick":
-            bestk = maverick_merger(arg.outpath, Ks, arg.params, arg.notests)
+            bestk = maverick_merger(arg.outpath, k_list, arg.params, arg.notests)
             arg.notests = True
 
         if arg.notests is False:
             bestk = structure_harvester(arg.outpath, wrapped_prog)
         else:
-            bestk = Ks
+            bestk = k_list
 
         if arg.noplot is False:
-            create_plts(arg.outpath, wrapped_prog, Ks, bestk, arg)
+            create_plts(arg.outpath, wrapped_prog, k_list, bestk, arg)
 
     # Perform only plotting operation
     if arg.main_op == "plot":
