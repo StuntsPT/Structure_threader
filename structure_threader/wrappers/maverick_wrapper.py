@@ -44,7 +44,7 @@ def mav_cli_generator(arg, k_val):
            root_dir, "-parameters", arg.params]
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
-    failsafe = mav_alpha_failsafe(arg.params, arg.Ks)
+    failsafe = mav_alpha_failsafe(arg.params, arg.k_list)
     for param in failsafe:
         if failsafe[param] is not False:
             cli += ["-" + param, failsafe[param][k_val]]
