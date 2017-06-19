@@ -19,6 +19,7 @@ import hashlib
 import os
 import pytest
 import structure_threader.structure_threader as st
+import structure_threader.wrappers.maverick_wrapper as mw
 
 
 def test_maverick_merger():
@@ -37,7 +38,7 @@ def test_maverick_merger():
 
         return hashes
 
-    st.maverick_merger("files", [1, 2, 3], "smalldata/parameters.txt", False)
+    mw.maverick_merger("files", [1, 2, 3], "smalldata/parameters.txt", False)
     known_hashes = _hash_function("files/test_merged")
     generated_hashes = _hash_function("files/merged")
 

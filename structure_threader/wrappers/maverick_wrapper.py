@@ -102,3 +102,64 @@ def mav_alpha_failsafe(parameter_filename, k_list):
                     sorted_data[param][i] = j
 
     return sorted_data
+
+
+def maverick_merger(outdir, k_list, params, no_tests):
+    """
+    Grabs the split outputs from MavericK and merges them in a single directory.
+    """
+    files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
+    mrg_res_dir = os.path.join(outdir, "merged")
+    os.makedirs(mrg_res_dir, exist_ok=True)
+    log_evidence_mv = {}
+
+    def _mav_output_parser(filename, get_header):
+        """
+        Parse MavericK output files that need to be merged for TI calculations.
+        Returns the contents of the parsed files as a single string, with or
+        without a header.
+        """
+        infile = open(filename, 'r')
+        header = infile.readline()
+        data = "".join(infile.readlines())
+        infile.close()
+        if get_header is True:
+            data = header + data
+
+        return data
+
+    def _ti_test(outdir, log_evidence_mv):
+        """
+        Write a bestK result based in TI results.
+        """
+        bestk_dir = os.path.join(outdir, "bestK")
+        os.makedirs(bestk_dir, exist_ok=True)
+        bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
+        bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
+        output_text = ("MavericK's estimation test revealed "
+                       "that the best value of 'K' is: {}\n".format(bestk))
+        bestk_file.write(output_text)
+        bestk_file.close()
+        return [int(bestk)]
+
+    for filename in files_list:
+        header = True
+        if mav_params_parser(params) is True:
+            column_num = -2
+        else:
+            column_num = -4
+        outfile = open(os.path.join(mrg_res_dir, filename), "w")
+        for i in k_list:
+            data_dir = os.path.join(outdir, "mav_K" + str(i))
+            data = _mav_output_parser(os.path.join(data_dir, filename), header)
+            header = False
+            if filename == "outputEvidence.csv":
+                log_evidence_mv[data.split(",")[0]] = float(
+                    data.split(",")[column_num])
+            outfile.write(data)
+
+        outfile.close()
+
+    if no_tests is False:
+        bestk = _ti_test(outdir, log_evidence_mv)
+        return bestk
