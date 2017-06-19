@@ -66,19 +66,19 @@ def runprogram(wrapped_prog, iterations, arg):
     """
     worker_status = (None, None)
 
-    K, rep_num = iterations
+    k_val, rep_num = iterations
 
     if wrapped_prog == "structure":  # Run STRUCTURE
         # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "str_K" + str(K) + "_rep" +
+        output_file = os.path.join(arg.outpath, "str_K" + str(k_val) + "_rep" +
                                    str(rep_num))
-        cli = [arg.external_prog, "-K", str(K), "-i", arg.infile, "-o",
+        cli = [arg.external_prog, "-K", str(k_val), "-i", arg.infile, "-o",
                output_file]
         if arg.params is not None:
             cli += arg.params
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        cli, output_dir = mw.mav_cli_generator(arg, K)
+        cli, output_dir = mw.mav_cli_generator(arg, k_val)
 
     else:  # Run fastStructure
         # Keeps correct directory separator across OS's
@@ -98,7 +98,7 @@ def runprogram(wrapped_prog, iterations, arg):
             else:
                 infile = arg.infile[:-4]
 
-        cli = ["python2", arg.external_prog, "-K", str(K), "--input",
+        cli = ["python2", arg.external_prog, "-K", str(k_val), "--input",
                infile, "--output", output_file, "--format", file_format,
                arg.extra_options]
 
@@ -126,9 +126,9 @@ def runprogram(wrapped_prog, iterations, arg):
     # Handle logging for debugging purposes.
     if arg.log is True:
 
-        logfile = open(os.path.join(arg.outpath, "K" + str(K) + "_rep" +
+        logfile = open(os.path.join(arg.outpath, "K" + str(k_val) + "_rep" +
                                     str(rep_num) + ".stlog"), "w")
-        logging.info("Writing logfile for K" + str(K) + ", replicate " +
+        logging.info("Writing logfile for K" + str(k_val) + ", replicate " +
                      str(rep_num) + ". Please wait...")
         logfile.write(out)
         logfile.write(err)
@@ -137,7 +137,7 @@ def runprogram(wrapped_prog, iterations, arg):
     return worker_status
 
 
-def structure_threader(k_list, replicates, threads, wrapped_prog, arg):
+def structure_threader(replicates, threads, wrapped_prog, arg):
     """
     Do the threading book-keeping to spawn jobs at the asked rate.
     """
@@ -158,7 +158,7 @@ def structure_threader(k_list, replicates, threads, wrapped_prog, arg):
                 touch.close()
             arg.params = ["-m", mainparams, "-e", extraparams]
 
-    jobs = list(itertools.product(k_list, replicates))[::-1]
+    jobs = list(itertools.product(arg.k_list, replicates))[::-1]
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
@@ -214,13 +214,13 @@ def structure_harvester(resultsdir, wrapped_prog):
     return bestk
 
 
-def create_plts(resultsdir, wrapped_prog, k_list, bestk, arg):
+def create_plts(wrapped_prog, bestk, arg):
     """
     Create plots from result dir.
     :param resultsdir: path to results directory
     """
 
-    outdir = os.path.join(resultsdir, "plots")
+    outdir = os.path.join(arg.outpath, "plots")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
@@ -231,17 +231,17 @@ def create_plts(resultsdir, wrapped_prog, k_list, bestk, arg):
             file_to_plot = "1"
         else:
             file_to_plot = str(randrange(1, arg.replicates + 1))
-        plt_files = [os.path.join(resultsdir, "str_K") + str(i) + "_rep" +
+        plt_files = [os.path.join(arg.outpath, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
-                     for i in k_list]
+                     for i in arg.k_list]
     elif wrapped_prog == "maverick":
-        plt_files = [os.path.join(os.path.join(resultsdir, "mav_K" + str(i)),
+        plt_files = [os.path.join(os.path.join(arg.outpath, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
-                     for i in k_list]
+                     for i in arg.k_list]
 
     else:
-        plt_files = [os.path.join(resultsdir, "fS_run_K.") + str(i) + ".meanQ"
-                     for i in k_list]
+        plt_files = [os.path.join(arg.outpath, "fS_run_K.") + str(i) + ".meanQ"
+                     for i in arg.k_list]
 
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)
@@ -630,9 +630,6 @@ def main():
                             "existing file. This argument requires a "
                             "directory.".format(arg.outpath), False)
 
-        # Number of Ks
-        k_list = arg.k_list
-
         # Number of replicates
         replicates = range(1, arg.replicates + 1)
 
@@ -640,19 +637,20 @@ def main():
 
         signal.signal(signal.SIGINT, gracious_exit)
 
-        structure_threader(k_list, replicates, threads, wrapped_prog, arg)
+        structure_threader(replicates, threads, wrapped_prog, arg)
 
         if wrapped_prog == "maverick":
-            bestk = maverick_merger(arg.outpath, k_list, arg.params, arg.notests)
+            bestk = maverick_merger(arg.outpath, arg.k_list, arg.params,
+                                    arg.notests)
             arg.notests = True
 
         if arg.notests is False:
             bestk = structure_harvester(arg.outpath, wrapped_prog)
         else:
-            bestk = k_list
+            bestk = arg.k_list
 
         if arg.noplot is False:
-            create_plts(arg.outpath, wrapped_prog, k_list, bestk, arg)
+            create_plts(wrapped_prog, bestk, arg)
 
     # Perform only plotting operation
     if arg.main_op == "plot":
