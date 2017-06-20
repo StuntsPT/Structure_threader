@@ -24,7 +24,7 @@ import itertools
 import logging
 
 from multiprocessing import Pool
-from random import randrange
+from random import choice
 from functools import partial
 
 try:
@@ -207,7 +207,7 @@ def create_plts(wrapped_prog, bestk, arg):
         if arg.replicates == 1:
             file_to_plot = "1"
         else:
-            file_to_plot = str(randrange(1, arg.replicates + 1))
+            file_to_plot = str(choice(arg.replicates))
         plt_files = [os.path.join(arg.outpath, "str_K") + str(i) + "_rep" +
                      file_to_plot + "_f"
                      for i in arg.k_list]
