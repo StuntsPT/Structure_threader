@@ -23,7 +23,7 @@ import structure_threader.wrappers.faststructure_wrapper as fsw
 
 def test_fs_cli_generator():
     """
-    Tests if faststructure_cli_generator() is working correctlly.
+    Tests if fs_cli_generator() is working correctlly.
     """
     # Define arguments
     arg = mockups.Arguments()
