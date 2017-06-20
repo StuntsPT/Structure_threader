@@ -18,19 +18,9 @@
 import hashlib
 import os
 import pytest
+import mockups
 import structure_threader.wrappers.maverick_wrapper as mw
 
-class Arguments():
-    """
-    Bogus class to work a mock for the "args" attributes from argparse.
-    """
-    def __init__(self):
-        self.external_prog = "EP"
-        self.infile = "IF"
-        self.outpath = ""
-        self.params = "smalldata/parameters.txt"
-        self.notests = False
-        self.k_list = [2, 3, 4, 5]
 
 
 def test_mav_cli_generator():
@@ -38,7 +28,7 @@ def test_mav_cli_generator():
     Tests if mav_cli_generator() is working correctlly.
     """
     # Define arguments
-    arg = Arguments()
+    arg = mockups.Arguments()
     k_val = 4
 
     mock_cli = ["EP", "-Kmin", str(k_val), "-Kmax", str(k_val), "-data",

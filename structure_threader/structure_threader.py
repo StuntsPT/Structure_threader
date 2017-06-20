@@ -33,11 +33,14 @@ try:
     import sanity_checks.sanity as sanity
     import colorer.colorer as colorer
     import wrappers.maverick_wrapper as mw
+    import wrappers.faststructure_wrapper as fsw
+
 except ImportError:
     import structure_threader.plotter.structplot as sp
     import structure_threader.sanity_checks.sanity as sanity
     import structure_threader.colorer.colorer as colorer
     import structure_threader.wrappers.maverick_wrapper as mw
+    import structure_threader.wrappers.faststructure_wrapper as fsw
 
 # Where are we?
 CWD = os.getcwd()
@@ -81,30 +84,7 @@ def runprogram(wrapped_prog, iterations, arg):
         cli, output_dir = mw.mav_cli_generator(arg, k_val)
 
     else:  # Run fastStructure
-        # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "fS_run_K")
-        if arg.infile.endswith((".bed", ".fam", ".bim")):
-            file_format = "bed"
-            infile = arg.infile[:-4]
-        else:
-            file_format = "str"  # Assume 'STR' format if plink is not specified
-            if arg.infile.endswith(".str") is False:  # Do we need a symlink?
-                infile = arg.infile
-                try:
-                    os.symlink(os.path.basename(arg.infile), arg.infile+".str")
-                except OSError as err:
-                    if err.errno != 17:
-                        raise
-            else:
-                infile = arg.infile[:-4]
-
-        cli = ["python2", arg.external_prog, "-K", str(k_val), "--input",
-               infile, "--output", output_file, "--format", file_format,
-               arg.extra_options]
-
-        # Are we using the python script or a binary?
-        if arg.external_prog.endswith(".py") is False:
-            cli = cli[1:]
+        cli = fsw.fs_cli_generator(k_val, arg)
 
     logging.info("Running: " + " ".join(cli))
     program = subprocess.Popen(cli,
