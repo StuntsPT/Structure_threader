@@ -82,7 +82,7 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     {paramter: False, parameter: {k: paran_value}}
     """
     parsed_data = {}
-    sorted_data = {"alpha": False, "alphapropsd": False}
+    sorted_data = {"alpha": False, "alphaPropSD": False}
 
     param_file = open(parameter_filename, "r")
     for lines in param_file:
