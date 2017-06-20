@@ -21,7 +21,6 @@ import sys
 import signal
 import subprocess
 import itertools
-import argparse
 import logging
 
 from multiprocessing import Pool
@@ -35,6 +34,7 @@ try:
     import wrappers.maverick_wrapper as mw
     import wrappers.faststructure_wrapper as fsw
     import wrappers.structure_wrapper as sw
+    import argparser
 
 except ImportError:
     import structure_threader.plotter.structplot as sp
@@ -43,6 +43,7 @@ except ImportError:
     import structure_threader.wrappers.maverick_wrapper as mw
     import structure_threader.wrappers.faststructure_wrapper as fsw
     import structure_threader.wrappers.structure_wrapper as sw
+    import structure_threader.argparser as argparser
 
 # Where are we?
 CWD = os.getcwd()
@@ -113,13 +114,13 @@ def runprogram(wrapped_prog, iterations, arg):
     return worker_status
 
 
-def structure_threader(replicates, threads, wrapped_prog, arg):
+def structure_threader(wrapped_prog, arg):
     """
     Do the threading book-keeping to spawn jobs at the asked rate.
     """
 
     if wrapped_prog != "structure":
-        replicates = [1]
+        arg.replicates = [1]
     else:
         os.chdir(os.path.dirname(arg.infile))
         if arg.params is not None:
@@ -134,7 +135,7 @@ def structure_threader(replicates, threads, wrapped_prog, arg):
                 touch.close()
             arg.params = ["-m", mainparams, "-e", extraparams]
 
-    jobs = list(itertools.product(arg.k_list, replicates))[::-1]
+    jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
@@ -144,7 +145,7 @@ def structure_threader(replicates, threads, wrapped_prog, arg):
     # the function while the children processed are being executed. This will
     # also allow to iterate over the values returned by all workers and to sort
     # them out to see if there were any errors
-    pool = Pool(threads).map(temp, jobs)
+    pool = Pool(arg.threads).map(temp, jobs)
 
     # Check for worker status. This will search the worker outputs and if
     # one or more workers had an error exit status, the error_list will be
@@ -270,226 +271,51 @@ def plots_only(arg):
             use_ind=arg.use_ind)
 
 
-def argument_parser(args):
+def full_run(arg):
     """
-    Parses the list of arguments as implemented in argparse.
+    Make a full Structure_threader run, including program wrapping, and
+    eventually bestK tests and plotting.
     """
-    parser = argparse.ArgumentParser(
-        description="A software wrapper to paralelize genetic clustering "
-                    "programs.",
-        prog="Structure_threader",
-        formatter_class=argparse.RawTextHelpFormatter)
+    # Figure out which program we are wrapping
+    if "-fs" in sys.argv:
+        wrapped_prog = "faststructure"
+    elif "-mv" in sys.argv:
+        wrapped_prog = "maverick"
+    elif "-st" in sys.argv:
+        wrapped_prog = "structure"
 
-    # Create subparsers for each main structure_threader  operation
-    subparsers = parser.add_subparsers(
-        help="Select which structure_threader command you wish to "
-             "execute.",
-        dest="main_op")
+    structure_threader(wrapped_prog, arg)
 
-    run_parser = subparsers.add_parser("run", help="Performs a complete"
-                                       " run of structure_threader.")
-    plot_parser = subparsers.add_parser("plot", help="Performs only the"
-                                        " plotting operations.")
-    param_parser = subparsers.add_parser("params", help="Generates mainparams "
-                                         "and extraparams files.")
+    if wrapped_prog == "maverick":
+        bestk = mw.maverick_merger(arg.outpath, arg.k_list, arg.params,
+                                   arg.notests)
+        arg.notests = True
 
-    # ####################### RUN ARGUMENTS ###################################
-    # Group definition
-    io_opts = run_parser.add_argument_group("Input/Output options")
-    id_opts = run_parser.add_argument_group(
-        "Individual/Population identification options")
-    main_exec = run_parser.add_argument_group(
-        "Program execution options. Mutually exclusive")
-    k_opts = run_parser.add_argument_group("Cluster options")
-    run_opts = run_parser.add_argument_group("Structure run options")
-    plot_opts = run_parser.add_argument_group("Q-matrix plotting options")
-    misc_opts = run_parser.add_argument_group("Miscellaneous options")
+    if arg.notests is False:
+        bestk = structure_harvester(arg.outpath, wrapped_prog)
+    else:
+        bestk = arg.k_list
 
-    # Group options
-    main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
-    k_opts = k_opts.add_mutually_exclusive_group(required=True)
-    id_opts = id_opts.add_mutually_exclusive_group(required=False)
+    if arg.noplot is False:
+        create_plts(wrapped_prog, bestk, arg)
 
-    main_exec_ex.add_argument("-st", dest="external_prog", type=str,
-                              default=None,
-                              metavar="filepath",
-                              help="Location of the structure executable "
-                              "in  your environment.")
-    main_exec_ex.add_argument("-fs", dest="external_prog", type=str,
-                              default=None,
-                              metavar="filepath",
-                              help="Location of the fastStructure "
-                              "executable in your environment.")
-    main_exec_ex.add_argument("-mv", dest="external_prog", type=str,
-                              default=None,
-                              metavar="filepath",
-                              help="Location of the MavericK executable "
-                              "in your environment.")
 
-    k_opts.add_argument("-K", dest="k_list", type=int,
-                        help="Number of Ks to calculate.\n",
-                        metavar="int")
-    k_opts.add_argument("-Klist", dest="k_list", nargs="+",
-                        type=int,
-                        help="List of Ks to calculate.\n",
-                        metavar="'2 4 6'")
+def spooky_scary_skeletons(arg):
+    """
+    Generates skeleton parameter files for STRUCTURE.
+    """
+    try:
+        import structure_threader.skeletons.stparams as parameters
+    except ImportError:
+        import skeletons.stparams as parameters
 
-    run_opts.add_argument("-R", dest="replicates", type=int, required=False,
-                          help="Number of replicate runs for each value "
-                          "of K (default:%(default)s).\nIgnored for "
-                          "fastStructure and MavericK",
-                          metavar="int", default=20)
-
-    io_opts.add_argument("-i", dest="infile", type=str, required=True,
-                         help="Input file.\n", metavar="infile")
-    io_opts.add_argument("-o", dest="outpath", type=str, required=True,
-                         help="Directory where the results will be "
-                         "stored in.\n",
-                         metavar="output_directory")
-    io_opts.add_argument("--params", dest="params", type=str, required=False,
-                         help="File with run parameters.",
-                         metavar="parameters_file.txt", default=None)
-
-    id_opts.add_argument("--pop", dest="popfile", type=str, required=False,
-                         help="File with population information.",
-                         metavar="popfile", default=None)
-    id_opts.add_argument("--ind", dest="indfile", type=str, required=False,
-                         help="File with population information.",
-                         metavar="indfile", default=None)
-
-    misc_opts.add_argument("-t", dest="threads", type=int, required=True,
-                           help="Number of threads to use "
-                                "(default:%(default)s).\n",
-                           metavar="int", default=4)
-    misc_opts.add_argument("--log", dest="log", type=bool, required=False,
-                           help="Choose this option if you want to "
-                           "enable logging.",
-                           metavar="bool", default=False)
-    misc_opts.add_argument("--no_tests", dest="notests", type=bool,
-                           required=False,
-                           help="Disable best K tests. Implies "
-                           "--no_plots",
-                           metavar="bool", default=False)
-    misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
-                           required=False,
-                           help="Add extra arguments to pass to the "
-                           "wrapped program here.\nExample: "
-                           "prior=logistic seed=123",
-                           metavar="string", default="")
-
-    plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
-                           required=False, help="Disable plot drawing.",
-                           metavar="bool", default=False)
-    plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
-                           required=False, nargs="+",
-                           help="Override 'K' values from the given list"
-                           " to be ploteted in the combined figure.",
-                           metavar="'2 4 5'", default=None)
-    plot_opts.add_argument("-bw", dest="blacknwhite",
-                           action="store_const", const=True,
-                           help="Set this flag to draw greyscale plots"
-                           " instead of colored ones.")
-    plot_opts.add_argument("--use-ind-labels", dest="use_ind",
-                           action="store_const", const=True,
-                           help="Use the individual labels in the "
-                                "structure plot instead of population"
-                                " labels")
-
-    # ####################### PLOT ARGUMENTS ##################################
-    # Group definitions
-
-    main_opts = plot_parser.add_argument_group("Main plotting options")
-    extra_opts = plot_parser.add_argument_group("Extra plotting options")
-    sort_opts = plot_parser.add_argument_group("Plot sorting options")
-
-    # Group options
-    sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
-
-    main_opts.add_argument("-i", dest="prefix", type=str, required=True,
-                           help="The prefix of the output meanQ files."
-                                "You can provide a full path or just the "
-                                "prefix. Passing just the prefix will assume "
-                                "the current working diretory.")
-    main_opts.add_argument("-f", dest="program", type=str, required=True,
-                           choices=["structure", "faststructure",
-                                    "maverick"],
-                           help="The format of the result files.")
-    main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
-                           help="Choose the K values to plot. Each K"
-                                "value provided will be plotted "
-                                "individually and a comparative plot"
-                                " will all K's will be generated."
-                                "Example: -K 2 3 4.")
-    main_opts.add_argument("-o", dest="outpath", type=str, default=".",
-                           help="The directory where the plots will be"
-                                " generated. If it is not provided,"
-                                " the current working directory"
-                                " will be used.")
-
-    extra_opts.add_argument("-bw", dest="blacknwhite",
-                            action="store_const", const=True,
-                            help="Set this flag to draw greyscale plots"
-                                 " instead of colored ones.")
-    extra_opts.add_argument("--use-ind-labels", dest="use_ind",
-                            action="store_const", const=True,
-                            help="Use the individual labels in the "
-                                 "structure plot instead of population"
-                                 " labels")
-
-    sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
-                              required=False,
-                              help="File with population information.",
-                              metavar="popfile", default=None)
-    sort_opts_ex.add_argument("--ind", dest="indfile", type=str,
-                              required=False,
-                              help="File with individual information.",
-                              metavar="indfile", default=None)
-
-    # ####################### RUN ARGUMENTS ###################################
-    # Group definition
-    io_opts = param_parser.add_argument_group("Input/Output options")
-
-    # Group options
-    io_opts.add_argument("-o", dest="outpath", type=str, required=True,
-                         help="Directory where the parameter files will be "
-                         "written.\n",
-                         metavar="output_directory")
-
-    # ##################### Sanity checks ################################
-    arguments = parser.parse_args(args)
-
-    if arguments.main_op == "run":
-        # Handle argparse limitations with "--" options.
-        if arguments.extra_options != "":
-            arguments.extra_options = "--{0}".format(arguments.extra_options)
-            arguments.extra_options = \
-                " --".join(arguments.extra_options.split())
-
-        # fastStructure is really only usefull with either a pop or indfile...
-        if "-fs" in sys.argv and\
-            arguments.popfile is None and\
-                arguments.indfile is None:
-            parser.error("-fs requires either --pop or --ind.")
-
-        # Make sure we provide paths for mainparam, extraparams and
-        # parameters.txt  depending on the wrapped program.
-        if arguments.params is not None:
-            arguments.params = os.path.abspath(arguments.params)
-        if "-mv" in sys.argv and arguments.params is None:
-            parser.error("-mv requires --params.")
-        elif "-mv" in sys.argv:
-            sanity.file_checker(os.path.abspath(arguments.params))
-    elif arguments.main_op == "plot":
-        if arguments.program == "faststructure" and arguments.popfile is None\
-                and arguments.indfile is None:
-            parser.error("fastStructure plots require either --pop or --ind.")
-
-    # #################### Agrument modifications ##########################
-    # Number of Ks
-    if isinstance(arguments.k_list, int):
-        arguments.k_list = range(1, arguments.k_list + 1)
-
-    return arguments
+    sanity.file_checker(arg.outpath, is_file=False)
+    main_file = os.path.join(arg.outpath, "mainparams")
+    with open(main_file, 'w') as fhandle:
+        fhandle.write(parameters.MAINPARAMS)
+    extra_file = os.path.join(arg.outpath, "extraparams")
+    with open(extra_file, 'w') as fhandle:
+        fhandle.write(parameters.EXTRAPARAMS)
 
 
 def main():
@@ -498,74 +324,17 @@ def main():
     from.
     """
 
+    # Make sure we exit graciously on Crtl+c
+    signal.signal(signal.SIGINT, gracious_exit)
+
     # Make sure we provide an help message instead of an error
     if len(sys.argv) == 1:
         sys.argv += ["-h"]
-    arg = argument_parser(sys.argv[1:])
+    arg = argparser.argument_parser(sys.argv[1:])
 
-    if arg.main_op == "run" or arg.main_op == "plot":
-        # Check the existance of several files:
-        # Popfile
-        if arg.popfile is not None:
-            sanity.file_checker(arg.popfile,
-                                "The specified popfile '{}' does not "
-                                "exist.".format(arg.popfile))
-        # Indfile
-        if arg.indfile is not None:
-            sanity.file_checker(arg.indfile,
-                                "The specified indfile '{}' does not "
-                                "exist.".format(arg.indfile))
-
-    # Perform usual structure_threader run
+    # Perform full structure_threader run
     if arg.main_op == "run":
-
-        # Switch relative to absolute paths
-        arg.infile = os.path.abspath(arg.infile)
-        arg.outpath = os.path.abspath(arg.outpath)
-
-        # Figure out which program we are wrapping
-        if "-fs" in sys.argv:
-            wrapped_prog = "faststructure"
-        elif "-mv" in sys.argv:
-            wrapped_prog = "maverick"
-        elif "-st" in sys.argv:
-            wrapped_prog = "structure"
-
-        # External program
-        sanity.file_checker(arg.external_prog,
-                            "Could not find your external program in "
-                            "the specified path "
-                            "'{}'.".format(arg.external_prog))
-        # Input file
-        sanity.file_checker(arg.infile, "The specified infile '{}' does "
-                                        "not exist.".format(arg.infile))
-        # Output dir
-        sanity.file_checker(arg.outpath,
-                            "Output argument '{}' is pointing to an "
-                            "existing file. This argument requires a "
-                            "directory.".format(arg.outpath), False)
-
-        # Number of replicates
-        replicates = range(1, arg.replicates + 1)
-
-        threads = sanity.cpu_checker(arg.threads)
-
-        signal.signal(signal.SIGINT, gracious_exit)
-
-        structure_threader(replicates, threads, wrapped_prog, arg)
-
-        if wrapped_prog == "maverick":
-            bestk = mw.maverick_merger(arg.outpath, arg.k_list, arg.params,
-                                       arg.notests)
-            arg.notests = True
-
-        if arg.notests is False:
-            bestk = structure_harvester(arg.outpath, wrapped_prog)
-        else:
-            bestk = arg.k_list
-
-        if arg.noplot is False:
-            create_plts(wrapped_prog, bestk, arg)
+        full_run(arg)
 
     # Perform only plotting operation
     if arg.main_op == "plot":
@@ -573,18 +342,7 @@ def main():
 
     # Write skeleton parameter files
     elif arg.main_op == "params":
-        try:
-            import structure_threader.skeletons.stparams as parameters
-        except ImportError:
-            import skeletons.stparams as parameters
-
-        sanity.file_checker(arg.outpath, is_file=False)
-        main_file = os.path.join(arg.outpath, "mainparams")
-        with open(main_file, 'w') as fhandle:
-            fhandle.write(parameters.MAINPARAMS)
-        extra_file = os.path.join(arg.outpath, "extraparams")
-        with open(extra_file, 'w') as fhandle:
-            fhandle.write(parameters.EXTRAPARAMS)
+        spooky_scary_skeletons(arg)
 
 
 if __name__ == "__main__":
