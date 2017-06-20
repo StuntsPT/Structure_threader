@@ -76,6 +76,10 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     """
     Parses MavericK's parameter file and implements a failsafe for multiple
     alpha values.
+    Returns the following dict:
+    {paramter: {k:param_value}, parameter: {k: param_value}}
+    If the paramterer values are a single value, False is returned:
+    {paramter: False, parameter: {k: paran_value}}
     """
     parsed_data = {}
     sorted_data = {"alpha": False, "alphapropsd": False}
