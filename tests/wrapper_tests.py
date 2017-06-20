@@ -62,3 +62,20 @@ def test_mav_params_parser():
     """
     assert mw.mav_params_parser("smalldata/parameters.txt") is True
     assert mw.mav_params_parser("smalldata/parameters_f.txt") is False
+
+
+def test_mav_alpha_failsafe():
+    """
+    Tests if mav_alpha_failsafe() is working correctlly.
+    """
+    k_list = [2, 3, 4, 5]
+    assert mw.mav_alpha_failsafe("smalldata/parameters.txt", k_list) == {
+        "alpha": False, "alphaPropSD": False}
+    assert mw.mav_alpha_failsafe("smalldata/parameters_a.txt", k_list) == {
+        "alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"}, "alphaPropSD": False}
+    assert mw.mav_alpha_failsafe("smalldata/parameters_as.txt", k_list) == {
+        "alpha": False,
+        "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07", 5: "0.06"}}
+    assert mw.mav_alpha_failsafe("smalldata/parameters_a_as.txt", k_list) == {
+        "alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"},
+        "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07", 5: "0.06"}}

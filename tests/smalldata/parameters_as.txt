@@ -1,0 +1,39 @@
+#### Data proprieties
+headerRow_on	t
+popCol_on	t
+ploidyCol_on	f
+ploidy	2
+missingData	-9
+
+
+#### Model parameters
+Kmin	1
+Kmax	4
+admix_on	t
+fixAlpha_on	f
+alpha	1.0
+alphaPropSD	0.09,0.08,0.07,0.06
+
+
+#### Simulation parameters
+exhaustive_on	f
+mainRepeats	5
+mainBurnin	500
+mainSamples	4000
+
+thermodynamic_on	t
+thermodynamicRungs	20
+thermodynamicBurnin	1000
+thermodynamicSamples	5000
+
+
+#### Basic output proprieties
+outputLog_on	t
+outputLikelihood_on	t
+outputQmatrix_ind_on	t
+outputQmatrix_pop_on	t
+outputEvidence_on	t
+outputEvidenceDetails_on	t
+
+
+#### Output location
