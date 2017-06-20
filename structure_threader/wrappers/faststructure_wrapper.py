@@ -46,4 +46,4 @@ def fs_cli_generator(k_val, arg):
     if arg.external_prog.endswith(".py") is False:
         cli = cli[1:]
 
-    return cli
+    return cli, output_file

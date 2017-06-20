@@ -34,6 +34,7 @@ try:
     import colorer.colorer as colorer
     import wrappers.maverick_wrapper as mw
     import wrappers.faststructure_wrapper as fsw
+    import wrappers.structure_wrapper as sw
 
 except ImportError:
     import structure_threader.plotter.structplot as sp
@@ -41,6 +42,7 @@ except ImportError:
     import structure_threader.colorer.colorer as colorer
     import structure_threader.wrappers.maverick_wrapper as mw
     import structure_threader.wrappers.faststructure_wrapper as fsw
+    import structure_threader.wrappers.structure_wrapper as sw
 
 # Where are we?
 CWD = os.getcwd()
@@ -72,19 +74,13 @@ def runprogram(wrapped_prog, iterations, arg):
     k_val, rep_num = iterations
 
     if wrapped_prog == "structure":  # Run STRUCTURE
-        # Keeps correct directory separator across OS's
-        output_file = os.path.join(arg.outpath, "str_K" + str(k_val) + "_rep" +
-                                   str(rep_num))
-        cli = [arg.external_prog, "-K", str(k_val), "-i", arg.infile, "-o",
-               output_file]
-        if arg.params is not None:
-            cli += arg.params
+        cli, output_file = sw.str_cli_generator(arg, k_val, rep_num)
 
     elif wrapped_prog == "maverick":  # Run MavericK
         cli, output_dir = mw.mav_cli_generator(arg, k_val)
 
     else:  # Run fastStructure
-        cli = fsw.fs_cli_generator(k_val, arg)
+        cli, output_file = fsw.fs_cli_generator(k_val, arg)
 
     logging.info("Running: " + " ".join(cli))
     program = subprocess.Popen(cli,

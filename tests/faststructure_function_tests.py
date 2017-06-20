@@ -16,7 +16,6 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 
-import os
 import pytest
 import mockups
 import structure_threader.wrappers.faststructure_wrapper as fsw
@@ -30,21 +29,16 @@ def test_fs_cli_generator():
     arg = mockups.Arguments()
     k_val = 4
 
-    # Test with a binary
-    mock_cli = ["EP", "-K", str(k_val), "--input",
-                "IF", "--output", "fS_run_K", "--format", "str",
-                "--prior=logistic"]
+    for prog in ["EP", "EP.py"]:
 
-    returned_cli = fsw.fs_cli_generator(k_val, arg)
-    assert returned_cli == mock_cli
+        arg.external_prog = prog
+        mock_cli = [prog, "-K", str(k_val), "--input",
+                    "IF", "--output", "fS_run_K", "--format", "str",
+                    "--prior=logistic"]
+        if prog.endswith(".py"):
+            mock_cli = ["python2"] + mock_cli
 
-    # Test with a script
-    arg.external_prog = "EP.py"
-    mock_cli = ["python2", "EP.py", "-K", str(k_val), "--input",
-                "IF", "--output", "fS_run_K", "--format", "str",
-                "--prior=logistic"]
+        returned_cli, returned_outdir = fsw.fs_cli_generator(k_val, arg)
 
-    returned_cli = fsw.fs_cli_generator(k_val, arg)
-    assert returned_cli == mock_cli
-
-    # TODO: deduplicate code.
+        assert returned_cli == mock_cli
+        assert returned_outdir == "fS_run_K"
