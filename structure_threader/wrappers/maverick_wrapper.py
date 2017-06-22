@@ -173,7 +173,7 @@ def maverick_merger(outdir, k_list, params, no_tests):
         return bestk
 
 
-def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
+def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     """
     Performs TI normalization as in the original implementation from MavericK.
     This is essentially a port from the C++ code written by Bob Verity.
@@ -199,7 +199,7 @@ def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
 
     # Gather mean and CI values and return them as a single dict.
     norm_res = dict(
-        (i, {"norm_mean": np.mean(z_array[i]),
+        (k, {"norm_mean": np.mean(z_array[i]),
              "lower_limit": np.percentile(z_array[i], l_limit),
              "upper_limit": np.percentile(z_array[i], u_limit)})
         for i, k in enumerate(klist))
