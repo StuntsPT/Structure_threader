@@ -179,8 +179,14 @@ def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
     This is essentially a port from the C++ code written by Bob Verity.
     """
 
+    # subtract maximum value from x_mean (this has no effect on final outcome
+    # but prevents under/overflow)
+    # Just like in the original implementation (even though it should not be
+    # required in the python version)
     z_array = np.zeros([len(x_mean), draws])
 
+    # draw random values of Z, exponentiate, and sort them in a bidimensional
+    # array
     for i in range(z_array.shape[0]):
         y_array = np.array([np.exp(rnorm(x_mean[i], x_sd[i]))
                             for _ in range(draws)])
@@ -191,6 +197,7 @@ def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
     l_limit = (100 - limit) / 2
     u_limit = 100 - l_limit
 
+    # Gather mean and CI values and return them as a single dict.
     norm_res = dict(
         (i, {"norm_mean": np.mean(z_array[i]),
              "lower_limit": np.percentile(z_array[i], l_limit),
