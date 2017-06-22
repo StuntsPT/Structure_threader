@@ -182,12 +182,13 @@ def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
     z = np.zeros([len(x_mean), draws])
 
     for i in range(z.shape[0]):
-        z[i] = np.sort(np.array(
-            [np.exp(rnorm(x_mean[i], x_sd[i])) for _ in range(draws)]))
+        y = np.array([np.exp(rnorm(x_mean[i], x_sd[i])) for _ in range(draws)])
+        z[i] = np.sort(y/sum(y))
 
-    norm_res = dict((i, {"norm_mean": np.mean(z[i]),
-                         "lower_limit": np.percentile(z[i], 2.5),
-                         "upper_limit": np.percentile(z[i], 97.5)}) for i, k in
-                    enumerate(klist))
+    norm_res = dict(
+        (i, {"norm_mean": np.mean(z[i]),
+             "lower_limit": np.percentile(z[i], 2.5),
+             "upper_limit": np.percentile(z[i], 97.5)})
+        for i, k in enumerate(klist))
 
     return norm_res
