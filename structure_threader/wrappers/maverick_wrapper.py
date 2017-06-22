@@ -179,16 +179,22 @@ def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
     This is essentially a port from the C++ code written by Bob Verity.
     """
 
-    z = np.zeros([len(x_mean), draws])
+    z_array = np.zeros([len(x_mean), draws])
 
-    for i in range(z.shape[0]):
-        y = np.array([np.exp(rnorm(x_mean[i], x_sd[i])) for _ in range(draws)])
-        z[i] = np.sort(y/sum(y))
+    for i in range(z_array.shape[0]):
+        y_array = np.array([np.exp(rnorm(x_mean[i], x_sd[i]))
+                            for _ in range(draws)])
+
+        z_array[i] = np.sort(y_array/sum(y_array))
+
+    # Define limit tails
+    l_limit = (100 - limit) / 2
+    u_limit = 100 - l_limit
 
     norm_res = dict(
-        (i, {"norm_mean": np.mean(z[i]),
-             "lower_limit": np.percentile(z[i], 2.5),
-             "upper_limit": np.percentile(z[i], 97.5)})
+        (i, {"norm_mean": np.mean(z_array[i]),
+             "lower_limit": np.percentile(z_array[i], l_limit),
+             "upper_limit": np.percentile(z_array[i], u_limit)})
         for i, k in enumerate(klist))
 
     return norm_res
