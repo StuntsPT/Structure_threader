@@ -167,3 +167,31 @@ def maverick_merger(outdir, k_list, params, no_tests):
     if no_tests is False:
         bestk = _ti_test(outdir, log_evidence_mv)
         return bestk
+
+
+def maverick_normalization(x_mean, x_sd, draws=1e6):
+    """
+    Performs TI normalization as in the origina implementation from MavericK.
+    This is essentially a port from the C++ code written by Bob Verity.
+    """
+    from math import exp
+    from numpy.random import normal as rnorm
+    from numpy import array
+
+    # subtract maximum value from x_mean (this has no effect on final outcome
+    # but prevents under/overflow)
+    new_mean = [x - max(x_mean) for x in x_mean]
+
+    # draw random values of Z (exponentiated and normalised draws)
+    x_list = []
+    y_list = []
+    z_array = array()
+
+    for i in draws:
+        y_sum = 0
+        for j, k in zip(new_mean, x_sd):
+            normalized = rnorm(j, k)
+            x_list.append(normalized)
+            exponentiated = exp(normalized)
+            y_list.append(exponentiated)
+            y_sum += exponentiated
