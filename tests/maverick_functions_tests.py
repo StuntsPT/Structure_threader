@@ -46,12 +46,12 @@ def test_mav_cli_generator():
         assert out_dir == "mav_K4/"
 
 
-def test_mav_params_parser():
+def test_mav_ti_in_use():
     """
     Tests if mav_params_parser() is working correctlly.
     """
-    assert mw.mav_params_parser("smalldata/parameters.txt") is True
-    assert mw.mav_params_parser("smalldata/parameters_f.txt") is False
+    assert mw.mav_ti_in_use("smalldata/parameters.txt") is True
+    assert mw.mav_ti_in_use("smalldata/parameters_f.txt") is False
 
 
 def test_mav_alpha_failsafe():

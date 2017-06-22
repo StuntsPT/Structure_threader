@@ -56,24 +56,51 @@ def mav_cli_generator(arg, k_val):
     return cli, output_dir
 
 
-def mav_params_parser(parameter_filename):
+def mav_ti_in_use(parameter_filename):
     """
-    Parses MavericK's parameter file and switches some options if necessary.
+    Checks if TI is in use. Returns True or Flase.
     """
-    param_file = open(parameter_filename, "r")
+    parsed_data = mav_params_parser(parameter_filename,
+                                    ("thermodynamic_on",))
+
     use_ti = True
+    if parsed_data["thermodynamic_on"] in ("f", "false", "0"):
+        use_ti = False
+        logging.error("Thermodynamic integration is turned OFF. "
+                      "Using STRUCTURE criteria for bestK estimation.")
+    elif not parsed_data:
+        logging.error("The parameter setting Thermodynamic integration was not "
+                      "found. Assuming the default 'on' value.")
+
+    return use_ti
+
+
+def mav_params_parser(parameter_filename, query):
+    """
+    Parses MavericK's parameter file and returns the results in a dict.
+    Returns "None" if no matches are found.
+    """
+    # Add a "\t" at the end of each string to avoid finding partial strings
+    # such as "alpha" and "alphaPropSD".
+    sane_query = tuple((x + '\t' for x in query))
+    print(sane_query)
+
+    param_file = open(parameter_filename, "r")
+    result = {}
+
     for lines in param_file:
-        if lines.startswith("thermodynamic_on"):
-            ti_status = lines.split()[1].lower()
-            if ti_status in ("f", "false", "0"):
-                use_ti = False
-                logging.error("Thermodynamic integration is turned OFF. "
-                              "Using STRUCTURE criteria for bestK estimation.")
-                break
+        if lines.startswith(sane_query):
+            lines = lines.split()
+            result[lines[0]] = lines[1]
 
     param_file.close()
 
-    return use_ti
+    if result == {}:
+        logging.error("Failed to find the parameter(s) '%s'. Please verify the "
+                      "parameter file, or the run options.", query)
+        result = None
+    else:
+        return result
 
 
 def mav_alpha_failsafe(parameter_filename, k_list):
@@ -85,19 +112,23 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     If the paramterer values are a single value, False is returned:
     {paramter: False, parameter: {k: paran_value}}
     """
-    parsed_data = {}
-    sorted_data = {"alpha": False, "alphaPropSD": False}
+    parameters = ("alpha", "alphaPropSD")
 
-    param_file = open(parameter_filename, "r")
-    for lines in param_file:
-        if lines.lower().startswith("alpha\t"):
-            parsed_data["alpha"] = lines.split()[1].split(",")
-        elif lines.lower().startswith("alphapropsd\t"):
-            parsed_data["alphaPropSD"] = lines.split()[1].split(",")
+    sorted_data = {x: False for x in parameters}
 
-    param_file.close()
+    # param_file = open(parameter_filename, "r")
+    # for lines in param_file:
+    #     if lines.lower().startswith("alpha\t"):
+    #         parsed_data["alpha"] = lines.split()[1].split(",")
+    #     elif lines.lower().startswith("alphapropsd\t"):
+    #         parsed_data["alphaPropSD"] = lines.split()[1].split(",")
+    #
+    # param_file.close()
+
+    parsed_data = mav_params_parser(parameter_filename, parameters)
 
     for param, val in parsed_data.items():
+        val = val.split(",")
         if len(val) > 1:
             if len(val) != len(k_list):
                 logging.fatal("The number of values provided for the %s "
@@ -115,6 +146,8 @@ def mav_alpha_failsafe(parameter_filename, k_list):
 def maverick_merger(outdir, k_list, params, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
+    Also uses the data from these file to generate an
+    "outputEvidenceNormalized.csv" file.
     """
     files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
     mrg_res_dir = os.path.join(outdir, "merged")
@@ -152,7 +185,7 @@ def maverick_merger(outdir, k_list, params, no_tests):
 
     for filename in files_list:
         header = True
-        if mav_params_parser(params) is True:
+        if mav_ti_in_use(params) is True:
             column_num = -2
         else:
             column_num = -4
