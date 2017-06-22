@@ -60,8 +60,7 @@ def mav_ti_in_use(parameter_filename):
     """
     Checks if TI is in use. Returns True or Flase.
     """
-    parsed_data = mav_params_parser(parameter_filename,
-                                    ("thermodynamic_on",))
+    parsed_data = mav_params_parser(parameter_filename, ("thermodynamic_on",))
 
     use_ti = True
     if parsed_data["thermodynamic_on"] in ("f", "false", "0"):
@@ -105,40 +104,31 @@ def mav_params_parser(parameter_filename, query):
 
 def mav_alpha_failsafe(parameter_filename, k_list):
     """
-    Parses MavericK's parameter file and implements a failsafe for multiple
-    alpha values.
+    Implements a failsafe for discrepancies with multiple alpha values.
     Returns the following dict:
     {paramter: {k:param_value}, parameter: {k: param_value}}
     If the paramterer values are a single value, False is returned:
-    {paramter: False, parameter: {k: paran_value}}
+    {paramter: False, parameter: {k: param_value}}
     """
     parameters = ("alpha", "alphaPropSD")
 
     sorted_data = {x: False for x in parameters}
 
-    # param_file = open(parameter_filename, "r")
-    # for lines in param_file:
-    #     if lines.lower().startswith("alpha\t"):
-    #         parsed_data["alpha"] = lines.split()[1].split(",")
-    #     elif lines.lower().startswith("alphapropsd\t"):
-    #         parsed_data["alphaPropSD"] = lines.split()[1].split(",")
-    #
-    # param_file.close()
-
     parsed_data = mav_params_parser(parameter_filename, parameters)
 
-    for param, val in parsed_data.items():
-        val = val.split(",")
-        if len(val) > 1:
-            if len(val) != len(k_list):
-                logging.fatal("The number of values provided for the %s "
-                              "parameter are not the same as the number of "
-                              "'Ks' provided. Please correct this.", param)
-                sys.exit(0)
-            else:
-                sorted_data[param] = {}
-                for i, j in zip(k_list, val):
-                    sorted_data[param][i] = j
+    if parsed_data is not None:
+        for param, val in parsed_data.items():
+            val = val.split(",")
+            if len(val) > 1:
+                if len(val) != len(k_list):
+                    logging.fatal("The number of values provided for the %s "
+                                  "parameter are not the same as the number of "
+                                  "'Ks' provided. Please correct this.", param)
+                    sys.exit(0)
+                else:
+                    sorted_data[param] = {}
+                    for i, j in zip(k_list, val):
+                        sorted_data[param][i] = j
 
     return sorted_data
 
