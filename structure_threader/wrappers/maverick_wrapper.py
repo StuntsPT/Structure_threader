@@ -15,9 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import logging
 import sys
+import os
+
+import numpy as np
+
+from numpy.random import normal as rnorm
 
 try:
     import colorer.colorer as colorer
@@ -169,29 +173,21 @@ def maverick_merger(outdir, k_list, params, no_tests):
         return bestk
 
 
-def maverick_normalization(x_mean, x_sd, draws=1e6):
+def maverick_normalization(x_mean, x_sd, klist, draws=1e6, limit=95):
     """
-    Performs TI normalization as in the origina implementation from MavericK.
+    Performs TI normalization as in the original implementation from MavericK.
     This is essentially a port from the C++ code written by Bob Verity.
     """
-    from math import exp
-    from numpy.random import normal as rnorm
-    from numpy import array
 
-    # subtract maximum value from x_mean (this has no effect on final outcome
-    # but prevents under/overflow)
-    new_mean = [x - max(x_mean) for x in x_mean]
+    z = np.zeros([len(x_mean), draws])
 
-    # draw random values of Z (exponentiated and normalised draws)
-    x_list = []
-    y_list = []
-    z_array = array()
+    for i in range(z.shape[0]):
+        z[i] = np.sort(np.array(
+            [np.exp(rnorm(x_mean[i], x_sd[i])) for _ in range(draws)]))
 
-    for i in draws:
-        y_sum = 0
-        for j, k in zip(new_mean, x_sd):
-            normalized = rnorm(j, k)
-            x_list.append(normalized)
-            exponentiated = exp(normalized)
-            y_list.append(exponentiated)
-            y_sum += exponentiated
+    norm_res = dict((i, {"norm_mean": np.mean(z[i]),
+                         "lower_limit": np.percentile(z[i], 2.5),
+                         "upper_limit": np.percentile(z[i], 97.5)}) for i, k in
+                    enumerate(klist))
+
+    return norm_res
