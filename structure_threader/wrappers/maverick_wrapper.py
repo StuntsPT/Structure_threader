@@ -63,7 +63,7 @@ def mav_ti_in_use(parameter_filename):
     parsed_data = mav_params_parser(parameter_filename, ("thermodynamic_on",))
 
     use_ti = True
-    if parsed_data["thermodynamic_on"] in ("f", "false", "0"):
+    if parsed_data["thermodynamic_on"].lower() in ("f", "false", "0"):
         use_ti = False
         logging.error("Thermodynamic integration is turned OFF. "
                       "Using STRUCTURE criteria for bestK estimation.")
@@ -133,18 +133,14 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     return sorted_data
 
 
-def maverick_merger(outdir, k_list, params, no_tests):
+def maverick_merger(outdir, k_list, params_file, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     Also uses the data from these file to generate an
     "outputEvidenceNormalized.csv" file.
     """
-    files_list = ["outputEvidence.csv", "outputEvidenceDetails.csv"]
-    mrg_res_dir = os.path.join(outdir, "merged")
-    os.makedirs(mrg_res_dir, exist_ok=True)
-    log_evidence_mv = {}
 
-    def _mav_output_parser(filename, get_header):
+    def _mav_output_parser(filename):
         """
         Parse MavericK output files that need to be merged for TI calculations.
         Returns the contents of the parsed files as a single string, with or
@@ -154,8 +150,8 @@ def maverick_merger(outdir, k_list, params, no_tests):
         header = infile.readline()
         data = "".join(infile.readlines())
         infile.close()
-        if get_header is True:
-            data = header + data
+
+        data = header + data
 
         return data
 
@@ -173,23 +169,109 @@ def maverick_merger(outdir, k_list, params, no_tests):
         bestk_file.close()
         return [int(bestk)]
 
-    for filename in files_list:
-        header = True
-        if mav_ti_in_use(params) is True:
-            column_num = -2
+    def _gen_files_list(output_params, no_tests):
+        """
+        Defines the output filenames to read based on data from the parameter
+        file. Returns a list.
+        """
+        files_list = []
+
+        parsed_params = mav_params_parser(params_file, output_params)
+
+        # Generate a list with the files to parse and merge
+        try:
+            if parsed_params["outputEvidence_on"].lower() in ("f",
+                                                              "false", "0"):
+                no_tests = True
+                logging.error("'outputEvidence' is set to false. Tests will be "
+                              "skipped.")
+        except KeyError:
+            pass
+
+        try:
+            files_list.append(parsed_params["outputEvidence"])
+        except KeyError:
+            files_list.append("outputEvidence.csv")
+
+        try:
+            evidence_filename = parsed_params["outputEvidenceDetails"]
+        except KeyError:
+            evidence_filename = "outputEvidenceDetails.csv"
+
+        try:
+            if parsed_params["outputEvidenceDetails_on"].lower() in ("t",
+                                                                     "true",
+                                                                     "1"):
+                files_list.append(evidence_filename)
+        except KeyError:
+            files_list.append(evidence_filename)
+
+        return files_list, no_tests
+
+    def _write_normalized_output(evidence, k_list):
+        """
+        Writes the normalized output file.
+        """
+        param_entry = mav_params_parser(params_file, "outputEvidenceNormalised")
+
+        if param_entry is not None:
+            filename = param_entry["outputEvidenceNormalised"]
         else:
-            column_num = -4
+            filename = "outputEvidenceNormalised.csv"
+        filepath = os.path.join(mrg_res_dir, filename)
+
+        categories = ("harmonic_grand", "structure_grand", "TI")
+
+        indep = [["logEvidence_" + x + "Mean",
+                  "logEvidence_" + x + "SE"] for x in categories]
+
+        p_format = "posterior_{}{}"
+
+        posterior = [[[p_format.format(x.replace("_grand", ""), i)]
+                      for i in ["_mean", "_LL", "_UL"]]
+                     for x in categories]
+
+        normalized = {}
+        for cat in indep:
+            normalized[cat] = maverick_normalization(evidence[cat][0],
+                                                     evidence[cat][1], k_list)
+
+
+
+    output_params = ("outputEvidence", "outputEvidence_on",
+                     "outputEvidenceDetails_on", "outputEvidenceDetails")
+
+    files_list, no_tests = _gen_files_list(output_params, no_tests)
+
+    # Handle a new dirctory for merged data
+    mrg_res_dir = os.path.join(outdir, "merged")
+    os.makedirs(mrg_res_dir, exist_ok=True)
+
+    for filename in files_list:
         outfile = open(os.path.join(mrg_res_dir, filename), "w")
+        first_k = True
+        if filename == files_list[0]:
+            evidence = {}
+        else:
+            evidence = None
         for i in k_list:
             data_dir = os.path.join(outdir, "mav_K" + str(i))
-            data = _mav_output_parser(os.path.join(data_dir, filename), header)
-            header = False
-            if filename == "outputEvidence.csv":
-                log_evidence_mv[data.split(",")[0]] = float(
-                    data.split(",")[column_num])
-            outfile.write(data)
+            data = _mav_output_parser(os.path.join(data_dir, filename))
+            diff = data.split("\n")
+            if evidence == {}:
+                evidence = {head: [val] for head, val in
+                            zip(diff[0].split(","), diff[1].split(","))}
+            elif evidence is not None:
+                for j, k in zip(diff[0].split(","), diff[1].split(",")):
+                    evidence[j].append(k)
+            if first_k:
+                outfile.write(data)
+                first_k = False
+            else:
+                outfile.write(diff[1])
 
         outfile.close()
+
 
     if no_tests is False:
         bestk = _ti_test(outdir, log_evidence_mv)
