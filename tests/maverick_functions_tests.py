@@ -50,8 +50,9 @@ def test_mav_ti_in_use():
     """
     Tests if mav_params_parser() is working correctlly.
     """
-    assert mw.mav_ti_in_use("smalldata/parameters.txt") is True
-    assert mw.mav_ti_in_use("smalldata/parameters_f.txt") is False
+    assert mw.mav_ti_in_use({"thermodynamic_on": "1"}) is True
+    assert mw.mav_ti_in_use({"thermodynamic_on": "0"}) is False
+    assert mw.mav_ti_in_use({}) is True
 
 
 def test_mav_alpha_failsafe():
