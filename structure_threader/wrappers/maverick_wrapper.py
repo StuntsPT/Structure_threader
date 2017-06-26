@@ -280,7 +280,8 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             _write_normalized_output(evidence, k_list)
         outfile.close()
 
-
+    # TODO: BestK presentation
+    # TODO: Make tests comply with new code
 
     # if no_tests is False:
     #     bestk = _ti_test(outdir, log_evidence_mv)
