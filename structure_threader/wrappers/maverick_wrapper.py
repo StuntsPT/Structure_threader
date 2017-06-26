@@ -29,7 +29,7 @@ except ImportError:
     import structure_threader.colorer.colorer as colorer
 
 
-def mav_cli_generator(arg, k_val):
+def mav_cli_generator(arg, k_val, mav_params):
     """
     Generates and returns the command line to run MavericK.
     """
@@ -48,7 +48,7 @@ def mav_cli_generator(arg, k_val):
            root_dir, "-parameters", arg.params]
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
-    failsafe = mav_alpha_failsafe(arg.params, arg.k_list)
+    failsafe = mav_alpha_failsafe(mav_params, arg.k_list)
     for param in failsafe:
         if failsafe[param] is not False:
             cli += ["-" + param, failsafe[param][k_val]]
@@ -56,53 +56,43 @@ def mav_cli_generator(arg, k_val):
     return cli, output_dir
 
 
-def mav_ti_in_use(parameter_filename):
+def mav_ti_in_use(parameters):
     """
     Checks if TI is in use. Returns True or Flase.
     """
-    parsed_data = mav_params_parser(parameter_filename, ("thermodynamic_on",))
+    ti_param = "thermodynamic_on"
 
     use_ti = True
-    if parsed_data["thermodynamic_on"].lower() in ("f", "false", "0"):
-        use_ti = False
-        logging.error("Thermodynamic integration is turned OFF. "
-                      "Using STRUCTURE criteria for bestK estimation.")
-    elif not parsed_data:
+    try:
+        if parameters[ti_param].lower() in ("f", "false", "0"):
+            use_ti = False
+            logging.error("Thermodynamic integration is turned OFF. "
+                          "Using STRUCTURE criteria for bestK estimation.")
+    except KeyError:
         logging.error("The parameter setting Thermodynamic integration was not "
                       "found. Assuming the default 'on' value.")
 
     return use_ti
 
 
-def mav_params_parser(parameter_filename, query):
+def mav_params_parser(parameter_filename):
     """
     Parses MavericK's parameter file and returns the results in a dict.
-    Returns "None" if no matches are found.
     """
-    # Add a "\t" at the end of each string to avoid finding partial strings
-    # such as "alpha" and "alphaPropSD".
-    sane_query = tuple((x + '\t' for x in query))
-    print(sane_query)
-
     param_file = open(parameter_filename, "r")
-    result = {}
+    parameters = {}
 
     for lines in param_file:
-        if lines.startswith(sane_query):
+        if not lines.startswith(("#", "\n")):
             lines = lines.split()
-            result[lines[0]] = lines[1]
+            parameters[lines[0]] = lines[1]
 
     param_file.close()
 
-    if result == {}:
-        logging.error("Failed to find the parameter(s) '%s'. Please verify the "
-                      "parameter file, or the run options.", query)
-        result = None
-    else:
-        return result
+    return parameters
 
 
-def mav_alpha_failsafe(parameter_filename, k_list):
+def mav_alpha_failsafe(mav_params, k_list):
     """
     Implements a failsafe for discrepancies with multiple alpha values.
     Returns the following dict:
@@ -112,12 +102,12 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     """
     parameters = ("alpha", "alphaPropSD")
 
+    parsed_data = {x: mav_params[x] if x in mav_params else False for x in
+                   parameters}
     sorted_data = {x: False for x in parameters}
 
-    parsed_data = mav_params_parser(parameter_filename, parameters)
-
-    if parsed_data is not None:
-        for param, val in parsed_data.items():
+    for param, val in parsed_data.items():
+        if val:
             val = val.split(",")
             if len(val) > 1:
                 if len(val) != len(k_list):
@@ -133,7 +123,7 @@ def mav_alpha_failsafe(parameter_filename, k_list):
     return sorted_data
 
 
-def maverick_merger(outdir, k_list, params_file, no_tests):
+def maverick_merger(outdir, k_list, mav_params, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
     Also uses the data from these file to generate an
@@ -155,19 +145,19 @@ def maverick_merger(outdir, k_list, params_file, no_tests):
 
         return data
 
-    def _ti_test(outdir, log_evidence_mv):
-        """
-        Write a bestK result based in TI results.
-        """
-        bestk_dir = os.path.join(outdir, "bestK")
-        os.makedirs(bestk_dir, exist_ok=True)
-        bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
-        bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
-        output_text = ("MavericK's estimation test revealed "
-                       "that the best value of 'K' is: {}\n".format(bestk))
-        bestk_file.write(output_text)
-        bestk_file.close()
-        return [int(bestk)]
+    # def _ti_test(outdir, log_evidence_mv):
+    #     """
+    #     Write a bestK result based in TI results.
+    #     """
+    #     bestk_dir = os.path.join(outdir, "bestK")
+    #     os.makedirs(bestk_dir, exist_ok=True)
+    #     bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
+    #     bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
+    #     output_text = ("MavericK's estimation test revealed "
+    #                    "that the best value of 'K' is: {}\n".format(bestk))
+    #     bestk_file.write(output_text)
+    #     bestk_file.close()
+    #     return [int(bestk)]
 
     def _gen_files_list(output_params, no_tests):
         """
@@ -176,34 +166,30 @@ def maverick_merger(outdir, k_list, params_file, no_tests):
         """
         files_list = []
 
-        parsed_params = mav_params_parser(params_file, output_params)
+        parsed_params = {x: mav_params[x] if x in mav_params else False for x in
+                         output_params}
 
         # Generate a list with the files to parse and merge
-        try:
-            if parsed_params["outputEvidence_on"].lower() in ("f",
-                                                              "false", "0"):
-                no_tests = True
-                logging.error("'outputEvidence' is set to false. Tests will be "
-                              "skipped.")
-        except KeyError:
-            pass
 
-        try:
+        if parsed_params["outputEvidence_on"].lower() in ("f", "false", "0"):
+            no_tests = True
+            logging.error("'outputEvidence' is set to false. Tests will be "
+                          "skipped.")
+        if parsed_params["outputEvidence"]:
             files_list.append(parsed_params["outputEvidence"])
-        except KeyError:
+        else:
             files_list.append("outputEvidence.csv")
 
-        try:
+        if parsed_params["outputEvidenceDetails"]:
             evidence_filename = parsed_params["outputEvidenceDetails"]
-        except KeyError:
+        else:
             evidence_filename = "outputEvidenceDetails.csv"
 
-        try:
-            if parsed_params["outputEvidenceDetails_on"].lower() in ("t",
-                                                                     "true",
-                                                                     "1"):
-                files_list.append(evidence_filename)
-        except KeyError:
+        if parsed_params["outputEvidenceDetails_on"].lower() in ("f",
+                                                                 "false",
+                                                                 "0"):
+            pass
+        else:
             files_list.append(evidence_filename)
 
         return files_list, no_tests
@@ -212,29 +198,50 @@ def maverick_merger(outdir, k_list, params_file, no_tests):
         """
         Writes the normalized output file.
         """
-        param_entry = mav_params_parser(params_file, "outputEvidenceNormalised")
+        from itertools import chain
+        param_entry = "outputEvidenceNormalised"
 
-        if param_entry is not None:
-            filename = param_entry["outputEvidenceNormalised"]
+        if param_entry in mav_params:
+            filename = mav_params["outputEvidenceNormalised"]
         else:
             filename = "outputEvidenceNormalised.csv"
         filepath = os.path.join(mrg_res_dir, filename)
 
         categories = ("harmonic_grand", "structure_grand", "TI")
 
-        indep = [["logEvidence_" + x + "Mean",
-                  "logEvidence_" + x + "SE"] for x in categories]
+        indep = [["logEvidence_" + x + "Mean" if x != "TI" else "logEvidence_"
+                  + x,
+                  "logEvidence_" + x + "SE" if x != "TI" else "logEvidence_"
+                  + x + "_SE"] for x in categories]
 
         p_format = "posterior_{}{}"
 
         posterior = [[[p_format.format(x.replace("_grand", ""), i)]
                       for i in ["_mean", "_LL", "_UL"]]
                      for x in categories]
+        flat_posterior = list(chain.from_iterable(
+            list(chain.from_iterable(posterior))))
 
-        normalized = {}
+        normalized = []
         for cat in indep:
-            normalized[cat] = maverick_normalization(evidence[cat][0],
-                                                     evidence[cat][1], k_list)
+            for i in cat:
+                evidence[i] = [float(x) for x in evidence[i]]
+            normalized.append(maverick_normalization(evidence[cat[0]],
+                                                     evidence[cat[1]], k_list))
+
+        dtypes = ("norm_mean", "lower_limit", "upper_limit")
+
+        outfile = open(filepath, 'w')
+
+        outfile.write(",".join(["K", "posterior_exhaustive"] + flat_posterior))
+        outfile.write("\n")
+        for k in k_list:
+            line = str(k) + ",N/A"
+            for i in normalized:
+                line += "," + ",".join([str(i[k][x]) for x in dtypes])
+
+            outfile.write(line)
+            outfile.write("\n")
 
 
 
@@ -269,13 +276,15 @@ def maverick_merger(outdir, k_list, params_file, no_tests):
                 first_k = False
             else:
                 outfile.write(diff[1])
-
+        if evidence is not None:
+            _write_normalized_output(evidence, k_list)
         outfile.close()
 
 
-    if no_tests is False:
-        bestk = _ti_test(outdir, log_evidence_mv)
-        return bestk
+
+    # if no_tests is False:
+    #     bestk = _ti_test(outdir, log_evidence_mv)
+    #     return bestk
 
 
 def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
@@ -283,7 +292,6 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     Performs TI normalization as in the original implementation from MavericK.
     This is essentially a port from the C++ code written by Bob Verity.
     """
-
     # subtract maximum value from x_mean (this has no effect on final outcome
     # but prevents under/overflow)
     # Just like in the original implementation (even though it should not be
