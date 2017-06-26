@@ -78,7 +78,8 @@ def runprogram(wrapped_prog, iterations, arg):
         cli, output_file = sw.str_cli_generator(arg, k_val, rep_num)
 
     elif wrapped_prog == "maverick":  # Run MavericK
-        cli, output_dir = mw.mav_cli_generator(arg, k_val)
+        mav_params = mw.mav_params_parser(arg.params)
+        cli, output_dir = mw.mav_cli_generator(arg, k_val, mav_params)
 
     else:  # Run fastStructure
         cli, output_file = fsw.fs_cli_generator(k_val, arg)
@@ -287,7 +288,8 @@ def full_run(arg):
     structure_threader(wrapped_prog, arg)
 
     if wrapped_prog == "maverick":
-        bestk = mw.maverick_merger(arg.outpath, arg.k_list, arg.params,
+        mav_params = mw.mav_params_parser(arg.params)
+        bestk = mw.maverick_merger(arg.outpath, arg.k_list, mav_params,
                                    arg.notests)
         arg.notests = True
 
