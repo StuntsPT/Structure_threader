@@ -34,14 +34,14 @@ class AuxSanity(object):
 
     def log_error(self, msg, aux):
 
-        logging.error("Badly formatted {f1}file (provided with --{f1})"
-                      " with error:\n\n"
-                      "{f2}\n\n"
-                      "Please correct the provided {f1}file and re-run"
-                      " the plotting operation of structure_threader "
-                      "with the following command:\n\n"
-                      "structure_threader plot <opts>".format(
-                          f1=aux, f2=msg))
+        logging.critical("Badly formatted {f1}file (provided with --{f1})"
+                         " with error:\n\n"
+                         "{f2}\n\n"
+                         "Please correct the provided {f1}file and re-run"
+                         " the plotting operation of structure_threader "
+                         "with the following command:\n\n"
+                         "structure_threader plot <opts>".format(
+                             f1=aux, f2=msg))
         raise SystemExit
 
     def ind_mismatch(self, exp_array, kvals):
