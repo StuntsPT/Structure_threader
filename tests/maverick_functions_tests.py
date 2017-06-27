@@ -89,6 +89,8 @@ def test_maverick_merger():
         A function to generate sha256 checksum of all contents of a directory.
         """
         fnamelst = os.listdir(dir_to_test)
+        # Skip the file that contains randomized data
+        fnamelst = [x for x in fnamelst if x != "outputEvidenceNormalised.csv"]
         fnamelst = [os.path.join(dir_to_test, fname) for fname in fnamelst]
         hashes = [(hashlib.sha256(open(fname, 'rb').read()).digest())
                   for fname in fnamelst]
@@ -98,6 +100,6 @@ def test_maverick_merger():
     mav_params = mw.mav_params_parser("smalldata/parameters.txt")
     mw.maverick_merger("files", [1, 2, 3], mav_params, False)
     known_hashes = _hash_function("files/test_merged")
-    generated_hashes = _hash_function("files/merged")[1:]
+    generated_hashes = _hash_function("files/merged")
 
     assert known_hashes == generated_hashes
