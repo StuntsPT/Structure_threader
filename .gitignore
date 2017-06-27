@@ -39,6 +39,8 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+tests/files/merged/*
+tests/files/bestK/*
 
 # Translations
 *.mo
