@@ -22,7 +22,6 @@ import mockups
 import structure_threader.wrappers.maverick_wrapper as mw
 
 
-
 def test_mav_cli_generator():
     """
     Tests if mav_cli_generator() is working correctlly.
@@ -30,6 +29,7 @@ def test_mav_cli_generator():
     # Define arguments
     arg = mockups.Arguments()
     k_val = 4
+    parameters = {}
 
     mock_cli = ["EP", "-Kmin", str(k_val), "-Kmax", str(k_val), "-data",
                 "IF", "-outputRoot", "mav_K4/", "-masterRoot", "/",
@@ -41,7 +41,7 @@ def test_mav_cli_generator():
         if arg.notests is True:
             mock_cli += ["-thermodynamic_on", "f"]
 
-        returned_cli, out_dir = mw.mav_cli_generator(arg, k_val)
+        returned_cli, out_dir = mw.mav_cli_generator(arg, k_val, parameters)
         assert returned_cli == mock_cli
         assert out_dir == "mav_K4/"
 
@@ -60,16 +60,23 @@ def test_mav_alpha_failsafe():
     Tests if mav_alpha_failsafe() is working correctlly.
     """
     k_list = [2, 3, 4, 5]
-    assert mw.mav_alpha_failsafe("smalldata/parameters.txt", k_list) == {
-        "alpha": False, "alphaPropSD": False}
-    assert mw.mav_alpha_failsafe("smalldata/parameters_a.txt", k_list) == {
-        "alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"}, "alphaPropSD": False}
-    assert mw.mav_alpha_failsafe("smalldata/parameters_as.txt", k_list) == {
-        "alpha": False,
-        "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07", 5: "0.06"}}
-    assert mw.mav_alpha_failsafe("smalldata/parameters_a_as.txt", k_list) == {
-        "alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"},
-        "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07", 5: "0.06"}}
+    mock_params = [{"alpha": "1", "alphaPropSD": "0.1"},
+                   {"alpha": "0.9,0.8,0.7,0.6", "alphaPropSD": "0.1"},
+                   {"alpha": "1", "alphaPropSD": "0.09,0.08,0.07,0.06"},
+                   {"alpha": "0.9,0.8,0.7,0.6",
+                    "alphaPropSD": "0.09,0.08,0.07,0.06"}]
+
+    expected_results = [{"alpha": False, "alphaPropSD": False},
+                        {"alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"},
+                         "alphaPropSD": False},
+                        {"alpha": False,
+                         "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07",
+                                         5: "0.06"}},
+                        {"alpha": {2: "0.9", 3: "0.8", 4: "0.7", 5: "0.6"},
+                         "alphaPropSD": {2: "0.09", 3: "0.08", 4: "0.07",
+                                         5: "0.06"}}]
+    for exp, mck in zip(expected_results, mock_params):
+        assert mw.mav_alpha_failsafe(mck, k_list) == exp
 
 
 def test_maverick_merger():
@@ -88,8 +95,9 @@ def test_maverick_merger():
 
         return hashes
 
-    mw.maverick_merger("files", [1, 2, 3], "smalldata/parameters.txt", False)
+    mav_params = mw.mav_params_parser("smalldata/parameters.txt")
+    mw.maverick_merger("files", [1, 2, 3], mav_params, False)
     known_hashes = _hash_function("files/test_merged")
-    generated_hashes = _hash_function("files/merged")
+    generated_hashes = _hash_function("files/merged")[1:]
 
     assert known_hashes == generated_hashes

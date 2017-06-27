@@ -96,7 +96,7 @@ def mav_alpha_failsafe(mav_params, k_list):
     """
     Implements a failsafe for discrepancies with multiple alpha values.
     Returns the following dict:
-    {paramter: {k:param_value}, parameter: {k: param_value}}
+    {parameter: {k:param_value}, parameter: {k: param_value}}
     If the paramterer values are a single value, False is returned:
     {paramter: False, parameter: {k: param_value}}
     """
@@ -287,6 +287,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
                 first_k = False
             else:
                 outfile.write(diff[1])
+                outfile.write("\n")
         if evidence is not None:
             bestk = _write_normalized_output(evidence, k_list, mav_params)
         outfile.close()
