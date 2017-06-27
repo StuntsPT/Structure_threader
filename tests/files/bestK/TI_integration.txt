@@ -1,1 +1,0 @@
-MavericK's estimation test revealed that the best value of 'K' is: 3
