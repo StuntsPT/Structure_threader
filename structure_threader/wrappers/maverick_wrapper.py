@@ -145,19 +145,28 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return data
 
-    # def _ti_test(outdir, log_evidence_mv):
-    #     """
-    #     Write a bestK result based in TI results.
-    #     """
-    #     bestk_dir = os.path.join(outdir, "bestK")
-    #     os.makedirs(bestk_dir, exist_ok=True)
-    #     bestk = max(log_evidence_mv, key=log_evidence_mv.get).replace("K", "1")
-    #     bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
-    #     output_text = ("MavericK's estimation test revealed "
-    #                    "that the best value of 'K' is: {}\n".format(bestk))
-    #     bestk_file.write(output_text)
-    #     bestk_file.close()
-    #     return [int(bestk)]
+    def _ti_test(outdir, norm_evidence, parameters):
+        """
+        Write a bestK result based on TI or STRUCTURE results.
+        """
+        if mav_ti_in_use(parameters):
+            # Use TI for bestK estimation
+            criteria = norm_evidence[2]
+        else:
+            # Use Structure for bestK estimation
+            criteria = norm_evidence[1]
+        means = {x: y["norm_mean"] for x, y in criteria.items()}
+
+        bestk_dir = os.path.join(outdir, "bestK")
+        os.makedirs(bestk_dir, exist_ok=True)
+        bestk = max(means, key=means.get)
+        bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
+        output_text = ("MavericK's estimation test revealed "
+                       "that the best value of 'K' is: {}\n".format(bestk))
+        bestk_file.write(output_text)
+        bestk_file.close()
+        return [int(bestk)]
+        # TODO: Draw a plot!
 
     def _gen_files_list(output_params, no_tests):
         """
@@ -194,7 +203,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return files_list, no_tests
 
-    def _write_normalized_output(evidence, k_list):
+    def _write_normalized_output(evidence, k_list, parameters):
         """
         Writes the normalized output file.
         """
@@ -243,7 +252,9 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             outfile.write(line)
             outfile.write("\n")
 
-
+        if no_tests is False:
+            bestk = _ti_test(outdir, normalized, parameters)
+            return bestk
 
     output_params = ("outputEvidence", "outputEvidence_on",
                      "outputEvidenceDetails_on", "outputEvidenceDetails")
@@ -277,15 +288,10 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             else:
                 outfile.write(diff[1])
         if evidence is not None:
-            _write_normalized_output(evidence, k_list)
+            bestk = _write_normalized_output(evidence, k_list, mav_params)
         outfile.close()
 
-    # TODO: BestK presentation
-    # TODO: Make tests comply with new code
-
-    # if no_tests is False:
-    #     bestk = _ti_test(outdir, log_evidence_mv)
-    #     return bestk
+    return bestk
 
 
 def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
