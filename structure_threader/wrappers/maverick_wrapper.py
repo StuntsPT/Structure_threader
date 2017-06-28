@@ -124,7 +124,7 @@ def mav_alpha_failsafe(mav_params, k_list):
     return sorted_data
 
 
-def _ti_test(outdir, norm_evidence, ti_in_use):
+def ti_test(outdir, norm_evidence, ti_in_use):
     """
     Write a bestK result based on TI or STRUCTURE results.
     """
@@ -170,8 +170,6 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
         data = header + data
 
         return data
-
-
 
     def _gen_files_list(output_params, no_tests):
         """
@@ -258,7 +256,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             outfile.write("\n")
 
         if no_tests is False:
-            bestk = _ti_test(outdir, normalized, ti_in_use)
+            bestk = ti_test(outdir, normalized, ti_in_use)
             return bestk
 
     output_params = ("outputEvidence", "outputEvidence_on",
