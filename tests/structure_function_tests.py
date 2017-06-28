@@ -43,3 +43,14 @@ def test_str_cli_generator():
 
     assert returned_cli == mock_cli
     assert returned_outfile == outfile
+
+
+def test_str_param_checker():
+    """
+    Tests if the STRUCTURE parameter file checker is working.
+    """
+    arg = mockups.Arguments()
+    arg.infile = "smalldata/Reduced_dataset.structure"
+    arg.params = "mainparams"
+    sw.str_param_checker(arg)
+    assert arg.params == ["-m", "mainparams", "-e", "extraparams"]
