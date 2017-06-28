@@ -19,6 +19,7 @@ import logging
 import sys
 import os
 
+from itertools import chain
 import numpy as np
 
 from numpy.random import normal as rnorm
@@ -207,7 +208,6 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
         """
         Writes the normalized output file.
         """
-        from itertools import chain
         param_entry = "outputEvidenceNormalised"
 
         if param_entry in mav_params:
@@ -230,8 +230,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
         posterior = [[[p_format.format(x.replace("_grand", ""), i)]
                       for i in ["_mean", "_LL", "_UL"]]
                      for x in categories]
-        flat_posterior = list(chain.from_iterable(
-            list(chain.from_iterable(posterior))))
+        flat_posterior = list(chain(*list(chain(*posterior))))
 
         normalized = []
         for cat in indep:
@@ -303,9 +302,6 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     Performs TI normalization as in the original implementation from MavericK.
     This is essentially a port from the C++ code written by Bob Verity.
     """
-    print(x_mean)
-    print(x_sd)
-    print(klist)
     # subtract maximum value from x_mean (this has no effect on final outcome
     # but prevents under/overflow)
     # Just like in the original implementation (even though it should not be
