@@ -66,8 +66,8 @@ def mav_ti_in_use(parameters):
     try:
         if parameters[ti_param].lower() in ("f", "false", "0"):
             use_ti = False
-            logging.error("Thermodynamic integration is turned OFF. "
-                          "Using STRUCTURE criteria for bestK estimation.")
+            logging.info("Thermodynamic integration is turned OFF. "
+                         "Using STRUCTURE criteria for bestK estimation.")
     except KeyError:
         logging.error("The parameter setting Thermodynamic integration was not "
                       "found. Assuming the default 'on' value.")
@@ -126,7 +126,7 @@ def mav_alpha_failsafe(mav_params, k_list):
 def maverick_merger(outdir, k_list, mav_params, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
-    Also uses the data from these file to generate an
+    Also uses the data from these files to generate an
     "outputEvidenceNormalized.csv" file.
     """
 
@@ -145,11 +145,11 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return data
 
-    def _ti_test(outdir, norm_evidence, parameters):
+    def _ti_test(outdir, norm_evidence, ti_in_use):
         """
         Write a bestK result based on TI or STRUCTURE results.
         """
-        if mav_ti_in_use(parameters):
+        if ti_in_use:
             # Use TI for bestK estimation
             criteria = norm_evidence[2]
         else:
@@ -203,7 +203,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return files_list, no_tests
 
-    def _write_normalized_output(evidence, k_list, parameters):
+    def _write_normalized_output(evidence, k_list, parameters, ti_in_use):
         """
         Writes the normalized output file.
         """
@@ -216,7 +216,9 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             filename = "outputEvidenceNormalised.csv"
         filepath = os.path.join(mrg_res_dir, filename)
 
-        categories = ("harmonic_grand", "structure_grand", "TI")
+        categories = ["harmonic_grand", "structure_grand"]
+        if ti_in_use:
+            categories += ["TI"]
 
         indep = [["logEvidence_" + x + "Mean" if x != "TI" else "logEvidence_"
                   + x,
@@ -253,13 +255,14 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             outfile.write("\n")
 
         if no_tests is False:
-            bestk = _ti_test(outdir, normalized, parameters)
+            bestk = _ti_test(outdir, normalized, ti_in_use)
             return bestk
 
     output_params = ("outputEvidence", "outputEvidence_on",
                      "outputEvidenceDetails_on", "outputEvidenceDetails")
 
     files_list, no_tests = _gen_files_list(output_params, no_tests)
+    ti_in_use = mav_ti_in_use(mav_params)
 
     # Handle a new dirctory for merged data
     mrg_res_dir = os.path.join(outdir, "merged")
@@ -289,7 +292,8 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
                 outfile.write(diff[1])
                 outfile.write("\n")
         if evidence is not None:
-            bestk = _write_normalized_output(evidence, k_list, mav_params)
+            bestk = _write_normalized_output(evidence, k_list, mav_params,
+                                             ti_in_use)
         outfile.close()
 
     return bestk
