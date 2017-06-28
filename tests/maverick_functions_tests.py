@@ -55,6 +55,27 @@ def test_mav_ti_in_use():
     assert mw.mav_ti_in_use({}) is True
 
 
+def test_mav_params_parser():
+    """
+    Test if maverick parameters are being parsed correctlly.
+    """
+    mock_parameters = {'headerRow_on': 't', 'popCol_on': 't',
+                       'ploidyCol_on': 'f', 'ploidy': '2', 'missingData': '-9',
+                       'Kmin': '1', 'Kmax': '4', 'admix_on': 't',
+                       'fixAlpha_on': 'f', 'alpha': '1.0',
+                       'alphaPropSD': '0.10', 'exhaustive_on': 'f',
+                       'mainRepeats': '5', 'mainBurnin': '500',
+                       'mainSamples': '4000', 'thermodynamic_on': 't',
+                       'thermodynamicRungs': '20',
+                       'thermodynamicBurnin': '1000',
+                       'thermodynamicSamples': '5000', 'outputLog_on': 't',
+                       'outputLikelihood_on': 't', 'outputQmatrix_ind_on': 't',
+                       'outputQmatrix_pop_on': 't', 'outputEvidence_on': 't',
+                       'outputEvidenceDetails_on': 't'}
+
+    assert mw.mav_params_parser("smalldata/parameters.txt") == mock_parameters
+
+
 def test_mav_alpha_failsafe():
     """
     Tests if mav_alpha_failsafe() is working correctlly.
