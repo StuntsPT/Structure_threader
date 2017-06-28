@@ -123,18 +123,7 @@ def structure_threader(wrapped_prog, arg):
     if wrapped_prog != "structure":
         arg.replicates = [1]
     else:
-        os.chdir(os.path.dirname(arg.infile))
-        if arg.params is not None:
-            mainparams = arg.params
-            extraparams = os.path.join(os.path.dirname(arg.params),
-                                       "extraparams")
-            if os.path.isfile(extraparams) is False:
-                logging.warning("No 'extraparams' file was found. An empty one "
-                                "was created, but it is highly recommended "
-                                "that you fill one out.")
-                touch = open(extraparams, 'w')
-                touch.close()
-            arg.params = ["-m", mainparams, "-e", extraparams]
+        sw.str_param_checker(arg)
 
     jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
 

@@ -16,6 +16,12 @@
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import logging
+
+try:
+    import colorer.colorer as colorer
+except ImportError:
+    import structure_threader.colorer.colorer as colorer
 
 
 def str_cli_generator(arg, k_val, rep_num):
@@ -30,3 +36,21 @@ def str_cli_generator(arg, k_val, rep_num):
         cli += arg.params
 
     return cli, output_file
+
+
+def str_param_checker(arg):
+    """
+    Handles the parameter files for STRUCTURE (or lack thereoff)
+    """
+    os.chdir(os.path.dirname(arg.infile))
+    if arg.params is not None:
+        mainparams = arg.params
+        extraparams = os.path.join(os.path.dirname(arg.params),
+                                   "extraparams")
+        if os.path.isfile(extraparams) is False:
+            logging.warning("No 'extraparams' file was found. An empty one "
+                            "was created, but it is highly recommended "
+                            "that you fill one out.")
+            touch = open(extraparams, 'w')
+            touch.close()
+        arg.params = ["-m", mainparams, "-e", extraparams]
