@@ -142,3 +142,30 @@ def test_maverick_normalization():
                                                  draws=int(1e5)).keys())
 
     assert real_result == list(k_list)
+
+
+def test_ti_test():
+    """
+    Tests if the function mw.ti_test is working correctlly.
+    """
+    mock_norm_res = [{1: {'norm_mean': 9.999999999895067e-07,
+                          'lower_limit': 9.9999999998950416e-07,
+                          'upper_limit': 9.9999999998950416e-07},
+                      2: {'norm_mean': 1.0000000000000086e-06,
+                          'lower_limit': 9.8867157962850701e-07,
+                          'upper_limit': 1.0114520038570394e-06}},
+                     {1: {'norm_mean': 9.9999999999999614e-07,
+                          'lower_limit': 8.377104935665546e-07,
+                          'upper_limit': 1.1841839939231559e-06},
+                      2: {'norm_mean': 1.0000000000000207e-06,
+                          'lower_limit': 1.8760359430467156e-07,
+                          'upper_limit': 3.1663015552647947e-06}},
+                     {1: {'norm_mean': 9.999999999895067e-07,
+                          'lower_limit': 9.9999999998950416e-07,
+                          'upper_limit': 9.9999999998950416e-07},
+                      2: {'norm_mean': 9.9999999999999148e-07,
+                          'lower_limit': 9.9846175097142567e-07,
+                          'upper_limit': 1.0015368125857768e-06}}]
+    outdir = "files"
+    assert mw.ti_test(outdir, mock_norm_res, True) == [2]
+    assert mw.ti_test(outdir, mock_norm_res[:-1], False) == [2]
