@@ -124,6 +124,31 @@ def mav_alpha_failsafe(mav_params, k_list):
     return sorted_data
 
 
+def _ti_test(outdir, norm_evidence, ti_in_use):
+    """
+    Write a bestK result based on TI or STRUCTURE results.
+    """
+    if ti_in_use:
+        # Use TI for bestK estimation
+        criteria = norm_evidence[2]
+    else:
+        # Use Structure for bestK estimation
+        criteria = norm_evidence[1]
+    means = {x: y["norm_mean"] for x, y in criteria.items()}
+
+    bestk_dir = os.path.join(outdir, "bestK")
+    os.makedirs(bestk_dir, exist_ok=True)
+    bestk = max(means, key=means.get)
+    bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
+    output_text = ("MavericK's estimation test revealed "
+                   "that the best value of 'K' is: {}\n".format(bestk))
+    bestk_file.write(output_text)
+    bestk_file.close()
+
+    return [int(bestk)]
+    # TODO: Draw a plot!
+
+
 def maverick_merger(outdir, k_list, mav_params, no_tests):
     """
     Grabs the split outputs from MavericK and merges them in a single directory.
@@ -146,28 +171,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return data
 
-    def _ti_test(outdir, norm_evidence, ti_in_use):
-        """
-        Write a bestK result based on TI or STRUCTURE results.
-        """
-        if ti_in_use:
-            # Use TI for bestK estimation
-            criteria = norm_evidence[2]
-        else:
-            # Use Structure for bestK estimation
-            criteria = norm_evidence[1]
-        means = {x: y["norm_mean"] for x, y in criteria.items()}
 
-        bestk_dir = os.path.join(outdir, "bestK")
-        os.makedirs(bestk_dir, exist_ok=True)
-        bestk = max(means, key=means.get)
-        bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
-        output_text = ("MavericK's estimation test revealed "
-                       "that the best value of 'K' is: {}\n".format(bestk))
-        bestk_file.write(output_text)
-        bestk_file.close()
-        return [int(bestk)]
-        # TODO: Draw a plot!
 
     def _gen_files_list(output_params, no_tests):
         """
