@@ -124,3 +124,21 @@ def test_maverick_merger():
     generated_hashes = _hash_function("files/merged")
 
     assert known_hashes == generated_hashes
+
+
+def test_maverick_normalization():
+    """
+    Test weather the maverick normalization is working.
+    This is a fuzzy test, since its result is allways different due to using
+    random numbers.
+    We cannot test the result, but we can test if the function works and returns
+    what it was supposed to (in this case, a dict).
+    """
+    x_mean = [-312.847354, -301.40566]
+    x_sd = [0.0, 0.004978]
+    k_list = range(1, 3)
+
+    real_result = list(mw.maverick_normalization(x_mean, x_sd, k_list,
+                                                 draws=int(1e5)).keys())
+
+    assert real_result == list(k_list)
