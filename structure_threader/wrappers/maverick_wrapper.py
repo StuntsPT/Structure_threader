@@ -203,7 +203,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
 
         return files_list, no_tests
 
-    def _write_normalized_output(evidence, k_list, parameters, ti_in_use):
+    def _write_normalized_output(evidence, k_list, ti_in_use):
         """
         Writes the normalized output file.
         """
@@ -292,8 +292,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
                 outfile.write(diff[1])
                 outfile.write("\n")
         if evidence is not None:
-            bestk = _write_normalized_output(evidence, k_list, mav_params,
-                                             ti_in_use)
+            bestk = _write_normalized_output(evidence, k_list, ti_in_use)
         outfile.close()
 
     return bestk
@@ -304,6 +303,9 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     Performs TI normalization as in the original implementation from MavericK.
     This is essentially a port from the C++ code written by Bob Verity.
     """
+    print(x_mean)
+    print(x_sd)
+    print(klist)
     # subtract maximum value from x_mean (this has no effect on final outcome
     # but prevents under/overflow)
     # Just like in the original implementation (even though it should not be
