@@ -653,16 +653,19 @@ class PlotList(AuxSanity):
                                             kvals))
             raise SystemExit(1)
 
+        # Adapt vspace to number of k
+        vspace = .25 / len(kvals)
+
         # Set the figure object with the subplots and their titles already
         # specified
         fig = tools.make_subplots(
             rows=nplots,
             cols=1,
             shared_xaxes=True,
-            subplot_titles=sorted(
-                [basename(self.kvals[k].file_path) for k in kvals
-                 if k in self.kvals], reverse=True),
-            vertical_spacing=0.05,
+            subplot_titles=[
+                basename(self.kvals[k].file_path) for k in
+                sorted(kvals, reverse=True) if k in self.kvals],
+            vertical_spacing=vspace,
             print_grid=False)
 
         shape_list = []
@@ -690,7 +693,15 @@ class PlotList(AuxSanity):
                 qvals = kobj.qvals.T
 
             # Iterate over each meanQ column (corresponding to each cluster)
+            counter = 0
             for p, i in enumerate(qvals):
+
+                try:
+                    clr = c[counter]
+                    counter += 1
+                except IndexError:
+                    counter = 0
+                    clr = c[counter]
 
                 # Create Bar trace for each cluster
                 current_bar = go.Bar(
@@ -708,8 +719,7 @@ class PlotList(AuxSanity):
                     text=["Assignment: {}%".format(x * 100) for x in i],
                     # Customization of bars
                     marker=dict(
-                        # TODO: Only 12 colors supported for now
-                        color=c[p],
+                        color=clr,
                         line=dict(
                             color='grey',
                             width=2,
@@ -790,10 +800,21 @@ class PlotList(AuxSanity):
         fig["layout"].update(shapes=shape_list)  # Update first xaxis
         fig["layout"]["xaxis1"].update(**xdata)
 
+        # Adapt figure size to number of K. Use auto-size for less
+        # than 3 K.
+        if len(kvals) > 3:
+            height = 250 * len(kvals)
+            size = {"autosize": False,
+                    "width": 1800,
+                    "height": height}
+        else:
+            size = {"autosize": True}
+
         fig["layout"].update(barmode="stack",
                              bargap=0,
                              margin={"b": bmargin},
-                             legend={"x": 1, "y": 0.5})
+                             legend={"x": 1, "y": 0.5},
+                             **size)
 
         # Determine file name. If a single K value is provided, then
         # adapt from the ouptut name of that K value file.
@@ -848,6 +869,7 @@ class PlotList(AuxSanity):
         else:
             qvalues = self.kvals[kval].qvals
 
+        counter = 0
         for i in range(kval):
 
             # Determine color/pattern arguments
@@ -858,9 +880,11 @@ class PlotList(AuxSanity):
                 # Get bar color. If K exceeds the 12 colors, generate random
                 # color
                 try:
-                    clr = clist[i]
+                    clr = clist[counter]
+                    counter += 1
                 except IndexError:
-                    clr = np.random.rand(3, 1)
+                    counter = 0
+                    clr = clist[counter]
 
                 kwargs["facecolor"] = clr
                 kwargs["edgecolor"] = "grey"
