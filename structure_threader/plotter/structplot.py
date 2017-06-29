@@ -27,8 +27,8 @@ from plotly import tools
 
 import numpy as np
 import matplotlib
-import matplotlib.pyplot as plt
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
 try:
@@ -943,7 +943,10 @@ class PlotList(AuxSanity):
 
 
 def plot_normalization(norm_dict, outdir):
-
+    """
+    Draws a bar plot with normalized bestK estimation for MavericK.
+    Result is similar to the plot produced by the R functions from MavericK.
+    """
     plt.clf()
 
     keys = ["norm_mean", "lower_limit", "upper_limit"]
