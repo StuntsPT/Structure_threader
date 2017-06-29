@@ -316,7 +316,13 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
         y_array = np.array([np.exp(rnorm(x_mean[i], x_sd[i]))
                             for _ in range(draws)])
 
-        z_array[i] = np.sort(y_array/sum(y_array))
+        z_array[i] = y_array
+
+    sum_ar = sum(z_array)
+
+    for i in range(draws):
+
+        z_array[:, i] = z_array[:, i] / sum_ar[i]
 
     # Define limit tails
     l_limit = (100 - limit) / 2
