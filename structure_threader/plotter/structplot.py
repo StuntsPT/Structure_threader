@@ -246,22 +246,20 @@ class PlotK:
         end_parsing_string = "estimated allele frequencies in each " \
                              "cluster"
 
-        with open(self.file_path) as fh:
-            for line in fh:
+        with open(self.file_path) as flh:
+            for line in flh:
                 # The string that marks the beginning of the parsing was found
                 if line.strip().lower().startswith(parsing_string):
                     # Check if the next line has the signature of an output
                     # file generated with the USEPOPINFO flag.
-                    if next(fh).lower().startswith(popinfo_string):
-                        self._parse_usepopinfo(fh, end_parsing_string)
+                    if next(flh).lower().startswith(popinfo_string):
+                        self._parse_usepopinfo(flh, end_parsing_string)
                         break
                     # THe output file generated was NOT generated with the
                     # USEPOPINFO flag.
                     else:
-                        self._parse_nousepopinfo(fh, end_parsing_string)
+                        self._parse_nousepopinfo(flh, end_parsing_string)
                         break
-
-        pass
 
     def _parse_faststructure(self):
         """
