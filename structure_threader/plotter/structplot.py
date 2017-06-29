@@ -659,8 +659,9 @@ class PlotList(AuxSanity):
             rows=nplots,
             cols=1,
             shared_xaxes=True,
-            subplot_titles=[basename(self.kvals[k].file_path) for k in kvals
-                            if k in self.kvals],
+            subplot_titles=sorted(
+                [basename(self.kvals[k].file_path) for k in kvals
+                 if k in self.kvals], reverse=True),
             vertical_spacing=0.05,
             print_grid=False)
 
