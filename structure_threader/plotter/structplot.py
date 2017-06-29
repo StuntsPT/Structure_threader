@@ -16,18 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+from os.path import basename, join, splitext
+from collections import Counter, defaultdict, OrderedDict
+import colorlover as cl
+
 from plotly.offline import plot
 import plotly.graph_objs as go
 from plotly import tools
-import colorlover as cl
 
-from os.path import basename, join, splitext
-from collections import Counter, defaultdict, OrderedDict
 import numpy as np
 import matplotlib
-import logging
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+matplotlib.use('Agg')
+
 
 try:
     from plotter.html_template import ploty_html
