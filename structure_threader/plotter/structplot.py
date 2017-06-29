@@ -834,16 +834,16 @@ class PlotList(AuxSanity):
                             '"Export to plot.ly"}', '')
 
         # Create html file
-        with open(filepath, "w") as fh:
-            fh.write(ploty_html(pdiv))
+        with open(filepath, "w") as flh:
+            flh.write(ploty_html(pdiv))
 
     def plotk_static(self, kval, output_dir, bw=False, use_ind=False):
         """
         Generates a structure plot in svg format.
         :param kval: (int) Must match the K value from self.kvals
         :param output_dir: (string) Path of the plot file
-        :param bw: (bool) If True, plots will be generated with patterns instead of
-        colors to distinguish k groups.
+        :param bw: (bool) If True, plots will be generated with patterns instead
+        of colors to distinguish k groups.
         :param show_ind: (bool) If True, and if individual labels were provided
         with the --ind option, use those labels instead of population labels
         """
@@ -973,7 +973,7 @@ def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
         missing = [str(x) for x in filter_k if x not in klist.kvals]
         if missing:
             logging.warning("The following K values are missing: {}".format(
-                    " ".join(missing)))
+                " ".join(missing)))
     else:
         filter_k = list(klist.kvals.keys())
 
