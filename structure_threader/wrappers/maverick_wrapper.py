@@ -26,9 +26,10 @@ from numpy.random import normal as rnorm
 
 try:
     import colorer.colorer as colorer
+    from plotter.structplot import plot_normalization
 except ImportError:
     import structure_threader.colorer.colorer as colorer
-
+    from structure_threader.plotter.structplot import plot_normalization
 
 def mav_cli_generator(arg, k_val, mav_params):
     """
@@ -145,8 +146,9 @@ def ti_test(outdir, norm_evidence, ti_in_use):
     bestk_file.write(output_text)
     bestk_file.close()
 
+    plot_normalization(criteria, outdir)
+
     return [int(bestk)]
-    # TODO: Draw a plot!
 
 
 def maverick_merger(outdir, k_list, mav_params, no_tests):

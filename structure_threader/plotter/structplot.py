@@ -38,7 +38,7 @@ except ImportError:
 
 # Create color pallete
 c = cl.scales["12"]["qual"]["Set3"]
-
+plt.style.use("ggplot")
 
 class PlotK:
     """
@@ -848,8 +848,6 @@ class PlotList(AuxSanity):
         with the --ind option, use those labels instead of population labels
         """
 
-        plt.style.use("ggplot")
-
         numinds = self.number_indv
 
         clist = [[i / 255. for i in x] for x in cl.to_numeric(c)]
@@ -942,6 +940,23 @@ class PlotList(AuxSanity):
         # Clear plot object
         plt.clf()
         plt.close()
+
+
+def plot_normalization(norm_dict, outdir):
+
+    plt.clf()
+
+    keys = ["norm_mean", "lower_limit", "upper_limit"]
+
+    data = [(k, [vals[x] for x in keys]) for k, vals in norm_dict.items()]
+
+    means = [x[1][0] for x in data]
+    lower_limit = [x[1][0] - x[1][1] for x in data]
+    upper_limit = [x[1][2] - x[1][0] for x in data]
+
+    plt.bar(range(len(means)), means, yerr=[lower_limit, upper_limit])
+
+    plt.savefig(join(outdir, "bestK", "bestk_evidence.svg"), dpi=200)
 
 
 def main(result_files, fmt, outdir, bestk=None, popfile=None, indfile=None,
