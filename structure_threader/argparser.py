@@ -297,11 +297,12 @@ def argument_modifications(arguments):
     them.
     """
     # Transform a single K value into a list
-    if isinstance(arguments.k_list, int):
-        arguments.k_list = range(1, arguments.k_list + 1)
+    if arguments.main_op == "run":
+        if isinstance(arguments.k_list, int):
+            arguments.k_list = range(1, arguments.k_list + 1)
 
-    # Switch relative to absolute paths
-    arguments.infile = os.path.abspath(arguments.infile)
-    arguments.outpath = os.path.abspath(arguments.outpath)
+        # Switch relative to absolute paths
+        arguments.infile = os.path.abspath(arguments.infile)
+        arguments.outpath = os.path.abspath(arguments.outpath)
 
     return arguments
