@@ -14,6 +14,7 @@
 * Vastly improved unit test suite.
 * New presentation of "bestK" evidence when wrapping MavericK.
 
+---
 
 ## Changes since v1.0.1:
 
