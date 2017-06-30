@@ -132,17 +132,21 @@ def ti_test(outdir, norm_evidence, ti_in_use):
     if ti_in_use:
         # Use TI for bestK estimation
         criteria = norm_evidence[2]
+        estimator = "TI"
     else:
         # Use Structure for bestK estimation
         criteria = norm_evidence[1]
+        estimator = "STRUCTURE"
     means = {x: y["norm_mean"] for x, y in criteria.items()}
 
     bestk_dir = os.path.join(outdir, "bestK")
     os.makedirs(bestk_dir, exist_ok=True)
     bestk = max(means, key=means.get)
     bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
-    output_text = ("MavericK's estimation test revealed "
-                   "that the best value of 'K' is: {}\n".format(bestk))
+    output_text = ("MavericK's estimation test ({}) revealed that the best "
+                   "value of 'K' is: {}\nIt is still recommended that you look "
+                   "at the generated plot for more accurate "
+                   "information".format(estimator, bestk))
     bestk_file.write(output_text)
     bestk_file.close()
 
