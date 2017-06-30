@@ -172,7 +172,7 @@ def cpu_checker(asked_threads):
             threads = os.cpu_count()
         else:
             threads = asked_threads
-    except:
+    except OSError:
         threads = asked_threads
     return threads
 
