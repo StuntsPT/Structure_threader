@@ -953,11 +953,22 @@ def plot_normalization(norm_dict, outdir):
 
     data = [(k, [vals[x] for x in keys]) for k, vals in norm_dict.items()]
 
+    xlabs = ["K" + str(x) for x in norm_dict.keys()]
+
     means = [x[1][0] for x in data]
     lower_limit = [x[1][0] - x[1][1] for x in data]
     upper_limit = [x[1][2] - x[1][0] for x in data]
 
-    plt.bar(range(len(means)), means, yerr=[lower_limit, upper_limit])
+    plt.bar(range(len(means)), means, 0.5, yerr=[lower_limit, upper_limit],
+            fc=(0, 0, 1, 0.5), edgecolor="blue", linewidth=1.5, capsize=5)
+    plt.xticks(range(len(xlabs)), xlabs)
+    axes = plt.gca()
+    axes.set_ylabel("Posterior probability")
+    axes.set_xlabel("Ks")
+    axes.set_facecolor('white')
+    axes.spines["bottom"].set_color("black")
+    axes.spines["left"].set_color("black")
+    axes.set_ylim([0, 1])
 
     plt.savefig(join(outdir, "bestK", "bestk_evidence.svg"), dpi=200)
 
