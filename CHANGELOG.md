@@ -3,12 +3,16 @@
 ## Changes since v1.1.0:
 
 ### Bug fixes
-* Corrected a few typos in some of the printed messages
+* Corrected a few typos in some of the printed messages.
 * Fixed a bug with a nonsensical leading "/" on the windows version.
+* Corrected a bug where *MavericK* execution stopped due to multiple `alpha` and `alphaPropSD` values being set.
+* K plots visualization is now improved when plotting a large number of Ks.
 
 ### New features:
 * Added option to generate skeleton parameter files (`mainparams` and `extraparams`) for *STRUCTURE*.
 * If wrapping *MavericK* with TI option turned off, bestK tests are now skipped.
+* Vastly improved unit test suite.
+* New presentation of "bestK" evidence when wrapping MavericK.
 
 
 ## Changes since v1.0.1:
