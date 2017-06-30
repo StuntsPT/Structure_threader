@@ -2,7 +2,7 @@
 
 ## Description
 
-A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html) and [fastStructure](https://rajanil.github.io/fastStructure/) software.
+A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html), [fastStructure](https://rajanil.github.io/fastStructure/) and [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) software.
 
 
 ## Requirements
@@ -16,7 +16,7 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 
 * Source code - [Structure_threader on github](https://github.com/StuntsPT/Structure_threader)
 * Source distribution with platform binaries for wrapped programs - [Sturcture_threader on Pypi](https://pypi.python.org/pypi/structure_threader/)
-    * You can install this version easily by issuing the command `pip3 install structure_threader`
+    * You can easily install *Structure_threader* by issuing the command `pip3 install structure_threader`
 
 
 ## Contents
@@ -34,8 +34,10 @@ To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
 
 ## A word of caution
 
-*structure_threader* can be quite useful in automating and speeding up your analyses, however, in order to use it effectively you **really** should learn and understand how the wrapped programs work. It is **highly** recommended that you first learn to use the wrapped programs in their default implementations. And by "learning", we don't just mean "I know how to make it run.", but rather "I understand what each of the chosen parameters does, and why I selected each of them.".
-The [documentation for *MavericK*](http://www.bobverity.com/home/maverick/additional-files/), for instance, is quite comprehensive and is a good starting point to learn about MCMC chain mixing.
+*Structure_threader* can be quite useful in automating and speeding up your analyses, however, in order to use it effectively you **really** should learn and understand how the wrapped programs work. It is **highly** recommended that you first learn to use the wrapped programs in their default implementations. And by "learning", we don't just mean "I know how to make it run.", but rather "I understand what each of the chosen parameters does, and why I selected each of them.".
+The paper [An overview of STRUCTURE: applications, parameter settings, and supporting software](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3665925/) is an excellent guide for understanding the parameterization of *STRUCTURE*.
+We do not know of a good "tutorial" for learning about *fastStructure*, and as such, the [original research paper](http://www.genetics.org/content/197/2/573) (paywalled), albeit a bit dense, is still the best place to learn about it.
+The [documentation for *MavericK*](http://www.bobverity.com/home/maverick/additional-files/), for instance, is quite comprehensive and a great resource to learn to use *MavericK* and consequently about the importance of proper MCMC chain mixing.
 
 
 ## Other works
