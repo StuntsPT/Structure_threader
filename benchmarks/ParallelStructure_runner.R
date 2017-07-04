@@ -45,8 +45,8 @@ parallel_structure(joblist = joblist_location, n_cpu = args[1],
                    ploidy = 2, noadmix = 0, linkage = 0, usepopinfo = 0,
                    locprior = 0, inferalpha = 1, alpha = 1, popalphas = 0,
                    unifprioralpha = 1, alphamax = 10, alphapropsd = 0.025,
-                   freqscorr = 1, onefst = 0, fpriormean = 0.01,
+                   freqscorr = 0, onefst = 0, fpriormean = 0.01,
                    fpriorsd = 0.05, inferlambda = 0, lambda = 1,
                    computeprob = 1, pfromflagonly = 0, ancestdist = 0,
-                   startatpopinfo = 0, metrofreq = 10, updatefreq = 1,
-                   printqhat = 1,revert_convert=0, randomize=1)
+                   startatpopinfo = 0, metrofreq = 10, updatefreq = 100,
+                   printqhat = 0,revert_convert=0, randomize=1)
