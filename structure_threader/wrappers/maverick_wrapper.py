@@ -144,9 +144,9 @@ def ti_test(outdir, norm_evidence, ti_in_use):
     bestk = max(means, key=means.get)
     bestk_file = open(os.path.join(bestk_dir, "TI_integration.txt"), "w")
     output_text = ("MavericK's estimation test ({}) revealed that the best "
-                   "value of 'K' is: {}\nIt is still recommended that you look "
+                   "value of 'K' is {}.\nIt is still recommended that you look "
                    "at the generated plot for more accurate "
-                   "information".format(estimator, bestk))
+                   "information.\n".format(estimator, bestk))
     bestk_file.write(output_text)
     bestk_file.close()
 
