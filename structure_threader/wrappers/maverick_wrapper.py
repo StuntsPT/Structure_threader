@@ -312,8 +312,9 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     """
     # subtract maximum value from x_mean (this has no effect on final outcome
     # but prevents under/overflow)
-    # Just like in the original implementation (even though it should not be
-    # required in the python version)
+    # Just like in the original implementation
+    x_mean = [x - max(x_mean) for x in x_mean]
+
     z_array = np.zeros([len(x_mean), draws])
 
     # draw random values of Z, exponentiate, and sort them in a bidimensional
