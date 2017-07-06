@@ -1,5 +1,14 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.0
+
+### Bug fixes
+* Added an underflow protection.
+* Added a fail-safe in case of MavericK using a single "MainRepeats" parameter.
+* Improved some text strings.
+
+---
+
 ## Changes since v1.1.0:
 
 ### Bug fixes
