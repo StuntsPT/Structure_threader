@@ -241,11 +241,21 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
         flat_posterior = list(chain(*list(chain(*posterior))))
 
         normalized = []
+        normalization = True
         for cat in indep:
             for i in cat:
-                evidence[i] = [float(x) for x in evidence[i]]
-            normalized.append(maverick_normalization(evidence[cat[0]],
-                                                     evidence[cat[1]], k_list))
+                evidence[i] = [float(x) if x != "NA"
+                               else x for x in evidence[i]]
+                if "NA" in evidence[i]:
+                    logging.error("Some 'NA' values found in outputEvidence.csv"
+                                  ". Normalization can not proceed."
+                                  "(Are you using a single "
+                                  "'MainRepeats' parameter?).")
+                    normalization = False
+            if normalization:
+                normalized.append(maverick_normalization(evidence[cat[0]],
+                                                         evidence[cat[1]],
+                                                         k_list))
 
         dtypes = ("norm_mean", "lower_limit", "upper_limit")
 
@@ -261,7 +271,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
             outfile.write(line)
             outfile.write("\n")
 
-        if no_tests is False:
+        if no_tests is False and normalization is True:
             bestk = ti_test(outdir, normalized, ti_in_use)
             return bestk
 
