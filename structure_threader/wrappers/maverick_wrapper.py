@@ -325,12 +325,13 @@ def maverick_normalization(x_mean, x_sd, klist, draws=int(1e6), limit=95):
     # Just like in the original implementation
     x_mean = [x - max(x_mean) for x in x_mean]
 
-    z_array = np.zeros([len(x_mean), draws])
+    z_array = np.zeros([len(x_mean), draws], dtype=np.longdouble)
 
     # draw random values of Z, exponentiate, and sort them in a bidimensional
     # array
     for i in range(z_array.shape[0]):
-        y_array = np.array([np.exp(rnorm(x_mean[i], x_sd[i]))
+        y_array = np.array([np.exp(rnorm(x_mean[i], x_sd[i]),
+                                   dtype=np.longdouble)
                             for _ in range(draws)])
 
         z_array[i] = y_array
