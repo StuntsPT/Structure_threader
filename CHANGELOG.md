@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.1
+
+### Bug fixes
+* Added more underflow protection.
+
+---
+
 ## Changes since v1.2.0
 
 ### Bug fixes
