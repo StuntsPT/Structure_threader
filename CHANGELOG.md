@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.2
+
+### Bug fixes
+* The "skeletons" module was not being packaged in Pypi. This is now fixed.
+
+---
+
 ## Changes since v1.2.1
 
 ### Bug fixes

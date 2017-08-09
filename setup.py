@@ -55,7 +55,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "1.2.2"
+VERSION = "1.2.3"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
@@ -67,7 +67,8 @@ setup(
               "structure_threader.plotter",
               "structure_threader.sanity_checks",
               "structure_threader.colorer",
-              "structure_threader.wrappers"],
+              "structure_threader.wrappers",
+              "structure_threader.skeletons"],
     install_requires=["plotly",
                       "colorlover",
                       "numpy",
