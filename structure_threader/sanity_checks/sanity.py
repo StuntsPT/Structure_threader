@@ -185,16 +185,29 @@ def file_checker(path, msg=None, is_file=True):
     :param if_file, True if path is a file, False if a dir
     """
     if is_file is False:
-        if not os.path.exists(path) or not os.path.isdir(path):
-            try:
+        try:
+            if not os.path.exists(path) or not os.path.isdir(path):
                 os.makedirs(path)
-            except FileExistsError:
-                if not msg:
-                    logging.error("'{}' should be the path to a directory, not "
-                                  "to a file.'".format(path))
-                else:
-                    logging.error("{}".format(msg))
-                raise SystemExit(1)
+            elif not os.access(path, os.W_OK | os.X_OK):
+                raise PermissionError
+        except FileExistsError:
+            if not msg:
+                logging.error("'{}' should be the path to a directory, not "
+                              "to a file.'".format(path))
+            else:
+                logging.error("{}".format(msg))
+            raise SystemExit(1)
+        except PermissionError:
+            logging.critical("Your user does not have permissions to write "
+                             "to the results directory ({}). Either "
+                             "chanage this path to one to which you have "
+                             "write permissions to, or change the "
+                             "permissions on this directory (if you "
+                             "can).".format(path))
+            raise SystemExit(1)
+
+
+
     else:
         if os.path.isdir(path):
             if not msg:
