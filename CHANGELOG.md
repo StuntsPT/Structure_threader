@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.3
+
+### Bug fixes
+* Added an extra sanity check for write permissions to the output directory.
+
+---
+
 ## Changes since v1.2.2
 
 ### Bug fixes
