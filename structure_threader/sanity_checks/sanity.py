@@ -206,8 +206,6 @@ def file_checker(path, msg=None, is_file=True):
                              "can).".format(path))
             raise SystemExit(1)
 
-
-
     else:
         if os.path.isdir(path):
             if not msg:
