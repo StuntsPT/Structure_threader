@@ -1,5 +1,13 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.4
+
+### Bug fixes
+* Allows a random seed to be passed to STRUCTURE. This seed will be used to generate *N* seeds, where *N* is the number of runs. Each will be attached to the appropriate CLI.
+
+
+---
+
 ## Changes since v1.2.3
 
 ### Bug fixes
