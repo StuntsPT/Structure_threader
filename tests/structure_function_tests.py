@@ -29,17 +29,27 @@ def test_str_cli_generator():
     k_val = 4
     outfile = "str_K4_rep1"
     arg.params = None
+    seed = None
 
     mock_cli = ["EP", "-K", str(k_val), "-i", "IF", "-o", outfile]
-    returned_cli, returned_outfile = sw.str_cli_generator(arg, k_val, 1)
+    returned_cli, returned_outfile = sw.str_cli_generator(arg, k_val, 1, seed)
 
     assert returned_cli == mock_cli
     assert returned_outfile == outfile
 
+    # Add a seed to the test
+    seed = "1234"
+    mock_cli += ["-D", "1234"]
+    returned_cli, returned_outfile = sw.str_cli_generator(arg, k_val, 1, seed)
+
+    assert returned_cli == mock_cli
+    assert returned_outfile == outfile
+
+    # Add an argument to the test
     arg.params = "test"
 
     mock_cli += arg.params
-    returned_cli, returned_outfile = sw.str_cli_generator(arg, k_val, 1)
+    returned_cli, returned_outfile = sw.str_cli_generator(arg, k_val, 1, seed)
 
     assert returned_cli == mock_cli
     assert returned_outfile == outfile
