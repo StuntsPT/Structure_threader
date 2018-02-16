@@ -64,3 +64,24 @@ def test_str_param_checker():
     arg.params = "mainparams"
     sw.str_param_checker(arg)
     assert arg.params == ["-m", "mainparams", "-e", "extraparams"]
+
+
+def test_seed_generator():
+    """
+    Tests if the Seed generator is working as intended.
+    """
+    k_list = [1, 2]
+    replicates = [1, 2, 3]
+    extra_options = ""
+
+    mock_jobs = [(2, 3), (2, 2), (2, 1), (1, 3), (1, 2), (1, 1)]
+    returned_jobs = sw.seed_generator(extra_options, k_list, replicates)
+    assert returned_jobs == mock_jobs
+
+    # Add a seed option
+    extra_options = "-D 1234"
+
+    mock_jobs = [("7394266", 2, 3), ("1960426", 2, 2), ("125686", 2, 1),
+                 ("1520747", 1, 3), ("9768157", 1, 2), ("585963", 1, 1)]
+    returned_jobs = sw.seed_generator(extra_options, k_list, replicates)
+    assert returned_jobs == mock_jobs
