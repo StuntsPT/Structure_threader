@@ -55,7 +55,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "1.2.4"
+VERSION = "1.2.5"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
