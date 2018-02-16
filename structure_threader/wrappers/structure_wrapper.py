@@ -42,8 +42,6 @@ def str_cli_generator(arg, k_val, rep_num, seed):
     if arg.params is not None:
         cli += arg.params
 
-    print(cli)
-
     return cli, output_file
 
 
