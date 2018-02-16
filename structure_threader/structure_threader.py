@@ -72,10 +72,14 @@ def runprogram(wrapped_prog, iterations, arg):
     """
     worker_status = (None, None)
 
-    k_val, rep_num = iterations
+    try:
+        seed, k_val, rep_num = iterations
+    except ValueError:
+        k_val, rep_num = iterations
+        seed = None
 
     if wrapped_prog == "structure":  # Run STRUCTURE
-        cli, output_file = sw.str_cli_generator(arg, k_val, rep_num)
+        cli, output_file = sw.str_cli_generator(arg, k_val, rep_num, seed)
 
     elif wrapped_prog == "maverick":  # Run MavericK
         mav_params = mw.mav_params_parser(arg.params)
@@ -122,10 +126,10 @@ def structure_threader(wrapped_prog, arg):
 
     if wrapped_prog != "structure":
         arg.replicates = [1]
+        jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
     else:
         sw.str_param_checker(arg)
-
-    jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
+        jobs = sw.seed_generator(arg.extra_options, arg.k_list, arg.replicates)
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().

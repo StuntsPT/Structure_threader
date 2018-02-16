@@ -128,8 +128,9 @@ def argument_parser(args):
     misc_opts.add_argument("--extra_opts", dest="extra_options", type=str,
                            required=False,
                            help="Add extra arguments to pass to the "
-                           "wrapped program here.\nExample: "
-                           "prior=logistic seed=123",
+                           "wrapped program here (between quotes).\nExamples: "
+                           "\"prior=logistic seed=123\" for fastStructure\n"
+                           "\"-D 12345\" for STRUCTURE",
                            metavar="string", default="")
 
     plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
@@ -246,9 +247,11 @@ def argument_sanity(arguments, parser):
 
         # Handle argparse limitations with "--" options.
         if arguments.extra_options != "":
-            arguments.extra_options = "--{0}".format(arguments.extra_options)
-            arguments.extra_options = \
-                " --".join(arguments.extra_options.split())
+            if "-st" not in sys.argv:
+                arguments.extra_options = \
+                    "--{0}".format(arguments.extra_options)
+                arguments.extra_options = \
+                    " --".join(arguments.extra_options.split())
 
         # fastStructure is really only usefull with either a pop or indfile...
         if "-fs" in sys.argv and\

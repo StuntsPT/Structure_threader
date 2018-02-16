@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2017 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2017-2018 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@
 
 import os
 import logging
+import itertools
+import random
+
 
 try:
     import colorer.colorer as colorer
@@ -24,7 +27,7 @@ except ImportError:
     import structure_threader.colorer.colorer as colorer
 
 
-def str_cli_generator(arg, k_val, rep_num):
+def str_cli_generator(arg, k_val, rep_num, seed):
     """
     Generates and returns command line for running STRUCTURE.
     """
@@ -32,8 +35,14 @@ def str_cli_generator(arg, k_val, rep_num):
                                str(rep_num))
     cli = [arg.external_prog, "-K", str(k_val), "-i", arg.infile, "-o",
            output_file]
+
+    if seed is not None:
+        cli += ["-D", seed]
+
     if arg.params is not None:
         cli += arg.params
+
+    print(cli)
 
     return cli, output_file
 
@@ -54,3 +63,20 @@ def str_param_checker(arg):
             touch = open(extraparams, 'w')
             touch.close()
         arg.params = ["-m", mainparams, "-e", extraparams]
+
+
+def seed_generator(extra_options, k_list, replicates):
+    """
+    Uses a user input seed value to generate *N* seeds, one for each run.
+    Takes a seed value and the number of iterations as input and returns a
+    job list: [(seed, K, replicate), ...].
+    """
+    jobs = list(itertools.product(k_list, replicates))[::-1]
+
+    extra_options = extra_options.split()
+    if "-D" in extra_options:
+        seed = int(extra_options[extra_options.index("-D") + 1])
+        random.seed(seed)
+        jobs = [(str(random.randrange(10000000)),) + x for x in jobs]
+
+    return jobs
