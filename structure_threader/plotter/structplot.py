@@ -590,7 +590,7 @@ class PlotList(AuxSanity):
                 # third column, if it is available
                 if indarray.shape[1] == 3:
                     self._sort_qvals_pop(indarray=indarray)
-                    indarray = indarray[indarray[:, 2].argsort()]
+                    indarray = indarray[indarray[:, 2].astype(int).argsort()]
                     # Sort the population list according to the new order
                     npops = list(OrderedDict.fromkeys(indarray[:, 1]))
 
