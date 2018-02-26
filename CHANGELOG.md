@@ -1,5 +1,13 @@
 # *Structure_threader* changelog
 
+
+## Changes since v1.2.6
+
+### Bug fixes
+* Corrected a bug when sorting plot order using an "indfile" with more than 10 populations.
+
+---
+
 ## Changes since v1.2.5
 
 ### Bug fixes
