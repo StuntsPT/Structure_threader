@@ -32,9 +32,10 @@ def test_fs_cli_generator():
     for prog in ["EP", "EP.py"]:
 
         arg.external_prog = prog
+        arg.seed = "1235813"
         mock_cli = [prog, "-K", str(k_val), "--input",
                     "IF", "--output", "fS_run_K", "--format", "str",
-                    "--prior=logistic"]
+                    "--seed", "1235813", "--prior=logistic"]
         if prog.endswith(".py"):
             mock_cli = ["python2"] + mock_cli
 
