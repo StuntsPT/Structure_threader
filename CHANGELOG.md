@@ -1,5 +1,13 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.8
+
+### Bug fixes
+* Using the `plot` function on *MavericK* results now works as intended.
+* Improved and clarified how the `plot` input files should be indicated.
+
+---
+
 ## Changes since v1.2.7
 
 ### Bug fixes
