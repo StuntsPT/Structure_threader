@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2016 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2016-2018 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "1.2.7"
+VERSION = "1.2.8"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 

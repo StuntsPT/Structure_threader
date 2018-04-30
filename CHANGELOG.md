@@ -1,5 +1,15 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.7
+
+### Bug fixes
+* *Structure_threader* now always makes a sanity check for `mainparams` and `extraparams`.
+
+### New features:
+* New option introduced: `--seed`, which allows the user to define a random seed value. It is not mandatory, and defaults to "1235813".
+* *Structure_threader* now checks if the `RANDOMIZE` option is set in the `extraparams` file. If it is, it gets disabled since random seeds are now handled internally.
+
+---
 
 ## Changes since v1.2.6
 
