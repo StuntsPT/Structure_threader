@@ -220,11 +220,13 @@ def create_plts(wrapped_prog, bestk, arg):
 
 def plots_only(arg):
     """
-    Handles arrugments and wraps things up for drawing the plots without Running
-    any wrapped programs.
+    Handles arrugments and wraps things up for drawing the plots without
+    running any wrapped programs.
     """
+    # Relative to abs path
+    prefix_abs_path = os.path.abspath(arg.prefix)
     # Get all files matching the provided prefix
-    prefix_dir, prefix_name = os.path.split(arg.prefix)
+    prefix_dir, prefix_name = os.path.split(prefix_abs_path)
 
     if prefix_dir == "":
         prefix_dir = "."
@@ -240,10 +242,10 @@ def plots_only(arg):
                    x.startswith(prefix_name) and
                    "rep1_" in x]
     else:
-        infiles = [os.path.join(prefix_dir, x)
-                   for x in os.listdir(prefix_dir) if
-                   x.startswith(prefix_name) and
-                   x.endswith(".csv")]
+        k_vals = arg.bestk
+        infiles = [os.path.join(os.path.join(prefix_abs_path, "mav_K" + x),
+                                "outputQmatrix_ind_K" + x + ".csv")
+                   for x in k_vals]
 
     for filename in infiles:
         sanity.file_checker(filename, "There was a problem with the deduced "
