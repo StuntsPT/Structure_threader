@@ -230,19 +230,17 @@ def plots_only(arg):
 
     if prefix_dir == "":
         prefix_dir = "."
+    k_vals = arg.bestk
 
     if arg.program == "faststructure":
-        infiles = [os.path.join(prefix_dir, x)
-                   for x in os.listdir(prefix_dir) if
-                   x.startswith(prefix_name) and
-                   x.endswith(".meanQ")]
+        infiles = [os.path.join(prefix_abs_path, "fS_run_K." + x + ".meanQ")
+                   for x in k_vals]
+
     elif arg.program == "structure":
-        infiles = [os.path.join(prefix_dir, x)
-                   for x in os.listdir(prefix_dir) if
-                   x.startswith(prefix_name) and
-                   "rep1_" in x]
+        infiles = [os.path.join(prefix_abs_path, "str_K" + x + "_rep1_f")
+                   for x in k_vals]
+
     else:
-        k_vals = arg.bestk
         infiles = [os.path.join(os.path.join(prefix_abs_path, "mav_K" + x),
                                 "outputQmatrix_ind_K" + x + ".csv")
                    for x in k_vals]

@@ -166,10 +166,11 @@ def argument_parser(args):
     sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
 
     main_opts.add_argument("-i", dest="prefix", type=str, required=True,
-                           help="The prefix of the output meanQ files."
-                                "You can provide a full path or just the "
-                                "prefix. Passing just the prefix will assume "
-                                "the current working diretory.")
+                           help="The directory where output meanQ files you "
+                                "want to plot are located."
+                                "If plotting MavericK results, provide"
+                                "the directory where the directories named"
+                                "`mav_KX` are located.")
     main_opts.add_argument("-f", dest="program", type=str, required=True,
                            choices=["structure", "faststructure",
                                     "maverick"],
