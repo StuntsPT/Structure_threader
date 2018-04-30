@@ -55,11 +55,11 @@ The program should be run in the same directory where the files "mainparams" and
 Using the `plot` mode, the program currently takes the following arguments:
 
 * Main plotting options:
-    * Prefix of the structuring software output files (-i)
+    * Directory where the Qmatrix files you want to plot are located. In the case of MavericK point to where the directories named `mav_KX` are located (-i)
     * External program or format of the output files. This can be 'structure', 'fastStructure' or 'maverick'. (-f)
     * The K values that you want to plot. Each individual K value that is provided will be plotted individually and in the end, a comparative plot will all K values will also be generated. (-K; Example: -K 2 3 4)
 
-    * Directory where the plots will be generated. By default they will be generated in the current working directory (-o)
+    * Directory where the plots will be saved to. By default they will be generated in the current working directory (-o)
 
 * Individual/Population identification options:
     * Path to popfile (--pop) [See below for more information]
