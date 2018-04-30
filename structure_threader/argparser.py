@@ -129,9 +129,13 @@ def argument_parser(args):
                            required=False,
                            help="Add extra arguments to pass to the "
                            "wrapped program here (between quotes).\nExamples: "
-                           "\"prior=logistic seed=123\" for fastStructure\n"
+                           "\"prior=logistic\" for fastStructure\n"
                            "\"-D 12345\" for STRUCTURE",
                            metavar="string", default="")
+    misc_opts.add_argument("--seed", dest="seed", type=int, required=False,
+                           help="Define the random seed value to pass to"
+                           "STRUCTURE and fastStructure",
+                           default=1235813, metavar="int")
 
     plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",
