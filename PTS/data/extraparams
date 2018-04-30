@@ -114,7 +114,7 @@ MISCELLANEOUS
                              for population origins.  (Need POPDATA==1).  It 
                              is assumed that the PopData in the input file 
                              are between 1 and k where k<=MAXPOPS.
-#define RANDOMIZE      1  // (B) use new random seed for each run 
+#define RANDOMIZE      0  // (B) use new random seed for each run 
 #define SEED        0  // (int) seed value for random number generator 
 	                     (must set RANDOMIZE=0) 
 #define METROFREQ    10   // (int) Frequency of using Metropolis step to update
