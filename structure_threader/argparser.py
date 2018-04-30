@@ -271,6 +271,9 @@ def argument_sanity(arguments, parser):
             parser.error("-mv requires --params.")
         elif "-mv" in sys.argv:
             sanity.file_checker(os.path.abspath(arguments.params))
+        elif "-st" in sys.argv and arguments.params is None:
+            arguments.params = os.path.join(os.path.dirname(arguments.infile),
+                                            "mainparams")
 
         # Number of replicates
         arguments.replicates = range(1, arguments.replicates + 1)

@@ -49,6 +49,35 @@ def str_param_checker(arg):
     """
     Handles the parameter files for STRUCTURE (or lack thereoff)
     """
+    def _disable_STRUCUTRE_RANDOMIZE(extraparams_file):
+        """
+        Checks if the RANDOMIZE option is set in the `extraparams` file.
+        If it is, disable it (set to `0`)
+        """
+        infile = open(extraparams, "r")
+        params = ""
+        overwrite = False
+        for lines in infile:
+            try:
+                if lines.split()[1] == "RANDOMIZE":
+                    if lines.split()[2] == "1":
+                        lines = lines.replace("1", "0")
+                        logging.warning("The RANDOMIZE option was activated in"
+                                        " the `extraparams` file. "
+                                        " *Structure_threader* has disabled it"
+                                        " since it handles this functionality "
+                                        "internallly (random seed setting).")
+                        overwrite = True
+            except IndexError:
+                pass
+            params += lines
+        infile.close()
+
+        if overwrite:
+            outfile = open(extraparams, "w")
+            outfile.write(params)
+            outfile.close()
+
     os.chdir(os.path.dirname(arg.infile))
     if arg.params is not None:
         mainparams = arg.params
@@ -60,6 +89,8 @@ def str_param_checker(arg):
                             "that you fill one out.")
             touch = open(extraparams, 'w')
             touch.close()
+        else:
+            _disable_STRUCUTRE_RANDOMIZE(extraparams)
         arg.params = ["-m", mainparams, "-e", extraparams]
 
 
