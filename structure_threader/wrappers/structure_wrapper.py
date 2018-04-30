@@ -63,7 +63,7 @@ def str_param_checker(arg):
         arg.params = ["-m", mainparams, "-e", extraparams]
 
 
-def seed_generator(extra_options, k_list, replicates):
+def seed_generator(seed, k_list, replicates):
     """
     Uses a user input seed value to generate *N* seeds, one for each run.
     Takes a seed value and the number of iterations as input and returns a
@@ -71,10 +71,7 @@ def seed_generator(extra_options, k_list, replicates):
     """
     jobs = list(itertools.product(k_list, replicates))[::-1]
 
-    extra_options = extra_options.split()
-    if "-D" in extra_options:
-        seed = int(extra_options[extra_options.index("-D") + 1])
-        random.seed(seed)
-        jobs = [(str(random.randrange(10000000)),) + x for x in jobs]
+    random.seed(seed)
+    jobs = [(str(random.randrange(10000000)),) + x for x in jobs]
 
     return jobs

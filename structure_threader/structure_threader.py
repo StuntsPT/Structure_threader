@@ -129,7 +129,7 @@ def structure_threader(wrapped_prog, arg):
         jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
     else:
         sw.str_param_checker(arg)
-        jobs = sw.seed_generator(arg.extra_options, arg.k_list, arg.replicates)
+        jobs = sw.seed_generator(arg.seed, arg.k_list, arg.replicates)
 
     # This allows us to pass partial arguments to a function so we can later
     # use it with multiprocessing map().
