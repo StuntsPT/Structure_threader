@@ -72,16 +72,18 @@ def test_seed_generator():
     """
     k_list = [1, 2]
     replicates = [1, 2, 3]
-    extra_options = ""
+    seed = 1235813
 
     mock_jobs = [(2, 3), (2, 2), (2, 1), (1, 3), (1, 2), (1, 1)]
-    returned_jobs = sw.seed_generator(extra_options, k_list, replicates)
+    mock_jobs = [("2153978", 2, 3), ("940261", 2, 2), ("8867621", 2, 1),
+                 ("786598", 1, 3), ("3922463", 1, 2), ("6870574", 1, 1)]
+    returned_jobs = sw.seed_generator(seed, k_list, replicates)
     assert returned_jobs == mock_jobs
 
-    # Add a seed option
-    extra_options = "-D 1234"
+    # Use a different seed
+    seed = 42
 
-    mock_jobs = [("7394266", 2, 3), ("1960426", 2, 2), ("125686", 2, 1),
-                 ("1520747", 1, 3), ("9768157", 1, 2), ("585963", 1, 1)]
-    returned_jobs = sw.seed_generator(extra_options, k_list, replicates)
+    mock_jobs = [("1867825", 2, 3), ("419610", 2, 2), ("4614226", 2, 1),
+                 ("4108603", 1, 3), ("3744854", 1, 2), ("2341057", 1, 1)]
+    returned_jobs = sw.seed_generator(seed, k_list, replicates)
     assert returned_jobs == mock_jobs
