@@ -263,7 +263,7 @@ def argument_sanity(arguments, parser):
                 arguments.indfile is None:
             parser.error("-fs requires either --pop or --ind.")
 
-        # Make sure we provide paths for mainparam, extraparams and
+        # Make sure we provide paths for mainparams, extraparams and
         # parameters.txt  depending on the wrapped program.
         if arguments.params is not None:
             arguments.params = os.path.abspath(arguments.params)
