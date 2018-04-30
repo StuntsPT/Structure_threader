@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2015-2017 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2015-2018 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ def argument_parser(args):
                            "\"-D 12345\" for STRUCTURE",
                            metavar="string", default="")
     misc_opts.add_argument("--seed", dest="seed", type=int, required=False,
-                           help="Define the random seed value to pass to"
+                           help="Define the random seed value to pass to "
                            "STRUCTURE and fastStructure",
                            default=1235813, metavar="int")
 
