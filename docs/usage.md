@@ -34,6 +34,7 @@ Using the `run` mode, the program currently takes the following arguments:
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
     * Add extra arguments to pass to the wrapped program (--extra_opts) [Example: prior=logistic seed=123]
+    * Define a random seed starting value (--seed) [default:1235813]
 
 
 Example run:
