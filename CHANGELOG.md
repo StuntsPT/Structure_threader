@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.9
+
+### Bug fixes
+* Corrects a bug with plotting *MavericK* "Qmatrix" files that did not have a "population identifier" field.
+
+---
+
 ## Changes since v1.2.8
 
 ### Bug fixes
