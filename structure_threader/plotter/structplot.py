@@ -283,15 +283,18 @@ class PlotK:
         """
 
         # Explanation of data import:
-        # 1. Import data using genfromtxt numpy method, specifiying the
-        #  delimiter and skiping the first header line
-        # 2. Remove the first three columns from the array with .T[3:].
-        # However, this messes the shape of the structure array, so....
-        # 3. We transpose the array so that each row is a taxon and
-        # the columns represent the assignment probabilities for each K
-        mavarray = np.genfromtxt(self.file_path, delimiter=",",
-                                 skip_header=1)
-        self.qvals = mavarray.T[3:].T
+        # 1. Figure out which columns we need to parse by reading the file
+        #  header
+        # 2. Import data using genfromtxt numpy method, specifiying the
+        #  delimiter, skiping the header line and using only the "demes"
+        #  columns
+        mavfile = open(self.file_path, "r")
+        header = mavfile.readline().rstrip()
+        mavfile.close()
+        demes = [i for i, j in enumerate(header.split(",")) if "deme" in j]
+
+        self.qvals = np.genfromtxt(self.file_path, delimiter=",",
+                                   skip_header=1, usecols=demes)
 
         if self.get_indv:
             self.indv = list(np.genfromtxt(self.file_path, delimiter=",",
