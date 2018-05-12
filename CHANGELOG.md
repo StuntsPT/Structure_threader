@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.10
+
+### Bug fixes
+* Marks `numpy>=1.12.1` dependency. The key issue here being in the version number.
+
+---
+
 ## Changes since v1.2.9
 
 ### Bug fixes

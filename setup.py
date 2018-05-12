@@ -55,7 +55,7 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "1.2.10"
+VERSION = "1.2.11"
 URL = "https://github.com/StuntsPT/Structure_threader"
 
 
@@ -71,7 +71,7 @@ setup(
               "structure_threader.skeletons"],
     install_requires=["plotly",
                       "colorlover",
-                      "numpy",
+                      "numpy>=1.12.1",
                       "matplotlib"],
     description=("A program to parallelize runs of 'Structure', "
                  "'fastStructure' and 'MavericK'."),
