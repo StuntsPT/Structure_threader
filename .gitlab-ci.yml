@@ -1,0 +1,17 @@
+stages:
+  - system_setup
+  - unit_test
+  - field_test
+#  - deploy
+
+environment:
+    stage: system_setup
+    script: echo "Setting up system"
+
+unit_test:
+  stage: unit_test
+  script: echo "Running tests"
+
+field_test:
+  stage: field_test
+  script: echo "Building the app"
