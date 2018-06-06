@@ -22,6 +22,7 @@ cache:
 tests:
     stage: tests
     script:
+      - apt-get update
       - apt-get install xz-utils
       - python -V               # Print out python version for debugging
       - pip install virtualenv
