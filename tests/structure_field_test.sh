@@ -24,7 +24,8 @@ echo "Runnig STRUCTURE 'field test'. This will simulate a full wrapped run on sm
 
 git_dir=$(pwd)
 str_bin=$(which structure)
+structure_threader_exec=$(which structure_threader)
 
-~/virtualenv/python3.5/bin/structure_threader run -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -st ${str_bin} -K 3 -t 4 -R 5 --params ${git_dir}/tests/smalldata/mainparams
+${structure_threader_exec} run -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results -st ${str_bin} -K 3 -t 4 -R 5 --params ${git_dir}/tests/smalldata/mainparams
 
 echo -e "${LightGreen}STRUCTURE 'Field test' ran successfully. Yay!${NoColor}"
