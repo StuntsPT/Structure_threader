@@ -34,3 +34,13 @@ tests:
       - tests/structure_field_test.sh
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
+
+# deployment:
+#     stage: deployment
+#     script:
+#         - python -V
+#         - pip install virtualenv
+#         - virtualenv venv
+#         - source venv/bin/activate
+#         - python setup.py sdist upload -r pypi
+# Make sure this only happens in `master`
