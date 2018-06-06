@@ -3,6 +3,7 @@ stages:
 #  - deployment
 
 image: python:3.5-slim-jessie
+  - apt-get install xz-utils
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
