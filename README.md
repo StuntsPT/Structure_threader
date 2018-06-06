@@ -5,6 +5,7 @@ A program to parallelize the runs of [Structure](http://web.stanford.edu/group/p
 [![Build Status](https://travis-ci.org/StuntsPT/Structure_threader.svg?branch=master)](https://travis-ci.org/StuntsPT/Structure_threader) [![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](http://structure-threader.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/31598374.svg)](https://zenodo.org/badge/latestdoi/31598374)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ee9b7a1779ca477aafe35ee9f3f5db38)](https://www.codacy.com/app/f.pinamartins/Structure_threader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=StuntsPT/Structure_threader&amp;utm_campaign=Badge_Grade)
+[![Pipeline Status](https://gitlab.com/StuntsPT/Structure_threader/badges/master/build.svg)](https://gitlab.com/StuntsPT/Structure_threader/pipelines)
 
 
 ## Installation
