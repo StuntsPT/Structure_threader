@@ -4,14 +4,40 @@ stages:
   - field_test
 #  - deploy
 
-environment:
-    stage: system_setup
-    script: echo "Setting up system"
+image: python:3.5-alpine3.7
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+system_setup:
+    script:
+      - python -V               # Print out python version for debugging
+      - pip install virtualenv
+      - virtualenv venv
+      - source venv/bin/activate
+      - pip install pytest
+      - pip install .
 
 unit_test:
   stage: unit_test
-  script: echo "Running tests"
+  script:
+      - pytest tests/*.py -v
 
 field_test:
   stage: field_test
-  script: echo "Building the app"
+  script:
+      - tests/structure_field_test.sh
+      - tests/fastStructure_field_test.sh
+      - tests/maverick_field_test.sh
