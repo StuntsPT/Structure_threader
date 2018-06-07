@@ -1,6 +1,6 @@
 stages:
   - tests
-#  - deployment
+  - deployment
 
 image: python:3.5-slim-jessie
 
@@ -35,12 +35,14 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
 
-# deployment:
-#     stage: deployment
-#     script:
-#         - python -V
-#         - pip install virtualenv
-#         - virtualenv venv
-#         - source venv/bin/activate
-#         - python setup.py sdist upload -r pypi
+deployment:
+    stage: deployment
+    script:
+        - python -V
+        - pip install virtualenv
+        - virtualenv venv
+        - source venv/bin/activate
+        - pip install twine
+        - python setup.py sdist
+        - twine upload dist/* -u Stunts -p $pypi_password --repository-url https://test.pypi.org/legacy/
 # Make sure this only happens in `master`
