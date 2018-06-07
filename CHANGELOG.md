@@ -1,5 +1,15 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.11
+
+### New features
+* Adds infrastructure to use Gitlab's CI server parallel to Travis CI.
+
+### Bug Fixes
+* The field tests coding was improved to drop some hard-coded paths into dynamic ones.
+
+---
+
 ## Changes since v1.2.10
 
 ### Bug fixes
