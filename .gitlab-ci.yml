@@ -46,4 +46,4 @@ deployment:
         - python setup.py sdist
         - twine upload dist/* -u Stunts -p $pypi_password
     only:
-        -master  # Make sure this only happens in `master`
+        - master  # Make sure this only happens in `master`
