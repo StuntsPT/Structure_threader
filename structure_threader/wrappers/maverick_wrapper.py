@@ -51,10 +51,15 @@ def mav_cli_generator(arg, k_val, mav_params):
            root_dir, "-parameters", arg.params]
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
-    failsafe = mav_alpha_failsafe(mav_params, arg.k_list)
-    for param in failsafe:
-        if failsafe[param] is not False:
-            cli += ["-" + param, failsafe[param][k_val]]
+    try:
+        if mav_params["fixAlpha_on"].lower() in ("f", "0", "false"):
+            failsafe = mav_alpha_failsafe(mav_params, arg.k_list)
+            for param in failsafe:
+                if failsafe[param] is not False:
+                    cli += ["-" + param, failsafe[param][k_val]]
+    except KeyError:
+        logging.critical("'fixAlpha_on' parameter is not set. Please set it in"
+                         " 'parameters.txt' file and try again.")
 
     return cli, output_dir
 
@@ -80,7 +85,9 @@ def mav_ti_in_use(parameters):
 
 def mav_params_parser(parameter_filename):
     """
-    Parses MavericK's parameter file and returns the results in a dict.
+    Parses MavericK's parameter file and returns the results in a dict with
+    the following structure:
+    {parsed_parameter: param_value, parsed_parameter: param_value ...}
     """
     param_file = open(parameter_filename, "r")
     parameters = {}
