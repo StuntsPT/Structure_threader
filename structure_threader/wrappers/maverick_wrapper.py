@@ -282,7 +282,7 @@ def maverick_merger(outdir, k_list, mav_params, no_tests):
     files_list, no_tests = _gen_files_list(output_params, no_tests)
     ti_in_use = mav_ti_in_use(mav_params)
 
-    # Handle a new dirctory for merged data
+    # Handle a new directory for merged data
     mrg_res_dir = os.path.join(outdir, "merged")
     os.makedirs(mrg_res_dir, exist_ok=True)
 
