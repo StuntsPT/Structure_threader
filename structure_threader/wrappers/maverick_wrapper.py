@@ -31,6 +31,7 @@ except ImportError:
     import structure_threader.colorer.colorer as colorer
     from structure_threader.plotter.structplot import plot_normalization
 
+
 def mav_cli_generator(arg, k_val, mav_params):
     """
     Generates and returns the command line to run MavericK.
