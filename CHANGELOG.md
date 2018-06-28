@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.12
+
+### Bug Fixes
+* Fixed a bug that caused a crash when *MavericK* *alpha* and *alphaPropSD* parameter values were split with both a comma and a white-space. Thank you to Sophie Gresham for reporting it.
+
+---
+
 ## Changes since v1.2.11
 
 ### New features
