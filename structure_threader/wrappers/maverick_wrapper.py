@@ -95,7 +95,7 @@ def mav_params_parser(parameter_filename):
     for lines in param_file:
         if not lines.startswith(("#", "\n")):
             lines = lines.split()
-            parameters[lines[0]] = lines[1]
+            parameters[lines[0]] = "".join(lines[1:])
 
     param_file.close()
 
