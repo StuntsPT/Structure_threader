@@ -51,15 +51,10 @@ def mav_cli_generator(arg, k_val, mav_params):
            root_dir, "-parameters", arg.params]
     if arg.notests is True:
         cli += ["-thermodynamic_on", "f"]
-    try:
-        if mav_params["fixAlpha_on"].lower() in ("f", "0", "false"):
-            failsafe = mav_alpha_failsafe(mav_params, arg.k_list)
-            for param in failsafe:
-                if failsafe[param] is not False:
-                    cli += ["-" + param, failsafe[param][k_val]]
-    except KeyError:
-        logging.critical("'fixAlpha_on' parameter is not set. Please set it in"
-                         " 'parameters.txt' file and try again.")
+    failsafe = mav_alpha_failsafe(mav_params, arg.k_list)
+    for param in failsafe:
+        if failsafe[param] is not False:
+            cli += ["-" + param, failsafe[param][k_val]]
 
     return cli, output_dir
 
