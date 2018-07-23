@@ -222,8 +222,9 @@ class PlotK:
                     self.indv.append(line.split()[1])
 
                 # Get the cluster values
-                fields = line.strip().split()
-                cl_vals = [float(x) for x in fields[5:]]
+                fields = line.strip().split(":")
+                fields = fields[1].split()
+                cl_vals = [float(x) for x in fields]
 
                 # Here we add the assignment probabilities to the main array.
                 # If the array alread exits,use vstack to "append" the values
