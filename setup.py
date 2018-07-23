@@ -56,7 +56,7 @@ def platform_detection(install_binaries=True):
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
 VERSION = "1.2.13"
-URL = "https://github.com/StuntsPT/Structure_threader"
+URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
 setup(
@@ -76,7 +76,7 @@ setup(
     description=("A program to parallelize runs of 'Structure', "
                  "'fastStructure' and 'MavericK'."),
     url=URL,
-    download_url="{0}/archive/v{1}.tar.gz".format(URL, VERSION),
+    download_url="{0}/-/archive/{1}/Structure_threader-{1}.tar.gz".format(URL, VERSION),
     author="Francisco Pina-Martins",
     author_email="f.pinamartins@gmail.com",
     license="GPL3",
