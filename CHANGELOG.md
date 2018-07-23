@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.2.13
+
+### Bug Fixes
+* Fixed a bug when parsing yet another variant of STRUCTURE output.
+
+---
+
 ## Changes since v1.2.12
 
 ### Bug Fixes
