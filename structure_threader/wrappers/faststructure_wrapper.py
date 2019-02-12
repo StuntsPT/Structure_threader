@@ -40,7 +40,7 @@ def fs_cli_generator(k_val, arg):
 
     cli = ["python2", arg.external_prog, "-K", str(k_val), "--input",
            infile, "--output", output_file, "--format", file_format,
-           "--seed", str(arg.seed), arg.extra_options]
+           "--seed", str(arg.seed)] + arg.extra_options.split()
 
     # Are we using the python script or a binary?
     if arg.external_prog.endswith(".py") is False:
