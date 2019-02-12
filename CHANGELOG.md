@@ -1,5 +1,13 @@
 # *Structure_threader* changelog
 
+
+## Changes since v1.2.14
+
+### Bug Fixes
+* Fixed a bug that occurred when multiple arguments were passed to `extra_opts` when wrapping *fastStructure*. Thank you to @oviscanadensis for the superb bug report.
+
+---
+
 ## Changes since v1.2.13
 
 ### Bug Fixes
