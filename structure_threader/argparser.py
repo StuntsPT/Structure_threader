@@ -97,7 +97,7 @@ def argument_parser(args):
     run_opts.add_argument("-R", dest="replicates", type=int, required=False,
                           help="Number of replicate runs for each value "
                           "of K (default:%(default)s).\nIgnored for "
-                          "fastStructure and MavericK",
+                          "fastStructure, MavericK and ALStructure",
                           metavar="int", default=20)
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,

@@ -290,6 +290,7 @@ def full_run(arg):
         wrapped_prog = "alstructure"
         arg.threads = 1
         arg.notests = True
+        arg.k_list = [x for x in arg.k_list if x != 1]
 
     structure_threader(wrapped_prog, arg)
 
