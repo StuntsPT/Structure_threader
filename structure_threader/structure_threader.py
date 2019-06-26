@@ -34,6 +34,7 @@ try:
     import wrappers.maverick_wrapper as mw
     import wrappers.faststructure_wrapper as fsw
     import wrappers.structure_wrapper as sw
+    import wrappers.alstructure_wrapper as alsw
     import argparser
 
 except ImportError:
@@ -43,6 +44,7 @@ except ImportError:
     import structure_threader.wrappers.maverick_wrapper as mw
     import structure_threader.wrappers.faststructure_wrapper as fsw
     import structure_threader.wrappers.structure_wrapper as sw
+    import structure_threader.wrappers.alstructure_wrapper as alsw
     import structure_threader.argparser as argparser
 
 # Where are we?
@@ -85,10 +87,17 @@ def runprogram(wrapped_prog, iterations, arg):
         mav_params = mw.mav_params_parser(arg.params)
         cli, output_dir = mw.mav_cli_generator(arg, k_val, mav_params)
 
+    elif wrapped_prog == "alstructure":  # Run ALStructure
+        cli, output_file = alsw.alstr_cli_generator(arg, k_val)
+
     else:  # Run fastStructure
         cli, output_file = fsw.fs_cli_generator(k_val, arg)
 
     logging.info("Running: " + " ".join(cli))
+    if wrapped_prog == "alstructure":
+        logging.info("If this is the first time running ALStructure it might "
+                     "take a while to install all the dependencies. Please "
+                     "be patient.")
     program = subprocess.Popen(cli,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
@@ -277,6 +286,10 @@ def full_run(arg):
         wrapped_prog = "maverick"
     elif "-st" in sys.argv:
         wrapped_prog = "structure"
+    elif "-als" in sys.argv:
+        wrapped_prog = "alstructure"
+        arg.threads = 1
+        arg.notests = True
 
     structure_threader(wrapped_prog, arg)
 
