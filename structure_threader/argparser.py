@@ -80,6 +80,11 @@ def argument_parser(args):
                               metavar="filepath",
                               help="Location of the MavericK executable "
                               "in your environment.")
+    main_exec_ex.add_argument("-als", dest="external_prog", type=str,
+                              default=None,
+                              metavar="filepath",
+                              help="Location of the ALStructure script "
+                              "in your environment.")
 
     k_opts.add_argument("-K", dest="k_list", type=int,
                         help="Number of Ks to calculate.\n",
