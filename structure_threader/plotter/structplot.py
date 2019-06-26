@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2015-2018 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2015-2019 Francisco Pina Martins <f.pinamartins@gmail.com>
 # and Diogo N. Silva <o.diogo.silva@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
@@ -100,7 +100,8 @@ class PlotK:
 
         parse_methods = {"structure": self._parse_structure,
                          "faststructure": self._parse_faststructure,
-                         "maverick": self._parse_maverick}
+                         "maverick": self._parse_maverick,
+                         "alstructure": self._parse_alstructure}
 
         # Let the parsing begin
         parse_methods[self.fmt]()
@@ -301,6 +302,22 @@ class PlotK:
             self.indv = list(np.genfromtxt(self.file_path, delimiter=",",
                                            dtype="|U20",
                                            skip_header=1).T[1].T)
+
+        def _parse_alstructure(self):
+            """
+            Parses the meanQ array of a single ALStructure output file
+            Sets the qvals array, the number of individual taxa (nind)
+            and number of clusters (k)
+            """
+
+            self.qvals = np.genfromtxt(self.file_path)
+            self.qvals = np.delete(self.qvals, 0, 0)
+            self.qvals = np.delete(self.qvals, 0, 1)
+
+            try:
+                self.nind, self.k = self.qvals.shape
+            except ValueError:
+                self.k = 1
 
 
 class PlotList(AuxSanity):

@@ -218,6 +218,9 @@ def create_plts(wrapped_prog, bestk, arg):
         plt_files = [os.path.join(os.path.join(arg.outpath, "mav_K" + str(i)),
                                   "outputQmatrix_ind_K" + str(i) + ".csv")
                      for i in arg.k_list]
+    elif wrapped_prog == "alstructure":
+        plt_files = [os.path.join(os.path.join(arg.outpath, "alstr_K" + str(i)))
+                     for i in arg.k_list]
 
     else:
         plt_files = [os.path.join(arg.outpath, "fS_run_K.") + str(i) + ".meanQ"
@@ -288,9 +291,9 @@ def full_run(arg):
         wrapped_prog = "structure"
     elif "-als" in sys.argv:
         wrapped_prog = "alstructure"
-        arg.threads = 1
-        arg.notests = True
-        arg.k_list = [x for x in arg.k_list if x != 1]
+        arg.threads = 1  # Depencency handling forces this
+        arg.notests = True  # No way to perform K tests with ALS
+        arg.k_list = [x for x in arg.k_list if x != 1]  # ALS can't have K=1
 
     structure_threader(wrapped_prog, arg)
 
