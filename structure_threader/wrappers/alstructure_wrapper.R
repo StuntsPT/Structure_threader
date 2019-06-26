@@ -14,23 +14,35 @@
 # You should have received a copy of the GNU General Public License
 # along with structure_threader. If not, see <http://www.gnu.org/licenses/>.
 
+## Default repo
+local({r <- getOption("repos")
+r["CRAN"] <- "http://cran.r-project.org" 
+options(repos=r)
+})
+
 ll = Sys.getenv()[ grep("R_LIBS_USER", names(Sys.getenv())) ]
-local_lib = gsub("^.*\t", "", ll)
+local_lib = gsub(".*~", path.expand('~'), as.character(ll), perl=T)
+
+if (dir.exists(local_lib) == FALSE) {
+  dir.create(local_lib, showWarnings = TRUE, recursive = TRUE)
+}
+
+.libPaths(c(local_lib))
 
 if(!require("alstructure")){
   if(!require("devtools")){
-    install.packages("devtools", lib=.libPaths()[1])
+    install.packages("devtools")
   }
   library("devtools")
-  install_github("storeylab/alstructure", build_vignettes=FALSE, ref="e355411", lib=.libPaths()[1])
+  install_github("storeylab/alstructure", build_vignettes=FALSE, ref="e355411")
   library(alstructure)
 }
 
 if(!require(lfa)){
   if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager", lib=.libPaths()[1])
+    install.packages("BiocManager")
   
-  BiocManager::install("lfa", lib=.libPaths()[1])
+  BiocManager::install("lfa")
   library(lfa)
 }
 
