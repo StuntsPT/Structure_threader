@@ -303,21 +303,20 @@ class PlotK:
                                            dtype="|U20",
                                            skip_header=1).T[1].T)
 
-        def _parse_alstructure(self):
-            """
-            Parses the meanQ array of a single ALStructure output file
-            Sets the qvals array, the number of individual taxa (nind)
-            and number of clusters (k)
-            """
+    def _parse_alstructure(self):
+        """
+        Parses the meanQ array of a single ALStructure output file
+        Sets the qvals array, the number of individual taxa (nind)
+        and number of clusters (k)
+        """
 
-            self.qvals = np.genfromtxt(self.file_path)
-            self.qvals = np.delete(self.qvals, 0, 0)
-            self.qvals = np.delete(self.qvals, 0, 1)
+        self.qvals = np.genfromtxt(self.file_path, skip_header=1, delimiter=",")
+        self.qvals = np.delete(self.qvals, 0, 1)
 
-            try:
-                self.nind, self.k = self.qvals.shape
-            except ValueError:
-                self.k = 1
+        try:
+            self.nind, self.k = self.qvals.shape
+        except ValueError:
+            self.k = 1
 
 
 class PlotList(AuxSanity):
