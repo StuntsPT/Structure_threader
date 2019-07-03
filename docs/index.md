@@ -2,7 +2,7 @@
 
 ## Description
 
-A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html), [fastStructure](https://rajanil.github.io/fastStructure/) and [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) software.
+A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html), [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) and [ALStructure](https://github.com/StoreyLab/alstructure) software.
 
 
 ## Requirements
@@ -10,6 +10,7 @@ A program to parallelize and automate the runs of [Structure](http://web.stanfor
 Python 3. The main program only uses modules from the standard library.
 In order to draw the plots, matplotlib >= 1.4 is required.
 To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
+In order to use "ALStructure", you need to have [R](https://www.r-project.org/) installed too.
 
 
 ## Where to get it

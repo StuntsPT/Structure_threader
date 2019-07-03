@@ -27,6 +27,20 @@ The used commands were:
     tar cvfJ BigTestData.str.tar.xz BigTestData.str
 
 
+## BigTestData.bed.tar.xz
+This file is a *PLINK* formatted `.bed`, `.bim` and `.fam` set of files. They were obtained in the exact same way as `BigTestData.str.tar.xz`, except for the conversion using *PGDSPIDER*, which was not used. Instead, the filtered VCF file was reduced to 501 individuals and 1000 SNPs with the following command:
+
+    head -n 1253 Chr22.recode.vcf |cut -f 1-510 > Testdata.vcf
+
+This file was then converted to the *PLINK* format and compressed with the following commands:
+
+    plink1.9 --vcf Testdata.vcf
+    mv plink.bed BigTestData.bed
+    mv plink.fam BigTestData.fam
+    mv plink.bim BigTestData.bim
+    tar cvfJ BigTestData.bed.tar.xz BigTestData.bed BigTestData.fam BigTestData.bim
+
+
 ## extraparams and mainparams
 The *STRUCTURE* parameter files that were used in the benchmarking process.
 
@@ -47,6 +61,7 @@ The used commands were:
 
 ## parameter.txt
     The *MavericK* parameter file that is used in the unit tests.
+
 
 ## mav_benchmark_parameters
     The file with the *MAvericK* benchmark parameters.
