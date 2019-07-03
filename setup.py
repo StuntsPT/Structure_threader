@@ -55,7 +55,8 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-VERSION = "1.2.15"
+DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
+VERSION = "1.3.0"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
@@ -89,7 +90,8 @@ setup(
                  "Programming Language :: Python :: 3 :: Only",
                  "Programming Language :: Python :: 3.4",
                  "Programming Language :: Python :: 3.5",
-                 "Programming Language :: Python :: 3.6"],
+                 "Programming Language :: Python :: 3.6",
+                 "Programming Language :: Python :: 3.7"],
     data_files=DATA_FILES,
     entry_points={
         "console_scripts": [
