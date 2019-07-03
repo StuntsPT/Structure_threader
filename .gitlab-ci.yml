@@ -22,8 +22,11 @@ cache:
 tests:
     stage: tests
     script:
+      - apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
+      - echo "deb http://cran.r-project.org/bin/linux/debian/ jessie-cran35/" >> /etc/apt/sources.list
       - apt-get update
       - apt-get install xz-utils
+      - apt-get install -y --force-yes r-base libcurl4-openssl-dev libssl-dev
       - python -V               # Print out python version for debugging
       - pip install virtualenv
       - virtualenv venv
@@ -34,6 +37,7 @@ tests:
       - tests/structure_field_test.sh
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
+      - tests/alstructure_field_tests.sh
 
 deployment:
     stage: deployment

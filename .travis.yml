@@ -8,6 +8,10 @@ python:
 
 install:
   - pip install .
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+  - echo "deb https://cran.r-project.org/bin/linux/ubuntu/ trusty-cran35/" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update
+  - sudo apt-get install -y r-base libcurl4-openssl-dev libssl-dev
 
 # Run tests
 script:
@@ -15,6 +19,7 @@ script:
   - tests/structure_field_test.sh
   - tests/fastStructure_field_test.sh
   - tests/maverick_field_test.sh
+  - tests/alstructure_field_tests.sh
 
 # Other stuff
 notifications:
