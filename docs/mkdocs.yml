@@ -11,3 +11,5 @@ pages:
     - 'Citation': 'citation.md'
     - 'Future Plans': 'future.md'
     - 'FAQ': 'faq.md'
+theme:
+    name: readthedocs
