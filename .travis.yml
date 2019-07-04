@@ -3,15 +3,18 @@ language: python
 os:
   - linux
 
+dist:
+  - xenial
+
 python:
-  - "3.5"
+  - "3.7"
 
 install:
   - pip install .
   - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-  - echo "deb https://cran.r-project.org/bin/linux/ubuntu/ trusty-cran35/" | sudo tee -a /etc/apt/sources.list
+  - echo "deb https://cran.r-project.org/bin/linux/ubuntu/ xenial-cran35/" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update
-  - sudo apt-get install -y r-base libcurl4-openssl-dev libssl-dev
+  - sudo apt-get install -y r-base libcurl4-openssl-dev libssl-dev gfortran liblapack-dev libblas-dev
 
 # Run tests
 script:
