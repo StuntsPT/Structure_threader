@@ -1,0 +1,15 @@
+site_name: 'Structure_threader manual'
+#site_favicon: 'assets/Icon.png'
+pages:
+    - 'Introduction': 'docs/index.md'
+    - 'Installation & dependencies': 'docs/install.md'
+    - 'External programs': 'docs/external.md'
+    - 'Usage': 'docs/usage.md'
+    - 'Output': 'docs/output.md'
+    - 'Test Data': 'docs/test_data.md'
+    - 'Building Binaries': 'docs/binaries.md'
+    - 'Benchmarking': 'docs/benchmark.md'
+    - 'Citation': 'docs/citation.md'
+    - 'Future Plans': 'docs/future.md'
+    - 'FAQ': 'docs/faq.md'
+theme: readthedocs
