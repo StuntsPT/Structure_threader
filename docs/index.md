@@ -15,6 +15,7 @@ In order to use "ALStructure", you need to have [R](https://www.r-project.org/) 
 
 ## Where to get it
 
+* Source code - [Structure_threader on gitlab](https://gitlab.com/StuntsPT/Structure_threader)
 * Source code - [Structure_threader on github](https://github.com/StuntsPT/Structure_threader)
 * Source distribution with platform binaries for wrapped programs - [Sturcture_threader on Pypi](https://pypi.python.org/pypi/structure_threader/)
     * You can easily install *Structure_threader* by issuing the command `pip3 install structure_threader`
@@ -53,7 +54,7 @@ Binaries for [fastStructure](https://github.com/rajanil/fastStructure), [STRUCTU
 ## Bug reporting
 
 Found a bug or would like a feature added? Or maybe drop some feedback?
-Just [open a new issue](https://github.com/StuntsPT/Structure_threader/issues/new).
+Just [open a new issue on gitlab](https://gitlab.com/StuntsPT/Structure_threader/issues/new) [or on github](https://github.com/StuntsPT/Structure_threader/issues/new).
 
 
 ## License
