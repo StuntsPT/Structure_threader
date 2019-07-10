@@ -8,3 +8,7 @@ version: 2
 # Build documentation with MkDocs
 mkdocs:
   configuration: docs/mkdocs.yml
+
+# Use python 3.6 to work around a RTD bug (https://github.com/readthedocs/readthedocs.org/issues/5474)
+python:
+   version: 3.6
