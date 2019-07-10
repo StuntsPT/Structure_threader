@@ -5,6 +5,7 @@
 ## New feature
 * *Structure_threader* can now wrap [ALStructure](https://github.com/StoreyLab/alstructure)!!! This is a major feature and warranted the release of version 1.3.0.
 
+---
 
 ## Changes since v1.2.14
 
