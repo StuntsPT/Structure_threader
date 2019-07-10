@@ -1,6 +1,6 @@
-title: 'Structure_threader manual'
+site_name: 'Structure_threader manual'
 #site_favicon: 'assets/Icon.png'
-nav:
+pages:
     - 'Introduction': 'index.md'
     - 'Installation & dependencies': 'install.md'
     - 'External programs': 'external.md'
