@@ -1,6 +1,6 @@
-site_name: 'Structure_threader manual'
+title: 'Structure_threader manual'
 #site_favicon: 'assets/Icon.png'
-pages:
+nav:
     - 'Introduction': 'index.md'
     - 'Installation & dependencies': 'install.md'
     - 'External programs': 'external.md'
@@ -11,5 +11,4 @@ pages:
     - 'Citation': 'citation.md'
     - 'Future Plans': 'future.md'
     - 'FAQ': 'faq.md'
-theme:
-    name: readthedocs
+theme: readthedocs
