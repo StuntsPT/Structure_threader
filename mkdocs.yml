@@ -2,6 +2,8 @@ site_name: 'Structure_threader manual'
 #site_favicon: 'assets/Icon.png'
 site_author: Francisco Pina-Martins
 repo_url: https://gitlab.com/StuntsPT/Structure_threader
+edit_uri: tree/master/docs
+
 pages:
     - 'Introduction': 'index.md'
     - 'Installation & dependencies': 'install.md'
