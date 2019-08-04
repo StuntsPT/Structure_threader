@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2015 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2015-2019 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ _OLD_LDFLAGS=$LDFLAGS
 # faststructure
 wget -c https://github.com/rajanil/fastStructure/archive/v1.0.tar.gz -O ${tempdir}/fastStructure-1.0.tar.gz
 # python-nose
-wget -c http://pypi.python.org/packages/source/n/nose/nose-1.3.6.tar.gz -O ${tempdir}/nose-1.3.6.tar.gz
+wget -c https://pypi.python.org/packages/source/n/nose/nose-1.3.6.tar.gz -O ${tempdir}/nose-1.3.6.tar.gz
 # numpy
 wget -c https://github.com/numpy/numpy/archive/v1.9.2.tar.gz -O ${tempdir}/numpy.tar.gz
 # scipy
