@@ -46,7 +46,7 @@ if(!require(lfa)){
   library(lfa)
 }
 
-alstructure_wrapper = function(input_prefix, K) {
+alstructure_wrapper = function(input_file, K) {
   #' ALStructure wrapper
   #'
   #' Small wrapper function that wraps ALStructure
@@ -54,7 +54,11 @@ alstructure_wrapper = function(input_prefix, K) {
   #' as arguments and returns a q-matrix
 
   K = as.numeric(K)
-  input_data = lfa::read.bed(input_prefix)
+
+  input_data = tryCatch(lfa::read.bed(input_file),
+                        error = read.csv(input_file, header=F, sep="\t")
+                        )
+  
   fit <- alstructure(X = input_data, d_hat=K)
   q_matrix = t(fit$Q_hat)
 

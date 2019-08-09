@@ -36,3 +36,32 @@ def alstr_cli_generator(arg, k_val):
     cli = ["Rscript", arg.external_prog, infile, str(k_val), output_file]
 
     return cli, output_file
+
+def vcf_to_matrix(vcf_file):
+    """
+    Parses a VCF file and converts it to a tsv matrix that can be read by
+    ALStructure.
+    Takes a VCF filename as input.
+    Does not return anything.
+    Writes a new file with the same name as the VCF but with .tsv extension
+    """
+    conversion_table = {"0/0": "0", "0/1": "1", "1/0": "1", "1/1": "2"}
+
+    outfile = open(vcf_file.replace(".vcf", ".tsv"), "w")
+    infile = open(vcf_file, "r")
+
+    # Skip initial comments that starts with #
+    while True:
+        line = infile.readline()
+        # break while statement if it is not a comment line
+        # i.e. does not startwith #
+        if not line.startswith('#'):
+            break
+
+    for lines in infile:
+        genotypes = lines.split()[9:]
+        converted = [conversion_table[x.split(":")[0]]
+                     if "." not in x else "NA" for x in genotypes]
+        outfile.write("\t".join(converted) + "\n")
+    infile.close()
+    outfile.close()
