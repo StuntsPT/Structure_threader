@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.0
+
+## New feature
+* *Structure_threader* can now supports passing a VCF file for [ALStructure](https://github.com/StoreyLab/alstructure). Not even upstream *ALStructure* can do this. =-)
+
+---
+
 ## Changes since v1.2.15
 
 ## New feature
