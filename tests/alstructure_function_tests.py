@@ -17,6 +17,7 @@
 
 import pytest
 import mockups
+import filecmp
 import structure_threader.wrappers.alstructure_wrapper as alsw
 
 
@@ -36,3 +37,18 @@ def test_alstr_cli_generator():
     returned_cli, out_file = alsw.alstr_cli_generator(arg, k_val)
     assert returned_cli == mock_cli
     assert out_file == "alstr_K4"
+
+
+def test_vcf_to_matrix():
+    """
+    Tests if vcf_to_matrix() is working correctlly.
+    Converts a known file, and compares the result with a known good conversion
+    """
+    # Define arguments
+    arg = mockups.Arguments()
+    arg.infile = "smalldata/SmallTestData.vcf"
+    k_val = 4
+    alsw.vcf_to_matrix(arg.infile)
+
+    assert filecmp.cmp(arg.infile[:-4] + ".tsv",
+                       "smalldata/SmallTestData_reference.tsv")
