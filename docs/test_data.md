@@ -41,6 +41,13 @@ This file was then converted to the *PLINK* format and compressed with the follo
     tar cvfJ BigTestData.bed.tar.xz BigTestData.bed BigTestData.fam BigTestData.bim
 
 
+## BigTestData.vcf.tar.xz
+    This file is *VCF* formatted. It was obtained in the exact same way as `BigTestData.str.tar.xz`, except for the conversion using *PGDSPIDER*, which was not used. Instead, the filtered VCF file was reduced to 501 individuals and 1000 SNPs and compressed with the following command:
+
+        head -n 1253 Chr22.recode.vcf |cut -f 1-510 > BigTestData.vcf
+        tar cvfJ BigTestData.vcf.tar.xz BigTestData.vcf
+
+
 ## extraparams and mainparams
 The *STRUCTURE* parameter files that were used in the benchmarking process.
 
