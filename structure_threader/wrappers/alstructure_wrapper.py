@@ -32,6 +32,9 @@ def alstr_cli_generator(arg, k_val):
     output_file = os.path.join(arg.outpath, "alstr_K" + str(k_val))
     if arg.infile.endswith((".bed", ".fam", ".bim")):
         infile = arg.infile[:-4]
+    elif arg.infile.endswith(".vcf"):
+        vcf_to_matrix(arg.infile)
+        infile = arg.infile[:-4] + ".tsv"
 
     cli = ["Rscript", arg.external_prog, infile, str(k_val), output_file]
 
@@ -46,7 +49,8 @@ def vcf_to_matrix(vcf_file):
     Does not return anything.
     Writes a new file with the same name as the VCF but with .tsv extension
     """
-    conversion_table = {"0/0": "0", "0/1": "1", "1/0": "1", "1/1": "2"}
+    conversion_table = {"0/0": "0", "0/1": "1", "1/0": "1", "1/1": "2",
+                        "0|0": "0", "0|1": "1", "1|0": "1", "1|1": "2"}
 
     outfile = open(vcf_file.replace(".vcf", ".tsv"), "w")
     infile = open(vcf_file, "r")
