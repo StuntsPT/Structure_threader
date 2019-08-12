@@ -46,28 +46,41 @@ if(!require(lfa)){
   library(lfa)
 }
 
-alstructure_wrapper = function(input_file, K) {
+alstructure_wrapper = function(data_matrix, K) {
   #' ALStructure wrapper
   #'
   #' Small wrapper function that wraps ALStructure
-  #' Takes an input prefix (file minus the extension) and value of K
+  #' Takes a data matrix and value of K
   #' as arguments and returns a q-matrix
 
   K = as.numeric(K)
 
-  input_data = tryCatch(lfa::read.bed(input_file),
-                        error = read.csv(input_file, header=F, sep="\t")
-                        )
-  
-  fit <- alstructure(X = input_data, d_hat=K)
+  fit <- alstructure(X = data_matrix, d_hat=K)
   q_matrix = t(fit$Q_hat)
 
   return(q_matrix)
 }
 
+data_to_matrix = function (ifile) {
+  #' data_to_matrix
+  #' Converts the data in an input file into a data matrix that can be read
+  #' by alstructure
+  #' Takes a tsv or a bed file as input and returns a data matrix
+
+  if (substring(ifile, nchar(ifile)-3) == ".tsv") {
+    print(ifile)
+    input_data = as.matrix(read.csv(ifile, header=F, sep="\t"))
+  } else {
+    input_data = lfa::read.bed(ifile)
+  }
+  
+  return(input_data)
+}
+
 args = commandArgs(trailingOnly=TRUE)
 
 if (sys.nframe() == 0){
-  Q_matrix = alstructure_wrapper(args[1], args[2])
+  data_matrix = data_to_matrix(args[1])
+  Q_matrix = alstructure_wrapper(data_matrix, args[2])
   write.csv(Q_matrix, args[3])
 }

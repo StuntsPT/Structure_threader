@@ -37,6 +37,7 @@ def alstr_cli_generator(arg, k_val):
 
     return cli, output_file
 
+
 def vcf_to_matrix(vcf_file):
     """
     Parses a VCF file and converts it to a tsv matrix that can be read by
@@ -58,10 +59,14 @@ def vcf_to_matrix(vcf_file):
         if not line.startswith('#'):
             break
 
-    for lines in infile:
-        genotypes = lines.split()[9:]
+    while line:
+        genotypes = line.split()[9:]
         converted = [conversion_table[x.split(":")[0]]
                      if "." not in x else "NA" for x in genotypes]
         outfile.write("\t".join(converted) + "\n")
+        try:
+            line = infile.readline()
+        except IOError:
+            break
     infile.close()
     outfile.close()
