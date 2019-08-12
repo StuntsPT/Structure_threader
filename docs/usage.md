@@ -142,7 +142,7 @@ Ind3    PopA    2
 
 The individuals of "PopB" will appear first, and then the individuals of "PopA".
 
-## fastStrucutre Warning:
+## fastStructure Warning:
 Keep in mind that *fastStructure* can take input in two distinct file formats:
 [Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
 [structure](http://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
@@ -152,7 +152,7 @@ In order to use the PLINK format, three files are required:
 * `file.fam`
 * `file.bim`
 
-You can enter any of them (but just one oof them) as the input file and
+You can enter any of them (but just one of them) as the input file and
 *Structure_threader* will assume the other two exist in the same path.
 If the input file specified by the *-i* switch in *Structure_threader* has an
 extension different from either of the three mentioned above, *Structure_threader* will assume th input is in the STRUCTURE format, which has some peculiarities:
@@ -167,6 +167,21 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   4
 Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ```
+
+## ALStructure Warning:
+Keep in mind that *ALStructure* can take input in two distinct file formats:
+[Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
+[VCF](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
+In order to use the PLINK format, three files are required:
+
+* `file.bed`
+* `file.fam`
+* `file.bim`
+
+You can enter any of them (but just one of them) as the input file and
+*Structure_threader* will assume the other two exist in the same path.
+
+In order to use a `VCF` formatted file, it is only required that you point at it with the `-i` switch. Note that when using this format, *Structure_threader* will create a new file, with the same name and in the same PATH as your `VCF` file, but with a `.tsv` extension, which is ready to be parsed by *ALStructure*.
 
 Don't forget to look at the [Output section](output.md) for information on how the data is presented after a successful (or not) run.
 
