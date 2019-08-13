@@ -23,7 +23,7 @@ import colorlover as cl
 
 from plotly.offline import plot
 import plotly.graph_objs as go
-from plotly import tools
+from plotly import subplots
 
 import numpy as np
 import matplotlib
@@ -678,7 +678,7 @@ class PlotList(AuxSanity):
 
         # Set the figure object with the subplots and their titles already
         # specified
-        fig = tools.make_subplots(
+        fig = subplots.make_subplots(
             rows=nplots,
             cols=1,
             shared_xaxes=True,
