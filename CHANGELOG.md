@@ -1,5 +1,18 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.1
+
+## Bugfix
+* Fixes a Plotly deprecation warning:
+
+```
+/usr/local/lib/python3.6/dist-packages/plotly/tools.py:465: DeprecationWarning:
+
+plotly.tools.make_subplots is deprecated, please use plotly.subplots.make_subplots instead
+```
+
+---
+
 ## Changes since v1.3.0
 
 ## New feature
