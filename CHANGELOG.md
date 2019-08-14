@@ -5,6 +5,8 @@
 ## Bugfix
 * Makes the VCF conversion script handle tri-alellic (and more) SNPs the same way that PLINK does - discard them as NA. I am under the impression that this could be better handled, but for now it will do.
 
+Big thanks to Yamila Paula Cardoso for providing me with a dataset where this bug showed up!
+
 ---
 
 ## Changes since v1.3.1
