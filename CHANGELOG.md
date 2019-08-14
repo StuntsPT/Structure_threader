@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.2
+
+## Bugfix
+* Makes the VCF conversion script handle tri-alellic (and more) SNPs the same way that PLINK does - discard them as NA. I am under the impression that this could be better handled, but for now it will do.
+
+---
+
 ## Changes since v1.3.1
 
 ## Bugfix

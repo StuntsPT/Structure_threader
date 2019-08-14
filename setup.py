@@ -56,7 +56,7 @@ def platform_detection(install_binaries=True):
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
 DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
-VERSION = "1.3.2"
+VERSION = "1.3.3"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
