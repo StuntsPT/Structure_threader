@@ -66,7 +66,8 @@ def vcf_to_matrix(vcf_file):
     while line:
         genotypes = line.split()[9:]
         converted = [conversion_table[x.split(":")[0]]
-                     if "." not in x else "NA" for x in genotypes]
+                     if x.split(":")[0] in conversion_table
+                     else "NA" for x in genotypes]
         outfile.write("\t".join(converted) + "\n")
         try:
             line = infile.readline()
