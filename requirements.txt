@@ -4,3 +4,4 @@ pytest
 
 # Version required
 matplotlib >= 1.5
+plotly >= 4.1.1

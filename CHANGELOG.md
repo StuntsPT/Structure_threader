@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.3
+
+## Bugfix
+* Forces plotly to version >= 4.1.1 due to a deprecation warning.
+
+---
+
 ## Changes since v1.3.2
 
 ## Bugfix

@@ -56,7 +56,7 @@ def platform_detection(install_binaries=True):
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
 DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
-VERSION = "1.3.3"
+VERSION = "1.3.4"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
@@ -70,7 +70,7 @@ setup(
               "structure_threader.colorer",
               "structure_threader.wrappers",
               "structure_threader.skeletons"],
-    install_requires=["plotly",
+    install_requires=["plotly>=4.1.1",
                       "colorlover",
                       "numpy>=1.12.1",
                       "matplotlib"],
