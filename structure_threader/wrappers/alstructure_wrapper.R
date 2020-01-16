@@ -1,5 +1,5 @@
-#!/usr/bin/Rscript
-# Copyright 2019 Francisco Pina Martins <f.pinamartins@gmail.com>
+#!/usr/bin/env Rscript
+# Copyright 2019-2020 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
