@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.4
+
+## Bugfix
+* Improves the shebang on `alstructure_wrapper.R` to improve conda compatibility.
+
+---
+
 ## Changes since v1.3.3
 
 ## Bugfix
