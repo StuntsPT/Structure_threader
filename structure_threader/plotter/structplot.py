@@ -224,7 +224,8 @@ class PlotK:
 
                 # Get the cluster values
                 fields = line.strip().split(":")
-                fields = fields[1].split()
+                fields = fields[1].split("(")  # Discard eventual conf.interval
+                fields = fields[0].split()
                 cl_vals = [float(x) for x in fields]
 
                 # Here we add the assignment probabilities to the main array.
