@@ -1,5 +1,13 @@
 # *Structure_threader* changelog
 
+
+## Changes since v1.3.5
+
+## Bugfix
+* Adds a corner case to the STRUCTURE results parser for when the option `#define ANCESTDIST` is set to `1`.
+
+---
+
 ## Changes since v1.3.4
 
 ## Bugfix
