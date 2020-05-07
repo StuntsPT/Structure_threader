@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2015-2019 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2015-2020 Francisco Pina Martins <f.pinamartins@gmail.com>
 # and Diogo N. Silva <o.diogo.silva@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
