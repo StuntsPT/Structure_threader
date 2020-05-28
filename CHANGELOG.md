@@ -1,5 +1,11 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.6
+
+## Bugfix
+* Corrects a bug with `setup.py` not working correctly when installing on Windows platforms.
+
+---
 
 ## Changes since v1.3.5
 

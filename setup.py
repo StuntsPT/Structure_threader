@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2016-2019 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2016-2020 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ except ImportError:
     from setuptools import setup
 
 
-class NotSupportedException(BaseException): pass
+class NotSupportedException(BaseException):
+    pass
 
 
 if sys.version_info.major < 3:
@@ -55,8 +56,12 @@ def platform_detection(install_binaries=True):
 
 # Set some variables (PKGBUILD inspired)
 DATA_FILES = platform_detection()
-DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
-VERSION = "1.3.6"
+try:
+    DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
+except TypeError:
+    DATA_FILES = [('bin',
+                   ["structure_threader/wrappers/alstructure_wrapper.R"])]
+VERSION = "1.3.7"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
