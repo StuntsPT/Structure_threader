@@ -52,6 +52,8 @@ cd ${tempdir}
 tar xvfz lapack-3.5.0.tgz
 mkdir -p build-lapack
 cd build-lapack
+export FCFLAGS="-w -fallow-argument-mismatch -O2"
+export FFLAGS="-w -fallow-argument-mismatch -O2"
 cmake ../lapack-3.5.0
 make
 mkdir -p ${install_dir}/{bin,lib}
