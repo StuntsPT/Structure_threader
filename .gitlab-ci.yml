@@ -40,10 +40,7 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
-    artifacts:
-        name: "$CI_PROJECT_NAME"
-        paths:
-            - /root/
+
 
 deployment:
     stage: deployment
