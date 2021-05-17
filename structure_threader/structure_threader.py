@@ -236,7 +236,7 @@ def plots_only(arg):
     running any wrapped programs.
     """
     # Relative to abs path
-    prefix_abs_path = os.path.abspath(arg.prefix)
+    prefix_abs_path = os.path.abspath(arg.results_path)
     # Get all files matching the provided prefix
     prefix_dir, prefix_name = os.path.split(prefix_abs_path)
 
@@ -263,8 +263,8 @@ def plots_only(arg):
                                       "it.".format(filename))
 
     if not infiles:
-        logging.error("No input files that match the provided prefix. "
-                      "Aborting.")
+        logging.error("No input files that match the expected prefix were "
+                      "found in the provided path. Aborting.")
         raise SystemExit
 
     if not os.path.exists(arg.outpath):

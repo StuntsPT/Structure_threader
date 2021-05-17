@@ -170,37 +170,37 @@ def argument_parser(args):
     # Group options
     sort_opts_ex = sort_opts.add_mutually_exclusive_group(required=True)
 
-    main_opts.add_argument("-i", dest="prefix", type=str, required=True,
+    main_opts.add_argument("-i", dest="results_path", type=str, required=True,
                            help="The directory where output meanQ files you "
-                                "want to plot are located."
-                                "If plotting MavericK results, provide"
-                                "the directory where the directories named"
+                                "want to plot are located. "
+                                "If plotting MavericK results, provide "
+                                "the directory where the directories named "
                                 "`mav_KX` are located.")
     main_opts.add_argument("-f", dest="program", type=str, required=True,
                            choices=["structure", "faststructure",
                                     "maverick"],
                            help="The format of the result files.")
     main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
-                           help="Choose the K values to plot. Each K"
+                           help="Choose the K values to plot. Each K "
                                 "value provided will be plotted "
-                                "individually and a comparative plot"
-                                " will all K's will be generated."
+                                "individually and a comparative plot "
+                                "will all K's will be generated. "
                                 "Example: -K 2 3 4.")
     main_opts.add_argument("-o", dest="outpath", type=str, default=".",
-                           help="The directory where the plots will be"
-                                " generated. If it is not provided,"
-                                " the current working directory"
-                                " will be used.")
+                           help="The directory where the plots will be "
+                                "generated. If it is not provided, "
+                                "the current working directory "
+                                "will be used.")
 
     extra_opts.add_argument("-bw", dest="blacknwhite",
                             action="store_const", const=True,
-                            help="Set this flag to draw greyscale plots"
-                                 " instead of colored ones.")
+                            help="Set this flag to draw greyscale plots "
+                                 "instead of colored ones.")
     extra_opts.add_argument("--use-ind-labels", dest="use_ind",
                             action="store_const", const=True,
                             help="Use the individual labels in the "
-                                 "structure plot instead of population"
-                                 " labels")
+                                 "structure plot instead of population "
+                                 "labels")
 
     sort_opts_ex.add_argument("--pop", dest="popfile", type=str,
                               required=False,
