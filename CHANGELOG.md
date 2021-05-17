@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.7
+
+## Documentation
+* Improves readability and clarifies inline help text for the `plot` option.
+
+---
+
 ## Changes since v1.3.6
 
 ## Bugfix
