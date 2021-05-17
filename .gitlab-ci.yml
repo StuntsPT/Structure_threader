@@ -2,7 +2,7 @@ stages:
   - tests
   - deployment
 
-image: python:3.5-slim-jessie
+image: python:3.7-slim
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
@@ -38,6 +38,10 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
+    artifacts:
+        name: "$CI_PROJECT_NAME"
+        paths:
+            - /root/
 
 deployment:
     stage: deployment
