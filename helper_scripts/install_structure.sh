@@ -32,6 +32,7 @@ wget http://web.stanford.edu/group/pritchardlab/structure_software/release_versi
 cd ${tempdir}
 tar xvfz structure_kernel_source.tar.gz
 cd  structure_kernel_src/
+sed -i 's/OPT = -O3/OPT = -O3 -fcommon/' Makefile
 make
 mv structure ${install_dir}
 
