@@ -3,7 +3,7 @@ This section describes how to use *Structure_threader*.
 
 *Structure_threader* can be executed via two main modes.
 
-- `run`: The main execution mode that performs the parallel execution of the external structuring program, calculates the best K values and generates the plot files
+- `run`: The main execution mode that performs the parallel execution of the external structuring program, calculates the best K values (ALStructure currently does not support finding the best K) and generates the plot files
 - `plot`: This execution mode will only generate new plot files from the output files of the structuring program.
 
 ### `run` mode
