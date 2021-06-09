@@ -1,5 +1,14 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.8
+
+## Documentation
+* Clarifies that ALStructure does not currently support Best K estimation.
+
+## Plotting
+* Moves the population/individual names on the HTML plot back to the bottom. Somewhere aling the way, plotly must have changed the default to above.
+
+---
 ## Changes since v1.3.7
 
 ## Documentation

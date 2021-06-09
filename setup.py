@@ -61,7 +61,7 @@ try:
 except TypeError:
     DATA_FILES = [('bin',
                    ["structure_threader/wrappers/alstructure_wrapper.R"])]
-VERSION = "1.3.8"
+VERSION = "1.3.9"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
