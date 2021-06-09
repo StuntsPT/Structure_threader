@@ -819,7 +819,7 @@ class PlotList(AuxSanity):
 
         # Update layout with population boundary shapes
         fig["layout"].update(shapes=shape_list)  # Update first xaxis
-        fig["layout"]["xaxis1"].update(**xdata)
+        fig.update_xaxes(**xdata, row=len(kvals))
 
         # Adapt figure size to number of K. Use auto-size for less
         # than 3 K.
