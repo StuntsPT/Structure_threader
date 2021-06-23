@@ -252,6 +252,10 @@ def plots_only(arg):
         infiles = [os.path.join(prefix_abs_path, "str_K" + x + "_rep1_f")
                    for x in k_vals]
 
+    elif arg.program == "alstructure":
+        infiles = [os.path.join(prefix_abs_path, "alstr_K" + x)
+                   for x in k_vals]
+
     else:
         infiles = [os.path.join(os.path.join(prefix_abs_path, "mav_K" + x),
                                 "outputQmatrix_ind_K" + x + ".csv")

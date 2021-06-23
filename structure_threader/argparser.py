@@ -178,7 +178,7 @@ def argument_parser(args):
                                 "`mav_KX` are located.")
     main_opts.add_argument("-f", dest="program", type=str, required=True,
                            choices=["structure", "faststructure",
-                                    "maverick"],
+                                    "maverick", "alstructure"],
                            help="The format of the result files.")
     main_opts.add_argument("-K", dest="bestk", nargs="+", required=True,
                            help="Choose the K values to plot. Each K "
