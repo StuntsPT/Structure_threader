@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.9
+
+## Plotting
+* Enables the option to draw ALStructure plots from the `plot` mode.
+
+---
+
 ## Changes since v1.3.8
 
 ## Documentation
@@ -9,6 +16,7 @@
 * Moves the population/individual names on the HTML plot back to the bottom. Somewhere aling the way, plotly must have changed the default to above.
 
 ---
+
 ## Changes since v1.3.7
 
 ## Documentation
