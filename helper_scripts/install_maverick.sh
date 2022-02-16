@@ -22,22 +22,22 @@ _version=1.0.4
 _name=MavericK
 
 # Define and create installation location:
-install_dir=~/Software/${_name}
-mkdir -p ${install_dir}
+install_dir=~/Software/"${_name}"
+mkdir -p "${install_dir}"
 
 # Define temp dir
-tempdir=/tmp/$USER
-mkdir -p $tempdir
+tempdir="/tmp/$USER"
+mkdir -p "${tempdir}"
 
 # Download structure sources into temp dir
-wget https://github.com/bobverity/${_name}/archive/v${_version}.tar.gz -O ${tempdir}/${_name}.tar.gz
+wget "https://github.com/bobverity/${_name}/archive/v${_version}.tar.gz" -O "${tempdir}/${_name}.tar.gz"
 
 # Extract tarball, enter src dir, build binary and place it in the install dir
-cd ${tempdir}
-tar xvfz ${_name}.tar.gz
-cd  ${_name}-${_version}/
+cd "${tempdir}"
+tar xvfz "${_name}.tar.gz"
+cd  "${_name}-${_version}/"
 make
-mv ${_name} ${install_dir}
+mv "${_name}" "${install_dir}"
 
 echo ""
 echo "Install succesfull. MavericK is now ready to use."
