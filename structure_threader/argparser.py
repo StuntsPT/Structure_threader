@@ -18,6 +18,7 @@
 import argparse
 import sys
 import os
+from gooey import Gooey
 
 try:
     import sanity_checks.sanity as sanity
@@ -25,6 +26,7 @@ except ImportError:
     import structure_threader.sanity_checks.sanity as sanity
 
 
+@Gooey
 def argument_parser(args):
     """
     Parses the list of arguments as implemented in argparse.
