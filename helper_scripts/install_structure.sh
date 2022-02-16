@@ -19,22 +19,22 @@ set -e
 
 # Define and create installation location:
 install_dir=~/Software/structure
-mkdir -p ${install_dir}
+mkdir -p "${install_dir}"
 
 # Define temp dir
-tempdir=/tmp/$USER
-mkdir -p $tempdir
+tempdir=/tmp/"${USER}"
+mkdir -p "${tempdir}"
 
 # Download structure sources into temp dir
-wget http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz -O ${tempdir}/structure_kernel_source.tar.gz
+wget http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz -O "${tempdir}"/structure_kernel_source.tar.gz
 
 # Extract tarball, enter src dir, build binary and place it in the install dir
-cd ${tempdir}
+cd "${tempdir}"
 tar xvfz structure_kernel_source.tar.gz
 cd  structure_kernel_src/
 sed -i 's/OPT = -O3/OPT = -O3 -fcommon/' Makefile
 make
-mv structure ${install_dir}
+mv structure "${install_dir}"
 
 echo ""
 echo "Install succesfull. STRUCTURE is now ready to use."
