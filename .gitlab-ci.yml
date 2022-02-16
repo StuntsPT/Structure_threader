@@ -2,7 +2,7 @@ stages:
   - tests
   - deployment
 
-image: python:3.7-slim
+image: python:3.8-slim
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
