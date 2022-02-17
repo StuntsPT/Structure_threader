@@ -36,6 +36,9 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
+    artifacts:
+    reports:
+      junit: /root/results_als/
 
 deployment:
     stage: deployment
