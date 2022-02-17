@@ -36,6 +36,10 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
+    artifacts:
+       paths:
+         - /root/results_als/
+       expire_in: 1 week
 
 
 deployment:
