@@ -24,7 +24,7 @@ tests:
     script:
       - apt-get update
       - apt-get install xz-utils
-      - apt-get install -y r-base libcurl4-openssl-dev libssl-dev libxml2 libxml2-dev
+      - apt-get install -y r-base libcurl4-openssl-dev libssl-dev libxml2 libxml2-dev git
       - python -V               # Print out python version for debugging
       - pip install virtualenv
       - virtualenv venv
@@ -36,11 +36,6 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
-    artifacts:
-       paths:
-         - /root/results_als/
-       expire_in: 1 week
-
 
 deployment:
     stage: deployment
