@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2016 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2016-2022 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ git_dir=$(pwd)
 str_bin=$(which fastStructure)
 structure_threader_exec=$(which structure_threader)
 
-tar xvfJ ${git_dir}/tests/smalldata/BigTestData.str.tar.xz -C ${git_dir}/tests/smalldata/
-${structure_threader_exec} run -i ${git_dir}/tests/smalldata/BigTestData.str -o ~/results_fs -fs ${str_bin} -K 4 -t 4 --ind ${git_dir}/tests/smalldata/indfile.txt
+tar xvfJ "${git_dir}/tests/smalldata/BigTestData.str.tar.xz" -C "${git_dir}/tests/smalldata/"
+${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.str" -o ~/results_fs -fs "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/smalldata/indfile.txt"
 
 echo -e "${LightGreen}fastStructure 'Field test' ran successfully. Yay!${NoColor}"
