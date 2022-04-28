@@ -32,7 +32,7 @@ def argument_parser(args):
     parser = argparse.ArgumentParser(
         description="A software wrapper to paralelize genetic clustering "
                     "programs.",
-        prog="Structure_threader",
+        prog="structure_threader",
         formatter_class=argparse.RawTextHelpFormatter)
 
     # Create subparsers for each main structure_threader  operation
