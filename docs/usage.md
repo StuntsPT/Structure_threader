@@ -134,7 +134,7 @@ Ind3    PopA
 
 The third column will simply allow you to change the order of the populations in the generated plots. In this example:
 
- ```
+```
 Ind1    PopA    2
 Ind2    PopB    1
 Ind3    PopA    2
