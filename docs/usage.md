@@ -126,7 +126,7 @@ Ind3
 
 If you provide the second column with the population name, the x-axis labels of the resulting plots will only display the population names. However, the .html plots will also display the name of the individual sample names when hovering the mouse over their respective bars. An example of a two column "indfile":
 
- ```
+```
 Ind1    PopA
 Ind2    PopB
 Ind3    PopA
