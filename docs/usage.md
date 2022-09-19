@@ -75,7 +75,7 @@ Example run:
 structure_threader plot -i fS_run -f fastStructure -K 2 3 4 -o 2_4_plots --ind indfile.txt
 ```
 
-Here, *Structure_threader* will search the current directory for all FastStructure output files that start with the "fS_run" string, as specified by the "-i" option. The "-f" option specified the fastStructure format of the output files. The "-K" option specified which K values should be plotted (Note: If any of the provided K values do not exist, they are ignored). Using the "-o" option the plots will be generated into the "2_4_plots" directory. Finally, we also provide an "indfile" using the "--ind" option.
+Here, *Structure_threader* will search the current directory for all FastStructure output files that start with the "fS_run" string, as specified by the "-i" option. The "-f" option specified the fastStructure format of the output files. The "-K" option specified which K values should be plotted (Note: If any of the provided K values do not exist, they are ignored). Using the "-o" option the plots will be generated into the "2_4_plots" directory. Finally, we also provide an `indfile` using the "--ind" option.
 
 ### `params` mode
 
@@ -84,7 +84,7 @@ The `params` mode takes only one option:
 
 * Output directory (path to where the skeleton parameter files should be written; -o)
 
-## Using a "popfile"
+## Using a `popfile`
 *Structure_threader* can build your structure plots with labels and in a specified order. For that you have to provide a "popfile" (--pop option). This file consists of the following 3 columns: "Population name", "Number of individuals in the population", "Order of the population in the plot file".
 Here is an example:
 
@@ -107,8 +107,8 @@ Location_2  21  2
 
 You can use any order you like using this scheme. Also note that the "split bars" that split the populations in your plot will correspond to the number provided in column 2.
 
-## Using an "indfile"
-The "indfile" works in a similar fashion to the "popfile" but discriminates each individual sample in the output file. This file can be provided with the --ind option and is particularly useful when you have no knowledge of the populations or when individuals from the same population are not clustered together in the input file.
+## Using an `indfile`
+The `indfile` works in a similar fashion to the `popfile` but discriminates each individual sample in the output file. This file can be provided with the --ind option and is particularly useful when you have no knowledge of the populations or when individuals from the same population are not clustered together in the input file.
 
  This file can have between one and up to three columns:
 
@@ -116,7 +116,7 @@ The "indfile" works in a similar fashion to the "popfile" but discriminates each
 2. Population name
 3. Order of the population in the plot
 
-Only the first column is mandatory and if you provide an "indfile" with a single column, the resulting plot will contain the individual samples as the x-axis labels. Such "indfile" could be simply:
+Only the first column is mandatory and if you provide an `indfile` with a single column, the resulting plot will contain the individual samples as the x-axis labels. Such `indfile` could be simply:
 
 ```
 Ind1
@@ -124,7 +124,9 @@ Ind2
 Ind3
 ```
 
-If you provide the second column with the population name, the x-axis labels of the resulting plots will only display the population names. However, the .html plots will also display the name of the individual sample names when hovering the mouse over their respective bars. An example of a two column "indfile":
+#### Note that this **will not re-order** the columns in your plot - this will simply **change the individual labels**! In order to avoid problems, **triple check** that the `indfile` order is the same as in your original input file.
+
+If you provide the second column with the population name, the x-axis labels of the resulting plots will only display the population names. However, the .html plots will also display the name of the individual sample names when hovering the mouse over their respective bars. An example of a two column `indfile`:
 
 ```
 Ind1    PopA
@@ -132,7 +134,10 @@ Ind2    PopB
 Ind3    PopA
 ```
 
-The third column will simply allow you to change the order of the populations in the generated plots. In this example:
+#### Like previously, this option will also not reorder the plot columns! It simply changes the labels.
+
+
+Adding a third column will allow you to change the order of **the populations** in the generated plots. In this example:
 
 ```
 Ind1    PopA    2
@@ -141,6 +146,8 @@ Ind3    PopA    2
 ```
 
 The individuals of "PopB" will appear first, and then the individuals of "PopA".
+
+**Note:** While `popfiles` and `indfiles` are a simple and convenient way to **change the population order**, they are not meant to change **individual order** (albeit individuals will be moved in the plot when population order changes) in the plot. If you are not happy with the individual order in your plot, the best way to change it is in the input file. I can implement a "plot order changer" routine if there is enough demand for it, though (you can provide feedback by commenting on the issue either on [gitlab](https://gitlab.com/StuntsPT/Structure_threader/-/issues/93) or [github](https://github.com/StuntsPT/Structure_threader/issues/91)). 
 
 ## fastStructure Warning:
 Keep in mind that *fastStructure* can take input in two distinct file formats:
