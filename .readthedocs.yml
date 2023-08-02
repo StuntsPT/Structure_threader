@@ -11,6 +11,6 @@ mkdocs:
 
 # Use python 3.6 to work around a RTD bug (https://github.com/readthedocs/readthedocs.org/issues/5474)
 python:
-  version: 3.11
+  version: 3.8
   install:
     - requirements: docs/requirements.txt
