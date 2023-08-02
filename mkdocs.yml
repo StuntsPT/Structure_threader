@@ -4,7 +4,7 @@ site_author: Francisco Pina-Martins
 repo_url: https://gitlab.com/StuntsPT/Structure_threader
 edit_uri: tree/master/docs
 
-pages:
+nav:
     - 'Introduction': 'index.md'
     - 'Installation & dependencies': 'install.md'
     - 'External programs': 'external.md'
