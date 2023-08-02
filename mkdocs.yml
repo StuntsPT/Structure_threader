@@ -17,3 +17,7 @@ pages:
     - 'Future Plans': 'future.md'
     - 'FAQ': 'faq.md'
 theme: readthedocs
+
+python:
+  install:
+    - requirements: docs/requirements.txt
