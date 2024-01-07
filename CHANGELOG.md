@@ -1,5 +1,12 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.10
+
+## Plotting
+* Fixes a bug with a corner case of `usepopinfo` when some individuals did not have population attributed (0)
+
+---
+
 ## Changes since v1.3.9
 
 ## Plotting
