@@ -47,7 +47,7 @@ deployment:
         - source venv/bin/activate
         - pip install twine
         - python setup.py sdist
-        - twine upload dist/* -u Stunts -p $pypi_password
+        - twine upload dist/* -u __token__ -p $pypi_token
     only:
         - tags
     artifacts:
