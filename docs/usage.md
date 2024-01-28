@@ -13,7 +13,7 @@ Using the `run` mode, the program currently takes the following arguments:
 * I/O arguments:
     * Input file (-i)
     * Output directory (-o)
-    * Path to parameters_file (path to `mainparams` [will also assume `extraparams`] or `parameters.txt`; --params)
+    * Path to parameters_file (`mainparams` for STRUCTURE [will assume `extraparams` exists in the same directory] or `parameters.txt` for MavericK; --params)
 * Individual/Population identification options:
     * Path to popfile (--pop) [See below for more information]
     * Path to indfile (--ind) [See below for more information]
@@ -44,12 +44,13 @@ Example run:
 structure_threader run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
 ```
 
-Where -K is the number of "Ks" to run, -R is the number of replicate runs for
-each value of "K", -i is the input file for *STRUCTURE*, -o is the directory where the output results should be stored,
--t is the number of threads to use and -p the path for the *STRUCTURE* binary.
+Where `-K` is the number of "Ks" to run, `-R` is the number of replicate runs for
+each value of "K", `-i` is the input file for *STRUCTURE*, `-o` is the directory where the output results should be stored,
+`-t` is the number of threads to use, `-st` the path for the *STRUCTURE* binary.
 
 The program should be run in the same directory where the files "mainparams" and
-"extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this. Alternatively, you can specify the path to where your parameter files (`mainparams` and `extraparams` or `parameters.txt`) and *Structure_threader* will read parameters from the specified location. This can be achieved using the `--params` switch.
+"extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this.
+Alternatively, you can specify the path to a `mainparams` (or `parameters.txt if wrapping *MavericK*) file. *Structure_threader* will look for an `extraparams` file in the same location and pass all read parameters to the wrapped program. This can be achieved using the `--params` switch.
 
 ### `plot` mode
 
