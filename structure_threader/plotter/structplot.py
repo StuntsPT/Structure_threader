@@ -163,16 +163,16 @@ class PlotK:
 
                 # Get the assignment probability for the best K assigned to
                 # the current taxon
-                qvalues_dic[fields[0].split()[3]] = float(fields[0].split()[5])
-
-                # Gather the assignment probabilities for other  K clusters.
-                for pop in fields[1:]:
-                    # To get the assignment to a particular cluster, we
-                    # have to sum all the values for other populations here
-                    prob = sum(map(float, pop.split()[-3:]))
-                    # pop.split()[1][:-1] gets the cluster number
-                    qvalues_dic[int(pop.split()[1][:-1])] = prob
-
+                try:
+                    qvalues_dic[int(fields[0].split()[3])] = float(fields[0].split()[5])
+                    for pop in fields[1:]:
+                        # To get the assignment to a particular cluster, we
+                        # have to sum all the values for other populations here
+                        prob = sum(map(float, pop.split()[2:]))
+                        # pop.split()[1][:-1] gets the cluster number
+                        qvalues_dic[int(pop.split()[1][:-1])] = prob
+                except IndexError:
+                    qvalues_dic = {n: float(x) for n, x in enumerate(line.split(":")[1].split())}
                 # Sort the probability assignment values according to cluster
                 # positions (e.g. [<cluster 1 prob>, <cluster 2 prob>, ...])
                 cl_vals = [vals for k, vals in sorted(qvalues_dic.items())]
