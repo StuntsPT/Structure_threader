@@ -7,10 +7,10 @@ A program to parallelize and automate the runs of [Structure](http://web.stanfor
 
 ## Requirements
 
-Python 3. The main program only uses modules from the standard library.
-In order to draw the plots, matplotlib >= 1.4 is required.
-To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required.
-In order to use "ALStructure", you need to have [R](https://www.r-project.org/) installed too.
+Python 3. The main program only uses modules from the standard library.  
+In order to draw the plots, matplotlib >= 1.4 is required (installed automatically as a dependency when installed via `pip`).  
+To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required (installed automatically as a dependency when installed via `pip`).  
+In order to use "ALStructure", you need to have [R](https://www.r-project.org/) installed too (must be installed manually, as `pip` can't handle installing R or dependencies).
 
 
 ## Where to get it
