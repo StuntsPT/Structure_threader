@@ -977,8 +977,8 @@ def plot_normalization(norm_dict, outdir):
     xlabs = ["K" + str(x) for x in norm_dict.keys()]
 
     means = [x[1][0] for x in data]
-    lower_limit = [x[1][0] - x[1][1] for x in data]
-    upper_limit = [x[1][2] - x[1][0] for x in data]
+    lower_limit = [max(0, x[1][0] - x[1][1]) for x in data]
+    upper_limit = [max(0, x[1][2] - x[1][0]) for x in data]
 
     plt.bar(range(len(means)), means, 0.5, yerr=[lower_limit, upper_limit],
             fc=(0, 0, 1, 0.5), edgecolor="blue", linewidth=1.5, capsize=5)

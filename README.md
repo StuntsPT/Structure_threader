@@ -10,15 +10,15 @@ A program to parallelize the runs of [Structure](http://web.stanford.edu/group/p
 ## Installation
 
 ```bash
-pip3 install structure_threader
+pip install structure-threader
 ```
 
 *Structure_threader* is available on
-[Pypi](https://pypi.python.org/pypi/structure_threader/). It can be
+[PyPI](https://pypi.python.org/pypi/structure-threader/). It can be
 installed by simply running the above command. If you are on a \*nix like
 platform, you can use the `--user` option if you can't or don't want to install
 the program as `root` user. Binaries for STRUCTURE, fastStructure and
-*MavericK* are also distributed for GNU/Linux and Mac OS X. For more details,
+*MavericK* are also distributed for GNU/Linux and macOS. Please note that the macOS binaries included are compiled for x64 and not ARM64, so it will run within Rosetta2 for M series Macs. For more details,
 please [check the
 manual](http://structure-threader.readthedocs.io/en/latest/install/).
 
@@ -39,4 +39,4 @@ If you use *Structure_threader*, please cite our
 </div>
 
 ## License
-GPLv3
+This project is licensed under the [GNU General Public License, version 3](https://gitlab.com/StuntsPT/Structure_threader/-/raw/master/LICENSE).

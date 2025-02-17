@@ -35,3 +35,7 @@ tar xvfJ "${git_dir}/tests/smalldata/BigTestData.vcf.tar.xz" -C "${git_dir}/test
 ${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.vcf" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/smalldata/indfile.txt"
 
 echo -e "${LightGreen}ALStructure 'Field test' ran successfully on the \`.vcf\` file. Yay!${NoColor}"
+
+${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.vcf.gz" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/smalldata/indfile.txt"
+
+echo -e "${LightGreen}ALStructure 'Field test' ran successfully on the \`.vcf.gz\` file. Yay!${NoColor}"

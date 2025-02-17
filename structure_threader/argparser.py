@@ -145,6 +145,9 @@ def argument_parser(args):
     plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",
                            metavar="bool", default=False)
+    plot_opts.add_argument("--no_clumpp", dest="noclumpp", type=bool,
+                           required=False, help="Disable Clumppling analysis.",
+                           metavar="bool", default=False)
     plot_opts.add_argument("--override_bestk", dest="bestk", type=int,
                            required=False, nargs="+",
                            help="Override 'K' values from the given list"

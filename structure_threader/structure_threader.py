@@ -17,6 +17,7 @@
 
 
 import os
+import shutil
 import sys
 import signal
 import subprocess
@@ -26,6 +27,7 @@ import logging
 from multiprocessing import Pool
 from random import choice
 from functools import partial
+from clumppling.__main__ import main as clumppling_main
 
 try:
     import plotter.structplot as sp
@@ -232,7 +234,7 @@ def create_plts(wrapped_prog, bestk, arg):
 
 def plots_only(arg):
     """
-    Handles arrugments and wraps things up for drawing the plots without
+    Handles arguments and wraps things up for drawing the plots without
     running any wrapped programs.
     """
     # Relative to abs path
@@ -281,6 +283,100 @@ def plots_only(arg):
             use_ind=arg.use_ind)
 
 
+def clumppling_run(wrapped_prog, arg):
+    """
+    Handles arrugments and runs an analysis on the output data using Clumppling.
+    Assumes wrapped software output folder as input for Clumppling.
+    """
+    if wrapped_prog == "structure":
+        wrapped_prog_f = wrapped_prog
+
+    elif wrapped_prog == "faststructure":
+        wrapped_prog_f = "fastStructure"
+
+        for file in os.listdir(arg.outpath):
+            if file == "fS_run_K.1.meanQ":
+                full_file_path = os.path.join(arg.outpath, file)
+                os.rename(full_file_path, f"{full_file_path}.bak")
+                break
+
+    elif wrapped_prog == "maverick":
+        wrapped_prog_f = "generalQ"
+
+        out_dir_list = []
+        for file in os.listdir(arg.outpath):
+            if file.startswith("mav") and not file == "mav_K1":
+                out_dir_list.append(file)
+
+        for dir in out_dir_list:
+            K = dir[-1:]
+            if arg.use_ind or arg.indfile is not None:
+                file = dir + f"/outputQmatrix_ind_K{K}.csv"
+            else:
+                file = dir + f"/outputQmatrix_pop_K{K}.csv"
+            out_file = f"K{K}.Q"
+
+            full_file_path = os.path.join(arg.outpath, file)
+            new_file_path = os.path.join(arg.outpath, out_file)
+            shutil.copy(full_file_path, new_file_path)
+
+    elif wrapped_prog == "alstructure":
+        wrapped_prog_f = "generalQ"
+
+        for file in os.listdir(arg.outpath):
+            if file.startswith("alstr"):
+                K = file[-1:]
+                out_file = f"K{K}.Q"
+
+                full_file_path = os.path.join(arg.outpath, file)
+                new_file_path = os.path.join(arg.outpath, out_file)
+                shutil.copy(full_file_path, new_file_path)
+
+    else:
+        return
+
+    args_dict = {
+        'input_path': arg.outpath,
+        'output_path': f"{arg.outpath}/clumpp",
+        'input_format': wrapped_prog_f,
+        'vis': 1,  # Default value for visualization
+        'cd_param': 1.0,  # Default value for community detection parameter
+        'use_rep': 0,  # Default value for using representative replicate
+        'merge_cls': 0,  # Default value for merging clusters
+        'cd_default': 1,  # Default value for using default community detection method
+        'plot_modes': 1,  # Default value for displaying aligned modes
+        'plot_modes_withinK': 0,  # Default value for displaying modes for each K
+        'plot_major_modes': 0,  # Default value for displaying major modes
+        'plot_all_modes': 0,  # Default value for displaying all aligned modes
+        'custom_cmap': ''  # Default value for custom colormap
+    }
+
+    args = argparser.argparse.Namespace(**args_dict)
+
+    logging.info("Running Clumppling analysis on the results.")
+    try:
+        clumppling_main(args)
+
+        if wrapped_prog == "faststructure":
+            for file in os.listdir(arg.outpath):
+                if file == "fS_run_K.1.meanQ.bak":
+                    full_file_path = os.path.join(arg.outpath, file)
+                    os.rename(full_file_path, full_file_path[:-4])
+
+        elif wrapped_prog == "maverick" or wrapped_prog == "alstructure":
+            for file in os.listdir(arg.outpath):
+                if file.endswith(".Q"):
+                    os.remove(file)
+
+        for file in os.listdir(arg.outpath):
+            if file == "clumpp.zip":
+                os.remove(os.path.join(arg.outpath, file))
+                break
+
+    except Exception as e:
+        print(f"An error occurred during Clumppling analysis: {e}")
+
+
 def full_run(arg):
     """
     Make a full Structure_threader run, including program wrapping, and
@@ -307,6 +403,11 @@ def full_run(arg):
                                    arg.notests)
         arg.notests = True
 
+    if wrapped_prog == "alstructure":
+        infile = arg.infile[:-4] + ".tsv"
+        if os.path.exists(infile):
+            os.remove(infile)
+
     if arg.notests is False:
         bestk = structure_harvester(arg.outpath, wrapped_prog)
     else:
@@ -314,6 +415,9 @@ def full_run(arg):
 
     if arg.noplot is False:
         create_plts(wrapped_prog, bestk, arg)
+
+    if arg.noclumpp is False:
+        clumppling_run(wrapped_prog, arg)
 
 
 def spooky_scary_skeletons(arg):
