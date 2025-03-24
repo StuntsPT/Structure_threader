@@ -28,3 +28,9 @@ class Arguments():
         self.notests = False
         self.k_list = [2, 3, 4, 5]
         self.extra_options = "--prior=logistic"
+        self.exec_mode = "EM"
+        self.init = None
+        self.nad_cpus = 0
+        self.nad_gpus = 0
+        self.supervised = False
+        self.popfile = None

@@ -85,6 +85,11 @@ def argument_parser(args):
                               metavar="filepath",
                               help="Location of the ALStructure script "
                               "in your environment.")
+    main_exec_ex.add_argument("-nad", dest="external_prog", type=str,
+                              default=None,
+                              metavar="filepath",
+                              help="Location of the Neural ADMIXTURE executable "
+                              "in your environment.")
 
     k_opts.add_argument("-K", dest="k_list", type=int,
                         help="Number of Ks to calculate.\n",
@@ -99,6 +104,17 @@ def argument_parser(args):
                           "of K (default:%(default)s).\nIgnored for "
                           "fastStructure, MavericK and ALStructure",
                           metavar="int", default=20)
+    run_opts.add_argument("--exec_mode", dest="exec_mode", type=str, required=False,
+                          help="Define execution mode for Neural ADMIXTURE.\n "
+                          "Can be train or infer. ",
+                          metavar="string", default="train")
+    run_opts.add_argument("--supervised", dest="supervised", type=bool, required=False,
+                          help="Specify if Neural ADMIXTURE runs in "
+                          "supervised mode. ",
+                          metavar="bool", default=False)
+    run_opts.add_argument("--nad_seed", dest="nad_seed", type=str, required=False,
+                          help="Define run seed for Neural ADMIXTURE train mode.",
+                          metavar="string", default="42")
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")
@@ -141,6 +157,16 @@ def argument_parser(args):
                            help="Define the random seed value to pass to "
                            "STRUCTURE and fastStructure",
                            default=1235813, metavar="int")
+    misc_opts.add_argument("--init", dest="init", type=str, required=False,
+                           help="Define initialization method for Neural ADMIXTURE. "
+                           "Defaults to GaussianMixture (gmm).",
+                           metavar="string")
+    misc_opts.add_argument("--nad_cpus", dest="nad_cpus", type=int, required=False,
+                           help="Define number of CPUs for Neural ADMIXTURE.",
+                           default=0, metavar="int")
+    misc_opts.add_argument("--nad_gpus", dest="nad_gpus", type=int, required=False,
+                           help="Define number of GPUs for Neural ADMIXTURE.",
+                           default=0, metavar="int")
 
     plot_opts.add_argument("--no_plots", dest="noplot", type=bool,
                            required=False, help="Disable plot drawing.",

@@ -23,7 +23,7 @@ tests:
     stage: tests
     script:
       - apt-get update
-      - apt-get install xz-utils
+      - apt-get install -y xz-utils
       - apt-get install -y r-base r-cran-devtools r-cran-biocmanager
       - python -V               # Print out python version for debugging
       - pip install virtualenv
@@ -36,6 +36,7 @@ tests:
       - tests/fastStructure_field_test.sh
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
+      - tests/neuraladmixture_field_tests.sh
 
 
 deployment:

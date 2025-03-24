@@ -22,10 +22,11 @@ Using the `run` mode, the program currently takes the following arguments:
     * *fastStructure* location (if you want to run *fastStructure*; -fs)
     * *MavericK* location (if you want to run *MavericK*; -mv)
     * *ALStructure_wrapper.R* location (if you want to run *ALStructure*; -als)
+    * *Neural ADMIXTURE* location (if you want to run *Neural ADMIXTURE*; -nad)
 * Number of K - you have to pass one and only one of the following arguments:
     * K (To test all values of "K" from 1 to "K"; -K)
     * Klist (To test all values of "K" in the provided list; -Klist)
-* Replicates (ignored for *fastStructure*, *MavericK* and *ALStructure*; -R)
+* Replicates (ignored for *fastStructure*, *MavericK*, *ALStructure* and *Neural ADMIXTURE*; -R)
 * Number of threads to use (-t)
 * Q-matrix plotting options:
   * Disable plot drawing (--no_plots)
@@ -34,6 +35,7 @@ Using the `run` mode, the program currently takes the following arguments:
 * Other options
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
+    * Do not run the Clumppling analysis (--no-clumpp)
     * Add extra arguments to pass to the wrapped program (--extra_opts) [Example: prior=logistic seed=123]
     * Define a random seed starting value (--seed) [default:1235813]
 

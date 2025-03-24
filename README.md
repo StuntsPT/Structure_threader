@@ -1,10 +1,10 @@
 # Structure_threader
-A program to parallelize the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) and [ALStructure](https://github.com/StoreyLab/alstructure) software.
+A program to parallelize the runs of [Structure](https://web.stanford.edu/group/pritchardlab/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](https://github.com/bobverity/MavericK), [ALStructure](https://github.com/StoreyLab/alstructure) and [Neural ADMIXTURE](https://github.com/AI-sandbox/neural-admixture) software.
 
-[![Travis Status](https://travis-ci.org/StuntsPT/Structure_threader.svg?branch=master)](https://travis-ci.org/StuntsPT/Structure_threader) [![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](http://structure-threader.readthedocs.io/en/latest/?badge=latest)
-[![DOI](https://zenodo.org/badge/31598374.svg)](https://zenodo.org/badge/latestdoi/31598374)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/becafd10f0bc4904b6d2857cf4c47ea4)](https://www.codacy.com/gh/StuntsPT/Structure_threader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=StuntsPT/Structure_threader&amp;utm_campaign=Badge_Grade)
 [![Pipeline Status](https://gitlab.com/StuntsPT/Structure_threader/badges/master/pipeline.svg)](https://gitlab.com/StuntsPT/Structure_threader/pipelines)
+[![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](https://structure-threader.readthedocs.io/en/latest/?badge=latest)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/becafd10f0bc4904b6d2857cf4c47ea4)](https://www.codacy.com/gh/StuntsPT/Structure_threader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=StuntsPT/Structure_threader&amp;utm_campaign=Badge_Grade)
+[![DOI](https://zenodo.org/badge/31598374.svg)](https://zenodo.org/badge/latestdoi/31598374)
 
 
 ## Installation
@@ -17,20 +17,20 @@ pip install structure-threader
 [PyPI](https://pypi.python.org/pypi/structure-threader/). It can be
 installed by simply running the above command. If you are on a \*nix like
 platform, you can use the `--user` option if you can't or don't want to install
-the program as `root` user. Binaries for STRUCTURE, fastStructure and
-*MavericK* are also distributed for GNU/Linux and macOS. Please note that the macOS binaries included are compiled for x64 and not ARM64, so it will run within Rosetta2 for M series Macs. For more details,
+the program as `root` user. Binaries for Structure, fastStructure and
+*MavericK* are also distributed for GNU/Linux and macOS. Please note that the macOS binaries included are compiled for x64 and not ARM64, so it will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
 please [check the
-manual](http://structure-threader.readthedocs.io/en/latest/install/).
+manual](https://structure-threader.readthedocs.io/en/latest/install/).
 
 
 ## Manual
-The complete documentation can be found on [readthedocs.org](http://structure-threader.readthedocs.io/en/latest/).
+The complete documentation can be found on [readthedocs.org](https://structure-threader.readthedocs.io/en/latest/).
 
 
 ## Citation
 If you use *Structure_threader*, please cite our
 ~~[Zenodo DOI](https://zenodo.org/badge/latestdoi/31598374).~~
-[Molecular Ecology Resources paper](http://doi.org/10.1111/1755-0998.12702)
+[Molecular Ecology Resources paper](https://doi.org/10.1111/1755-0998.12702)
 
 ### Full citation:
 <div class="csl-bib-body" style="line-height: 2; margin-left: 2em; text-indent:-2em;">

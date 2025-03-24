@@ -17,12 +17,13 @@
 
 
 import os
-import shutil
 import sys
 import signal
 import subprocess
 import itertools
+import shutil
 import logging
+import pandas as pd
 
 from multiprocessing import Pool
 from random import choice
@@ -37,6 +38,7 @@ try:
     import wrappers.faststructure_wrapper as fsw
     import wrappers.structure_wrapper as sw
     import wrappers.alstructure_wrapper as alsw
+    import wrappers.neuraladmixture_wrapper as nadw
     import argparser
 
 except ImportError:
@@ -47,6 +49,7 @@ except ImportError:
     import structure_threader.wrappers.faststructure_wrapper as fsw
     import structure_threader.wrappers.structure_wrapper as sw
     import structure_threader.wrappers.alstructure_wrapper as alsw
+    import structure_threader.wrappers.neuraladmixture_wrapper as nadw
     import structure_threader.argparser as argparser
 
 # Where are we?
@@ -92,6 +95,9 @@ def runprogram(wrapped_prog, iterations, arg):
     elif wrapped_prog == "alstructure":  # Run ALStructure
         cli, output_file = alsw.alstr_cli_generator(arg, k_val)
 
+    elif wrapped_prog == "neuraladmixture": # Run Neural ADMIXTURE
+        cli, run_name, output_file = nadw.nad_cli_generator(arg, k_val, arg.nad_seed)
+
     else:  # Run fastStructure
         cli, output_file = fsw.fs_cli_generator(k_val, arg)
 
@@ -134,6 +140,10 @@ def structure_threader(wrapped_prog, arg):
     """
     Do the threading book-keeping to spawn jobs at the asked rate.
     """
+
+    if wrapped_prog != "neuraladmixture":
+        arg.exec_mode = ""
+        arg.supervised = None
 
     if wrapped_prog != "structure":
         arg.replicates = [1]
@@ -224,12 +234,18 @@ def create_plts(wrapped_prog, bestk, arg):
         plt_files = [os.path.join(os.path.join(arg.outpath, "alstr_K" + str(i)))
                      for i in arg.k_list]
 
-    else:
+    elif wrapped_prog == "faststructure":
         plt_files = [os.path.join(arg.outpath, "fS_run_K.") + str(i) + ".meanQ"
                      for i in arg.k_list]
+    else:
+        plt_files = [os.path.join(os.path.join(arg.outpath, "nad_K" + str(i)),
+                                  "nad_K" + str(i) + "." + str(i) + ".Q")
+                     for i in arg.k_list]
 
+    logging.info("Creating plots from the results directory...")
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
             indfile=arg.indfile, bw=arg.blacknwhite, use_ind=arg.use_ind)
+    logging.info("Plots created!")
 
 
 def plots_only(arg):
@@ -290,12 +306,14 @@ def clumppling_run(wrapped_prog, arg):
     """
     if wrapped_prog == "structure":
         wrapped_prog_f = wrapped_prog
+        input_dir = arg.outpath
 
     elif wrapped_prog == "faststructure":
         wrapped_prog_f = "fastStructure"
+        input_dir = arg.outpath
 
         for file in os.listdir(arg.outpath):
-            if file == "fS_run_K.1.meanQ":
+            if file == "fS_run_K.1.meanQ": # placeholder until Clumppling releases version with fix
                 full_file_path = os.path.join(arg.outpath, file)
                 os.rename(full_file_path, f"{full_file_path}.bak")
                 break
@@ -308,6 +326,10 @@ def clumppling_run(wrapped_prog, arg):
             if file.startswith("mav") and not file == "mav_K1":
                 out_dir_list.append(file)
 
+        input_dir = arg.outpath + "/clumpp_temp"
+        if not os.path.exists(input_dir):
+            os.mkdir(input_dir)
+
         for dir in out_dir_list:
             K = dir[-1:]
             if arg.use_ind or arg.indfile is not None:
@@ -317,11 +339,20 @@ def clumppling_run(wrapped_prog, arg):
             out_file = f"K{K}.Q"
 
             full_file_path = os.path.join(arg.outpath, file)
-            new_file_path = os.path.join(arg.outpath, out_file)
-            shutil.copy(full_file_path, new_file_path)
+            Q_df = pd.read_csv(full_file_path)
+
+            deme_columns = [col for col in Q_df.columns if "deme" in col]
+            df_deme = Q_df[deme_columns]
+            new_file_path = os.path.join(input_dir, out_file)
+
+            df_deme.to_csv(new_file_path, index=False, header=False, sep=" ")
 
     elif wrapped_prog == "alstructure":
         wrapped_prog_f = "generalQ"
+
+        input_dir = arg.outpath + "/clumpp_temp"
+        if not os.path.exists(input_dir):
+            os.mkdir(input_dir)
 
         for file in os.listdir(arg.outpath):
             if file.startswith("alstr"):
@@ -329,14 +360,40 @@ def clumppling_run(wrapped_prog, arg):
                 out_file = f"K{K}.Q"
 
                 full_file_path = os.path.join(arg.outpath, file)
-                new_file_path = os.path.join(arg.outpath, out_file)
-                shutil.copy(full_file_path, new_file_path)
+                Q_df = pd.read_csv(full_file_path)
+
+                v_columns = [col for col in Q_df.columns if "V" in col]
+                df_v = Q_df[v_columns]
+                new_file_path = os.path.join(input_dir, out_file)
+
+                df_v.to_csv(new_file_path, index=False, header=False, sep=" ")
+
+    elif wrapped_prog == "neuraladmixture":
+        wrapped_prog_f = "admixture"
+
+        out_dir_list = []
+        for file in os.listdir(arg.outpath):
+            if file.startswith("nad") and not file == "nad_K1":
+                out_dir_list.append(file)
+
+        input_dir = arg.outpath + "/clumpp_temp"
+        if not os.path.exists(input_dir):
+            os.mkdir(input_dir)
+
+        for dir in out_dir_list:
+            K = dir[-1:]
+            file = dir + f"/nad_K{K}.{K}.Q"
+            out_file = f"K{K}.Q"
+
+            full_file_path = os.path.join(arg.outpath, file)
+            new_file_path = os.path.join(input_dir, out_file)
+            shutil.copy(full_file_path, new_file_path)
 
     else:
         return
 
     args_dict = {
-        'input_path': arg.outpath,
+        'input_path': input_dir,
         'output_path': f"{arg.outpath}/clumpp",
         'input_format': wrapped_prog_f,
         'vis': 1,  # Default value for visualization
@@ -353,7 +410,7 @@ def clumppling_run(wrapped_prog, arg):
 
     args = argparser.argparse.Namespace(**args_dict)
 
-    logging.info("Running Clumppling analysis on the results.")
+    logging.info("Running Clumppling analysis on the results...")
     try:
         clumppling_main(args)
 
@@ -371,7 +428,8 @@ def clumppling_run(wrapped_prog, arg):
         for file in os.listdir(arg.outpath):
             if file == "clumpp.zip":
                 os.remove(os.path.join(arg.outpath, file))
-                break
+            if file == "clumpp_temp":
+                shutil.rmtree(os.path.join(arg.outpath, file))
 
     except Exception as e:
         print(f"An error occurred during Clumppling analysis: {e}")
@@ -394,6 +452,10 @@ def full_run(arg):
         arg.threads = 1  # Depencency handling forces this
         arg.notests = True  # No way to perform K tests with ALS
         arg.k_list = [x for x in arg.k_list if x != 1]  # ALS can't have K=1
+    elif "-nad" in sys.argv:
+        wrapped_prog = "neuraladmixture"
+        arg.threads = 1 # Neural ADMIXTURE already has multithreading
+        arg.notests = True
 
     structure_threader(wrapped_prog, arg)
 
@@ -404,7 +466,18 @@ def full_run(arg):
         arg.notests = True
 
     if wrapped_prog == "alstructure":
-        infile = arg.infile[:-4] + ".tsv"
+        try:
+            infile = arg.infile[:-4] + ".tsv"
+            if infile.endswith(".vc"):
+                raise ValueError
+
+        except ValueError:
+            infile = arg.infile[:-7] + ".tsv"
+            extracted_vcf = arg.infile[:-3]
+
+            if os.path.exists(extracted_vcf):
+                os.remove(extracted_vcf)
+
         if os.path.exists(infile):
             os.remove(infile)
 

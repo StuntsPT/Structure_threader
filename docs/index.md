@@ -2,22 +2,23 @@
 
 ## Description
 
-A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html), [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/) and [ALStructure](https://github.com/StoreyLab/alstructure) software.
+A program to parallelize and automate the runs of [Structure](http://web.stanford.edu/group/pritchardlab/structure.html), [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](http://www.bobverity.com/home/maverick/what-is-maverick/), [ALStructure](https://github.com/StoreyLab/alstructure) and [Neural ADMIXTURE](https://github.com/AI-sandbox/neural-admixture) software.
 
 
 ## Requirements
 
-Python 3. The main program only uses modules from the standard library.  
+Python 3.9 or later (3.11 recommended). The main program uses modules from the standard library and [Clumppling](https://github.com/PopGenClustering/Clumppling).  
 In order to draw the plots, matplotlib >= 1.4 is required (installed automatically as a dependency when installed via `pip`).  
 To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required (installed automatically as a dependency when installed via `pip`).  
+Neural ADMIXTURE has support for the Plink2 (`.pgen`) binary format if [pgenlib]() is installed, and it's installed automatically as a dependency when installed via `pip`.  
 In order to use "ALStructure", you need to have [R](https://www.r-project.org/) installed too (must be installed manually, as `pip` can't handle installing R or dependencies).
 
 
 ## Where to get it
 
-* Source code - [Structure_threader on gitlab](https://gitlab.com/StuntsPT/Structure_threader)
-* Source code - [Structure_threader on github](https://github.com/StuntsPT/Structure_threader)
-* Source distribution with platform binaries for wrapped programs - [Sturcture_threader on Pypi](https://pypi.python.org/pypi/structure_threader/)
+* Source code - [Structure_threader on GitLab](https://gitlab.com/StuntsPT/Structure_threader)
+* Source code - [Structure_threader on GitHub](https://github.com/StuntsPT/Structure_threader)
+* Source distribution with platform binaries for wrapped programs - [Sturcture_threader on PyPI](https://pypi.python.org/pypi/structure_threader/)
     * You can easily install *Structure_threader* by issuing the command `pip3 install structure_threader`
 
 
@@ -44,19 +45,19 @@ The [documentation for *MavericK*](http://www.bobverity.com/home/maverick/additi
 
 ## Other works
 
-The script "fastChooseK.py" was taken from [the original fastStructure repository](https://github.com/rajanil/fastStructure), ported to python 3, largely modified to work as a module for the main script and re-licensed as GPLv3.
+The script "fastChooseK.py" was taken from [the original fastStructure repository](https://github.com/rajanil/fastStructure), ported to Python 3, largely modified to work as a module for the main script and re-licensed as GPLv3.
 
-The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the original structureHarverster repository](https://github.com/dentearl/structureHarvester), ported to python 3, and slightly modified to work as a module for the main script. Please see the "Citation" part of the README to know what to cite, should you use this module.
+The scripts "harvesterCore.py" and "structureHarvester.py" were taken from [the original structureHarverster repository](https://github.com/dentearl/structureHarvester), ported to Python 3, and slightly modified to work as a module for the main script. Please see the "Citation" part of the README to know what to cite, should you use this module.
 
-Binaries for [fastStructure](https://github.com/rajanil/fastStructure), [STRUCTURE](http://web.stanford.edu/group/pritchardlab/structure.html) and [MavericK](https://github.com/bobverity/MavericK) are distributed in the pypi hosted version.
+Binaries for [fastStructure](https://github.com/rajanil/fastStructure), [STRUCTURE](http://web.stanford.edu/group/pritchardlab/structure.html) and [MavericK](https://gitgub.com/bobverity/MavericK) are distributed in the PyPI hosted version.
 
 
 ## Bug reporting
 
 Found a bug or would like a feature added? Or maybe drop some feedback?
-Just [open a new issue on gitlab](https://gitlab.com/StuntsPT/Structure_threader/issues/new) [or on github](https://github.com/StuntsPT/Structure_threader/issues/new).
+Just [open a new issue on GitLab](https://gitlab.com/StuntsPT/Structure_threader/issues/new) [or on GitHub](https://github.com/StuntsPT/Structure_threader/issues/new).
 
 
 ## License
 
-GPLv3
+This project is licensed under the [GNU General Public License, version 3](https://gitlab.com/StuntsPT/Structure_threader/-/raw/master/LICENSE).
