@@ -26,11 +26,21 @@ git_dir=$(pwd)
 str_bin=$(which neural-admixture)
 structure_threader_exec=$(which structure_threader)
 
-tar xvfJ "${git_dir}/tests/smalldata/BigTestData.bed.tar.xz" -C "${git_dir}/tests/smalldata/"
-${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --nad_seed 42 -t 1 --ind "${git_dir}/tests/smalldata/indfile.txt"
+tar xvfJ "${git_dir}/tests/data/BigTestData.bed.tar.xz" -C "${git_dir}/tests/data/"
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --nad_seed 42 -t 1 --ind "${git_dir}/tests/data/indfile.txt"
 
 echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
 
-#${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode infer -t 1 --ind "${git_dir}/tests/smalldata/indfile.txt"
+tar xvfJ "${git_dir}/tests/data/BigTestData.pgen.tar.xz" -C "${git_dir}/tests/data/"
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.pgen" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --nad_seed 42 -t 1 --ind "${git_dir}/tests/data/indfile.txt"
+
+echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.pgen\` file. Yay!${NoColor}"
+
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --supervised True --nad_seed 42 -t 1 --pop "${git_dir}/tests/data/popfile.txt"
+
+echo -e "${LightGreen}Neural ADMIXTURE Supervised Train 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
+#tar xvfJ "${git_dir}/tests/data/BigTestData.vcf.tar.xz" -C "${git_dir}/tests/data/"
+#neural-admixture infer --name nad_K4 --data_path /analysis/Structure_threader/tests/data/BigTestData.vcf --out_name K4 --save_dir /analysis/results_nad/nad_K4/ --seed 42
+#${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.vcf" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode infer -t 1 --ind "${git_dir}/tests/data/indfile.txt"
 
 #echo -e "${LightGreen}Neural ADMIXTURE Infer 'Field test' ran successfully. Yay!${NoColor}"

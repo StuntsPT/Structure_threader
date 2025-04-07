@@ -31,7 +31,7 @@ def test_nad_cli_generator():
 
     # arg.external_prog, arg.exec_mode, run_name, str(k_val), arg.infile, output_dir
 
-    mock_cli = ["EP", "EM", "--name", "nad_K4", "--k", str(k_val), "--data_path",
+    mock_cli = ["EP", "train", "--name", "nad_K4", "--k", str(k_val), "--data_path",
                 "IF", "--save_dir", "nad_K4/", "--seed", str(seed)]
 
     returned_cli, run_name, out_dir = nadw.nad_cli_generator(arg, k_val, seed)

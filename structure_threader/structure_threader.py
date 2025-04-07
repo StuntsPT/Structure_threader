@@ -182,7 +182,7 @@ def structure_threader(wrapped_prog, arg):
 
 def structure_harvester(resultsdir, wrapped_prog):
     """
-    Run structureHarvester or fastChooseK to perform the Evanno test or the
+    Run Structure Harvester or fastChooseK to perform the Evanno test or the
     likelihood testing on the results.
     """
     outdir = os.path.join(resultsdir, "bestK")
@@ -194,14 +194,20 @@ def structure_harvester(resultsdir, wrapped_prog):
             import evanno.fastChooseK as sh
         except ImportError:
             import structure_threader.evanno.fastChooseK as sh
+
+        method = "fastChooseK"
     else:
         try:
             import evanno.structureHarvester as sh
         except ImportError:
             import structure_threader.evanno.structureHarvester as sh
 
+        method = "Structure Harvester"
+
+    logging.info(f"Inferring the optimal K value using {method}...")
     # Retrieve list of best K values
     bestk = sh.main(resultsdir, outdir)
+    logging.info("Optimal K value estimation complete!")
 
     return bestk
 
@@ -332,15 +338,14 @@ def clumppling_run(wrapped_prog, arg):
 
         for dir in out_dir_list:
             K = dir[-1:]
-            if arg.use_ind or arg.indfile is not None:
-                file = dir + f"/outputQmatrix_ind_K{K}.csv"
-            else:
-                file = dir + f"/outputQmatrix_pop_K{K}.csv"
+            try:
+                full_file_path = os.path.join(arg.outpath, dir + f"/outputQmatrix_pop_K{K}.csv")
+                Q_df = pd.read_csv(full_file_path)
+            except FileNotFoundError:
+                full_file_path = os.path.join(arg.outpath, dir + f"/outputQmatrix_ind_K{K}.csv")
+                Q_df = pd.read_csv(full_file_path)
+
             out_file = f"K{K}.Q"
-
-            full_file_path = os.path.join(arg.outpath, file)
-            Q_df = pd.read_csv(full_file_path)
-
             deme_columns = [col for col in Q_df.columns if "deme" in col]
             df_deme = Q_df[deme_columns]
             new_file_path = os.path.join(input_dir, out_file)
@@ -484,7 +489,9 @@ def full_run(arg):
     if arg.notests is False:
         bestk = structure_harvester(arg.outpath, wrapped_prog)
     else:
+        logging.info(f"Inferring the optimal K value...")
         bestk = arg.k_list
+        logging.info("Optimal K value estimation complete!")
 
     if arg.noplot is False:
         create_plts(wrapped_prog, bestk, arg)

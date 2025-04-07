@@ -24,14 +24,14 @@ Input/Output files
 Data file format
 
 #define NUMINDS    34    // (int) number of diploid individuals in data file
-#define NUMLOCI    29    // (int) number of loci in data file
+#define NUMLOCI    28    // (int) number of loci in data file
 #define PLOIDY       2    // (int) ploidy of data
 #define MISSING     -9    // (int) value given to missing genotype data
 #define ONEROWPERIND 0    // (B) store data for individuals in a single line
 
 
 #define LABEL     1     // (B) Input file contains individual labels
-#define POPDATA   1     // (B) Input file contains a population identifier
+#define POPDATA   0     // (B) Input file contains a population identifier
 #define POPFLAG   0     // (B) Input file contains a flag which says
                               whether to use popinfo when USEPOPINFO==1
 #define LOCDATA   0     // (B) Input file contains a location identifier

@@ -26,6 +26,6 @@ git_dir=$(pwd)
 maverick_bin=$(which MavericK)
 structure_threader_exec=$(which structure_threader)
 
-${structure_threader_exec} run -i ${git_dir}/tests/smalldata/Reduced_dataset.structure -o ~/results_mav -mv ${maverick_bin} -K 3 -t 4 --params ${git_dir}/tests/smalldata/parameters.txt
+${structure_threader_exec} run -i ${git_dir}/tests/data/Reduced_dataset.structure -o ~/results_mav -mv ${maverick_bin} -K 3 -t 4 --params ${git_dir}/tests/data/parameters.txt
 
 echo -e "${LightGreen}MavericK 'Field test' ran successfully. Yay!${NoColor}"

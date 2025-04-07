@@ -33,8 +33,12 @@ def nad_cli_generator(arg, k_val, seed=42):
     """
     run_name = "nad_K" + str(k_val)
     output_dir = os.path.join(arg.outpath, run_name) + os.path.sep
-    cli = [arg.external_prog, arg.exec_mode, "--name", run_name, "--k", str(k_val), "--data_path",
-           arg.infile, "--save_dir", output_dir, "--seed", str(seed)]
+    if arg.exec_mode == "train":
+        cli = [arg.external_prog, arg.exec_mode, "--name", run_name, "--k", str(k_val), "--data_path",
+               arg.infile, "--save_dir", output_dir, "--seed", str(seed)]
+    else:
+        cli = [arg.external_prog, arg.exec_mode, "--name", run_name, "--out_name", "nad_infer" + str(k_val),
+               "--data_path", arg.infile, "--save_dir", output_dir, "--seed", str(seed)]
     # If no seed is provided, then the default value for Neural ADMIXTURE is 42. See its documentation for more details.
 
     if arg.init is not None:
@@ -47,7 +51,7 @@ def nad_cli_generator(arg, k_val, seed=42):
             cli += ["--num_gpus", arg.nad_gpus]
 
     if arg.exec_mode == "train" and arg.supervised == True and arg.popfile != None:
-        cli += f"--supervised --populations_path {arg.popfile}"
+        cli.append(f"--supervised --populations_path {arg.popfile}")
     elif arg.popfile == None and arg.supervised == True:
         raise IndexError("When running supervised mode with Neural ADMIXTURE, you must include a population file!")
 

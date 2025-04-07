@@ -24,11 +24,11 @@ class Arguments():
         self.external_prog = "EP"
         self.infile = "IF"
         self.outpath = ""
-        self.params = "smalldata/parameters.txt"
+        self.params = "data/parameters.txt"
         self.notests = False
         self.k_list = [2, 3, 4, 5]
         self.extra_options = "--prior=logistic"
-        self.exec_mode = "EM"
+        self.exec_mode = "train"
         self.init = None
         self.nad_cpus = 0
         self.nad_gpus = 0

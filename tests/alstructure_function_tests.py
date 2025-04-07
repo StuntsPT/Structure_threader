@@ -46,9 +46,9 @@ def test_vcf_to_matrix():
     """
     # Define arguments
     arg = mockups.Arguments()
-    arg.infile = "smalldata/SmallTestData.vcf"
+    arg.infile = "data/SmallTestData.vcf"
     k_val = 4
     alsw.vcf_to_matrix(arg.infile)
 
     assert filecmp.cmp(arg.infile[:-4] + ".tsv",
-                       "smalldata/SmallTestData_reference.tsv")
+                       "data/SmallTestData_reference.tsv")
