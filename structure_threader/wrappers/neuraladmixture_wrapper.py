@@ -19,12 +19,15 @@ import os
 import logging
 import itertools
 import random
+import gzip
 
 
 try:
     import colorer.colorer as colorer
+    from alstructure_wrapper import vcfgz_to_vcf
 except ImportError:
     import structure_threader.colorer.colorer as colorer
+    from strucutre_threader.alstrucutre_wrapper import vcfgz_to_vcf
 
 
 def nad_cli_generator(arg, k_val, seed=42):
@@ -33,6 +36,10 @@ def nad_cli_generator(arg, k_val, seed=42):
     """
     run_name = "nad_K" + str(k_val)
     output_dir = os.path.join(arg.outpath, run_name) + os.path.sep
+
+    if arg.infile.endswith(".vcf.gz"):
+        arg.infile = vcfgz_to_vcf(arg.infile)
+
     if arg.exec_mode == "train":
         cli = [arg.external_prog, arg.exec_mode, "--name", run_name, "--k", str(k_val), "--data_path",
                arg.infile, "--save_dir", output_dir, "--seed", str(seed)]

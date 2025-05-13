@@ -470,14 +470,14 @@ def full_run(arg):
                                    arg.notests)
         arg.notests = True
 
-    if wrapped_prog == "alstructure":
+    if wrapped_prog == "alstructure" or wrapped_prog == "neuraladmixture":
         try:
-            infile = arg.infile[:-4] + ".tsv"
+            infile = arg.infile[:-4]
             if infile.endswith(".vc"):
                 raise ValueError
 
         except ValueError:
-            infile = arg.infile[:-7] + ".tsv"
+            infile = arg.infile[:-7]
             extracted_vcf = arg.infile[:-3]
 
             if os.path.exists(extracted_vcf):
