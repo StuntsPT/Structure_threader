@@ -33,7 +33,7 @@ def test_mav_cli_generator():
 
     mock_cli = ["EP", "-Kmin", str(k_val), "-Kmax", str(k_val), "-data",
                 "IF", "-outputRoot", "mav_K4/", "-masterRoot", "/",
-                "-parameters", "smalldata/parameters.txt"]
+                "-parameters", "data/parameters.txt"]
 
     # Perform test with and without TI
     for ti_value in (False, True):
@@ -59,7 +59,7 @@ def test_mav_params_parser():
     """
     Test if maverick parameters are being parsed correctlly.
     """
-    mock_parameters = {'headerRow_on': 't', 'popCol_on': 't',
+    mock_parameters = {'headerRow_on': 't', 'popCol_on': 'f',
                        'ploidyCol_on': 'f', 'ploidy': '2', 'missingData': '-9',
                        'Kmin': '1', 'Kmax': '4', 'admix_on': 't',
                        'fixAlpha_on': 'f', 'alpha': '1.0',
@@ -70,10 +70,10 @@ def test_mav_params_parser():
                        'thermodynamicBurnin': '1000',
                        'thermodynamicSamples': '5000', 'outputLog_on': 't',
                        'outputLikelihood_on': 't', 'outputQmatrix_ind_on': 't',
-                       'outputQmatrix_pop_on': 't', 'outputEvidence_on': 't',
+                       'outputQmatrix_pop_on': 'f', 'outputEvidence_on': 't',
                        'outputEvidenceDetails_on': 't'}
 
-    assert mw.mav_params_parser("smalldata/parameters.txt") == mock_parameters
+    assert mw.mav_params_parser("data/parameters.txt") == mock_parameters
 
 
 def test_mav_alpha_failsafe():
@@ -118,10 +118,10 @@ def test_maverick_merger():
 
         return hashes
 
-    mav_params = mw.mav_params_parser("smalldata/parameters.txt")
-    mw.maverick_merger("files", [1, 2, 3], mav_params, False)
-    known_hashes = _hash_function("files/test_merged")
-    generated_hashes = _hash_function("files/merged")
+    mav_params = mw.mav_params_parser("data/parameters.txt")
+    mw.maverick_merger("mav_files", [1, 2, 3], mav_params, False)
+    known_hashes = _hash_function("mav_files/test_merged")
+    generated_hashes = _hash_function("mav_files/merged")
 
     assert known_hashes == generated_hashes
 
@@ -166,6 +166,6 @@ def test_ti_test():
                       2: {'norm_mean': 9.9999999999999148e-07,
                           'lower_limit': 9.9846175097142567e-07,
                           'upper_limit': 1.0015368125857768e-06}}]
-    outdir = "files"
+    outdir = "mav_files"
     assert mw.ti_test(outdir, mock_norm_res, True) == [2]
     assert mw.ti_test(outdir, mock_norm_res[:-1], False) == [2]

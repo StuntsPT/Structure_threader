@@ -41,7 +41,7 @@ def platform_detection(install_binaries=True):
         if sys.platform == "linux":
             bin_dir = "structure_threader/bins/linux"
         elif sys.platform == "darwin":
-            bin_dir = "structure_threader/bins/osx"
+            bin_dir = "structure_threader/bins/macos"
         else:
             return None
     else:
@@ -61,7 +61,7 @@ try:
 except TypeError:
     DATA_FILES = [('bin',
                    ["structure_threader/wrappers/alstructure_wrapper.R"])]
-VERSION = "1.3.11"
+VERSION = "2.0.0"
 URL = "https://gitlab.com/StuntsPT/Structure_threader"
 
 
@@ -75,7 +75,10 @@ setup(
               "structure_threader.colorer",
               "structure_threader.wrappers",
               "structure_threader.skeletons"],
-    install_requires=["plotly>=4.1.1",
+    install_requires=["clumppling",
+                      "neural-admixture",
+                      "Pgenlib",
+                      "plotly==5.24.1",
                       "colorlover",
                       "numpy>=1.12.1",
                       "matplotlib"],
@@ -93,10 +96,9 @@ setup(
                  "Operating System :: POSIX :: Linux",
                  "Topic :: Scientific/Engineering :: Bio-Informatics",
                  "Programming Language :: Python :: 3 :: Only",
-                 "Programming Language :: Python :: 3.4",
-                 "Programming Language :: Python :: 3.5",
-                 "Programming Language :: Python :: 3.6",
-                 "Programming Language :: Python :: 3.7"],
+                 "Programming Language :: Python :: 3.9",
+                 "Programming Language :: Python :: 3.10",
+                 "Programming Language :: Python :: 3.11"],
     data_files=DATA_FILES,
     entry_points={
         "console_scripts": [

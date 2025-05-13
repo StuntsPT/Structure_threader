@@ -22,10 +22,11 @@ Using the `run` mode, the program currently takes the following arguments:
     * *fastStructure* location (if you want to run *fastStructure*; -fs)
     * *MavericK* location (if you want to run *MavericK*; -mv)
     * *ALStructure_wrapper.R* location (if you want to run *ALStructure*; -als)
+    * *Neural ADMIXTURE* location (if you want to run *Neural ADMIXTURE*; -nad)
 * Number of K - you have to pass one and only one of the following arguments:
     * K (To test all values of "K" from 1 to "K"; -K)
     * Klist (To test all values of "K" in the provided list; -Klist)
-* Replicates (ignored for *fastStructure*, *MavericK* and *ALStructure*; -R)
+* Replicates (ignored for *fastStructure*, *MavericK*, *ALStructure* and *Neural ADMIXTURE*; -R)
 * Number of threads to use (-t)
 * Q-matrix plotting options:
   * Disable plot drawing (--no_plots)
@@ -34,14 +35,22 @@ Using the `run` mode, the program currently takes the following arguments:
 * Other options
     * Enable logging - useful when problems arise (--log)
     * Do not run the BestK tests (--no-tests)
+    * Do not run the Clumppling analysis (--no-clumpp)
     * Add extra arguments to pass to the wrapped program (--extra_opts) [Example: prior=logistic seed=123]
     * Define a random seed starting value (--seed) [default:1235813]
+    * Neural ADMIXTURE exclusive options:
+      * Number of CPUs to use (--nad_cpus)
+      * Number of GPUs to use (--nad_gpus)
+      * Execution method (--exec_mode)
+      * Initialization method (--init)
+      * Seed (--nad_seed) [default: 42]
+      * Supervised run (--supervised)
 
 
 Example run:
 
 ```
-structure_threader run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure
+structure_threader run -K Ks -R replicates -i infile -o outpath -t num_of_threads -st path_to_structure_binary
 ```
 
 Where `-K` is the number of "Ks" to run, `-R` is the number of replicate runs for
@@ -152,8 +161,8 @@ The individuals of "PopB" will appear first, and then the individuals of "PopA".
 
 ## fastStructure Warning:
 Keep in mind that *fastStructure* can take input in two distinct file formats:
-[Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
-[structure](http://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
+[PLINK](https://www.cog-genomics.org/plink/1.9/input) and
+[STRUCTURE](https://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
 In order to use the PLINK format, three files are required:
 
 * `file.bed`
@@ -163,7 +172,7 @@ In order to use the PLINK format, three files are required:
 You can enter any of them (but just one of them) as the input file and
 *Structure_threader* will assume the other two exist in the same path.
 If the input file specified by the *-i* switch in *Structure_threader* has an
-extension different from either of the three mentioned above, *Structure_threader* will assume th input is in the STRUCTURE format, which has some peculiarities:
+extension different from either of the three mentioned above, *Structure_threader* will assume the input is in the STRUCTURE format, which has some peculiarities:
 *fastStructure* requires your input file to have each individual represented in
 two rows (one for each allele), and six "bogus" columns before the actual data.
 **No Header is allowed**. Here is a short example:
@@ -178,7 +187,7 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ## ALStructure Warning:
 Keep in mind that *ALStructure* can take input in two distinct file formats:
-[Plink](http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml) and
+[PLINK](https://www.cog-genomics.org/plink/1.9/input) and
 [VCF](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
 In order to use the PLINK format, three files are required:
 
@@ -194,5 +203,28 @@ In order to use a `VCF` formatted file, it is only required that you point at it
 Don't forget to look at the [Output section](output.md) for information on how the data is presented after a successful (or not) run.
 
 
+## Neural ADMIXTURE Warning:
+Keep in mind that *Neural ADMIXTURE* can take input in four distinct file formats:
+[PLINK](https://www.cog-genomics.org/plink/1.9/input),
+[PLINK 2](https://www.cog-genomics.org/plink/2.0/formats),
+[VCF](https://samtools.github.io/hts-specs/VCFv4.2.pdf) and
+[HDF5](https://www.hdfgroup.org/solutions/hdf5/).
+In order to use the PLINK format, three files are required:
+
+* `file.bed`
+* `file.fam`
+* `file.bim`
+
+And in order to use the PLINK 2 format, three files are also required:
+
+* `file.pgen`
+* `file.psam`
+* `file.pvar`
+
+It's recommended to use the *\.bed* or the *\.pgen* files as the input
+file for Neural ADMIXTURE and *Structure_threader* will assume the
+other two exist in the same path.
+
+
 ## Using *MavericK*:
-*MavericK* is exhaustively documented. You can find the full manual [here](http://www.bobverity.com/home/maverick/additional-files/), along with other useful material to make the most of the software.
+*MavericK* is thoroughly documented. Although the original website is no longer accessible, you can find the paper in which it was originally mentioned [here](https://doi.org/10.1534/genetics.115.180992). The documentation is available under "Supplementary data" as "FileS2" (PDF format).

@@ -1,6 +1,6 @@
 #### Data proprieties
 headerRow_on	t
-popCol_on	t
+popCol_on	f
 ploidyCol_on	f
 ploidy	2
 missingData	-9
@@ -31,7 +31,7 @@ thermodynamicSamples	5000
 outputLog_on	t
 outputLikelihood_on	t
 outputQmatrix_ind_on	t
-outputQmatrix_pop_on	t
+outputQmatrix_pop_on	f
 outputEvidence_on	t
 outputEvidenceDetails_on	t
 

@@ -101,7 +101,8 @@ class PlotK:
         parse_methods = {"structure": self._parse_structure,
                          "faststructure": self._parse_faststructure,
                          "maverick": self._parse_maverick,
-                         "alstructure": self._parse_alstructure}
+                         "alstructure": self._parse_alstructure,
+                         "neuraladmixture": self._parse_neuraladmixture}
 
         # Let the parsing begin
         parse_methods[self.fmt]()
@@ -319,6 +320,19 @@ class PlotK:
         except ValueError:
             self.k = 1
 
+    def _parse_neuraladmixture(self):
+        """
+        Parses the Q array of a single Neural ADMIXTURE output file
+        Sets the qvals array, the number of individual taxa (nind)
+        and number of clusters (k)
+        """
+
+        self.qvals = np.genfromtxt(self.file_path)
+
+        try:
+            self.nind, self.k = self.qvals.shape
+        except ValueError as e:
+            self.k = 1
 
 class PlotList(AuxSanity):
     """
@@ -977,8 +991,8 @@ def plot_normalization(norm_dict, outdir):
     xlabs = ["K" + str(x) for x in norm_dict.keys()]
 
     means = [x[1][0] for x in data]
-    lower_limit = [x[1][0] - x[1][1] for x in data]
-    upper_limit = [x[1][2] - x[1][0] for x in data]
+    lower_limit = [max(0, x[1][0] - x[1][1]) for x in data]
+    upper_limit = [max(0, x[1][2] - x[1][0]) for x in data]
 
     plt.bar(range(len(means)), means, 0.5, yerr=[lower_limit, upper_limit],
             fc=(0, 0, 1, 0.5), edgecolor="blue", linewidth=1.5, capsize=5)

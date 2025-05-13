@@ -26,12 +26,16 @@ git_dir=$(pwd)
 str_bin=$(which alstructure_wrapper.R)
 structure_threader_exec=$(which structure_threader)
 
-tar xvfJ "${git_dir}/tests/smalldata/BigTestData.bed.tar.xz" -C "${git_dir}/tests/smalldata/"
-${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.bed" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/smalldata/indfile.txt"
+tar xvfJ "${git_dir}/tests/data/BigTestData.bed.tar.xz" -C "${git_dir}/tests/data/"
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/data/indfile.txt"
 
 echo -e "${LightGreen}ALStructure 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
 
-tar xvfJ "${git_dir}/tests/smalldata/BigTestData.vcf.tar.xz" -C "${git_dir}/tests/smalldata/"
-${structure_threader_exec} run -i "${git_dir}/tests/smalldata/BigTestData.vcf" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/smalldata/indfile.txt"
+tar xvfJ "${git_dir}/tests/data/BigTestData.vcf.tar.xz" -C "${git_dir}/tests/data/"
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.vcf" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/data/indfile.txt"
 
 echo -e "${LightGreen}ALStructure 'Field test' ran successfully on the \`.vcf\` file. Yay!${NoColor}"
+
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.vcf.gz" -o ~/results_als -als "${str_bin}" -K 4 -t 4 --ind "${git_dir}/tests/data/indfile.txt"
+
+echo -e "${LightGreen}ALStructure 'Field test' ran successfully on the \`.vcf.gz\` file. Yay!${NoColor}"

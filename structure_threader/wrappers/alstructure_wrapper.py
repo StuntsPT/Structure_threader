@@ -17,6 +17,7 @@
 
 import os
 import logging
+import gzip
 
 
 try:
@@ -35,10 +36,29 @@ def alstr_cli_generator(arg, k_val):
     elif arg.infile.endswith(".vcf"):
         vcf_to_matrix(arg.infile)
         infile = arg.infile[:-4] + ".tsv"
+    elif arg.infile.endswith(".vcf.gz"):
+        extracted_file = vcfgz_to_vcf(arg.infile)
+
+        vcf_to_matrix(extracted_file)
+        infile = extracted_file[:-4] + ".tsv"
 
     cli = ["Rscript", arg.external_prog, infile, str(k_val), output_file]
 
     return cli, output_file
+
+
+def vcfgz_to_vcf(vcf_zipped):
+    """
+    Takes a gzipped VCF file and extracts it into a regular VCF file
+    """
+    with gzip.open(vcf_zipped, "rb") as f:
+        file_contents = f.read()
+
+    extracted_filename = vcf_zipped.replace(".vcf.gz", ".vcf")
+    with open(extracted_filename, "wb") as f:
+        f.write(file_contents)
+
+    return extracted_filename
 
 
 def vcf_to_matrix(vcf_file):

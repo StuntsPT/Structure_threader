@@ -1,0 +1,39 @@
+# spid-file generated: Mon Apr 14 12:03:56 WEST 2025
+
+# VCF Parser questions
+PARSER_FORMAT=VCF
+
+# Only output SNPs with a phred-scaled quality of at least:
+VCF_PARSER_QUAL_QUESTION=
+# Include a file with population definitions:
+VCF_PARSER_POP_FILE_QUESTION=
+# What is the ploidy of the data? (DIPLOID/HAPLOID)
+VCF_PARSER_PLOIDY_QUESTION=DIPLOID
+# Output genotypes as missing if the phred-scale genotype quality is below:
+VCF_PARSER_GTQUAL_QUESTION=
+# Do you want to include INDELS as STANDARD genetic markers? (TRUE/FALSE)
+VCF_PARSER_INDEL_QUESTION=false
+# Do you want to include non-polymorphic SNPs? (TRUE/FALSE)
+VCF_PARSER_MONOMORPHIC_QUESTION=false
+# Only output following individuals (ind1, ind2, ind4, ...):
+VCF_PARSER_IND_QUESTION=
+# Only input following regions (refSeqName:start:end, multiple regions: whitespace separated):
+VCF_PARSER_REGION_QUESTION=
+# Output genotypes as missing if the read depth of a position for the sample is below:
+VCF_PARSER_READ_QUESTION=
+# Take most likely genotype if "PL" or "GL" is given in the genotype field? (TRUE/FALSE)
+VCF_PARSER_PL_QUESTION=false
+# Do you want to exclude loci with only missing data? (TRUE/FALSE)
+VCF_PARSER_EXC_MISSING_LOCI_QUESTION=false
+
+# STRUCTURE / fastSTRUCTURE Writer questions
+WRITER_FORMAT=STRUCTURE
+
+# Do you want to include inter-marker distances? (TRUE/FALSE)
+STRUCTURE_WRITER_LOCI_DISTANCE_QUESTION=false
+# Specify which data type should be included in the STRUCTURE / fastSTRUCTURE file  (STRUCTURE / fastSTRUCTURE can only analyze one data type per file): (MICROSAT/SNP/STANDARD/DNA)
+STRUCTURE_WRITER_DATA_TYPE_QUESTION=SNP
+# If SNP data are encoded as nucleotides,  enter the integers that code for nucleotide A, T, C, G (comma separated, e.g 1,2,3,4):
+STRUCTURE_WRITER_SNP_CODE_QUESTION=
+# Save more specific fastSTRUCTURE format? (TRUE/FALSE)
+STRUCTURE_WRITER_FAST_FORMAT_QUESTION=true

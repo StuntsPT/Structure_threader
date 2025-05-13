@@ -24,7 +24,7 @@ def test_parse_logs():
     """
     Tests the result of parse_logs().
     """
-    files = glob.glob("files/*.log")
+    files = glob.glob("mav_files/*.log")
     assert sorted(fc.parse_logs(files)) == sorted([-0.9875020559, -0.978009636,
                                                    -0.9721792877, -0.9768312088,
                                                    -0.9806135049,
@@ -34,17 +34,17 @@ def test_parse_varQs():
     """
     Tests the result of parse_varQs().
     """
-    files = glob.glob("files/*.meanQ")
+    files = glob.glob("mav_files/*.meanQ")
     assert sorted(fc.parse_varQs(files)) == sorted([5, 2, 3, 1, 3, 3])
 
 def test_main():
     """
     Tests the result of main().
     """
-    indir = "files/"
+    indir = "mav_files/"
     text = str(['Model complexity that maximizes marginal likelihood = 2\n',
                 'Model components used to explain structure in data = 3\n'])
-    outdir = "files/"
+    outdir = "mav_files/"
     assert fc.main(indir, outdir) == [x for x in range(2, 4)]
     outfile = open(outdir + "chooseK.txt", "r")
     test_text = str(outfile.readlines())
