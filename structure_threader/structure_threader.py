@@ -147,7 +147,10 @@ def structure_threader(wrapped_prog, arg):
 
     if wrapped_prog != "structure":
         arg.replicates = [1]
-        jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
+        if arg.supervised == True:
+            jobs = list(itertools.product([1], arg.replicates))[::-1]
+        else:
+            jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
     else:
         sw.str_param_checker(arg)
         jobs = sw.seed_generator(arg.seed, arg.k_list, arg.replicates)
@@ -244,9 +247,26 @@ def create_plts(wrapped_prog, bestk, arg):
         plt_files = [os.path.join(arg.outpath, "fS_run_K.") + str(i) + ".meanQ"
                      for i in arg.k_list]
     else:
-        plt_files = [os.path.join(os.path.join(arg.outpath, "nad_K" + str(i)),
-                                  "nad_K" + str(i) + "." + str(i) + ".Q")
-                     for i in arg.k_list]
+        if arg.supervised == True:
+            pop_list = list()
+            pop_count = list()
+            with open(arg.popfile, "r") as f:
+                for line in f:
+                    line = line.strip().upper()
+                    pop_list.append(line)
+
+            for pop in pop_list:
+                if not pop in pop_count:
+                    pop_count.append(pop)
+
+            pop_count_n = len(pop_count)
+
+            plt_files = [os.path.join(os.path.join(arg.outpath, "nad_K" + str(pop_count_n) + "_supervised"),
+                                      "nad_K" + str(pop_count_n) + "_supervised." + str(pop_count_n) + ".Q")]
+        else:
+            plt_files = [os.path.join(os.path.join(arg.outpath, "nad_K" + str(i)),
+                                      "nad_K" + str(i) + "." + str(i) + ".Q")
+                         for i in arg.k_list]
 
     logging.info("Creating plots from the results directory...")
     sp.main(plt_files, wrapped_prog, outdir, bestk=bestk, popfile=arg.popfile,
