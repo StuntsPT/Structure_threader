@@ -24,10 +24,10 @@ import gzip
 
 try:
     import colorer.colorer as colorer
-    from alstructure_wrapper import vcfgz_to_vcf
+    from .alstructure_wrapper import vcfgz_to_vcf
 except ImportError:
     import structure_threader.colorer.colorer as colorer
-    from strucutre_threader.alstrucutre_wrapper import vcfgz_to_vcf
+    from structure_threader.wrappers.alstructure_wrapper import vcfgz_to_vcf
 
 
 def nad_cli_generator(arg, k_val, seed=42):
