@@ -58,7 +58,24 @@ def nad_cli_generator(arg, k_val, seed=42):
             cli += ["--num_gpus", arg.nad_gpus]
 
     if arg.exec_mode == "train" and arg.supervised == True and arg.popfile != None:
-        cli.append(f"--supervised --populations_path {arg.popfile}")
+        pop_list = list()
+        pop_count = list()
+        with open(arg.popfile, "r") as f:
+            for line in f:
+                line = line.strip().upper()
+                pop_list.append(line)
+
+        for pop in pop_list:
+            if not pop in pop_count:
+                pop_count.append(pop)
+
+        run_name = "nad_K" + str(len(pop_count)) + "_supervised"
+        output_dir = os.path.join(arg.outpath, run_name) + os.path.sep
+
+        cli[3] = run_name
+        cli[5] = str(len(pop_count))
+        cli[9] = output_dir
+        cli += ["--supervised", "--populations_path", arg.popfile]
     elif arg.popfile == None and arg.supervised == True:
         raise IndexError("When running supervised mode with Neural ADMIXTURE, you must include a population file!")
 
