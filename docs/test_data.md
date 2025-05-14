@@ -19,6 +19,7 @@ The used command was:
 This was the criteria that was used on the *admixture* [analysis of the 1000 genomes project](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/admixture_files/README.admixture_20141217).
 
 The file was then converted to structure format with [PGDSpider](http://www.cmpg.unibe.ch/software/PGDSpider/). The settings used for generating the SPID conversion file were the following:
+
 * Default options on the VCF input tab
 * On the STRUCTURE output tab:
     * Save more specific fastSTRUCTURE format? -> Yes
@@ -94,7 +95,7 @@ The *STRUCTURE* parameter files that were used in the benchmarking process.
 The *MavericK* parameters file that is used in the unit tests.
 
 
-## popfile.txt
+## nad_popfile.txt
 The population file containing each individual's identifier along with its associated population. It was obtained using the [index from the 1000 genomes project](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/1000genomes.sequence.index), which was filtered into the popfile using the contents from the indfile, with the following command:
 
     grep -f indfile.txt 1000genomes.sequence.index | sed 's/ \+/\t/' | cut -f 11,12 | sort -k 2 | uniq | cut -f 2 > popfile.txt

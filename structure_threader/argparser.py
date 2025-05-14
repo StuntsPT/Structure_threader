@@ -110,11 +110,15 @@ def argument_parser(args):
                           metavar="string", default="train")
     run_opts.add_argument("--supervised", dest="supervised", type=bool, required=False,
                           help="Specify if Neural ADMIXTURE runs in "
-                          "supervised mode. ",
+                          "supervised mode. Can be true, false, 1 or 0.",
                           metavar="bool", default=False)
     run_opts.add_argument("--nad_seed", dest="nad_seed", type=str, required=False,
                           help="Define run seed for Neural ADMIXTURE train mode.",
                           metavar="string", default="42")
+    run_opts.add_argument("--nad_pop", dest="nad_popfile", type=str, required=False,
+                          help="Define the popfile to be used with Neural ADMIXTURE train "
+                          "supervised mode.",
+                          metavar="string")
 
     io_opts.add_argument("-i", dest="infile", type=str, required=True,
                          help="Input file.\n", metavar="infile")

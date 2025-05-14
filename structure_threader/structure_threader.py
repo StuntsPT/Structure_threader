@@ -250,7 +250,7 @@ def create_plts(wrapped_prog, bestk, arg):
         if arg.supervised == True:
             pop_list = list()
             pop_count = list()
-            with open(arg.popfile, "r") as f:
+            with open(arg.nad_popfile, "r") as f:
                 for line in f:
                     line = line.strip().upper()
                     pop_list.append(line)
