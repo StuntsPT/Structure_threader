@@ -33,4 +33,4 @@ class Arguments():
         self.nad_cpus = 0
         self.nad_gpus = 0
         self.supervised = False
-        self.popfile = None
+        self.nad_popfile = None
