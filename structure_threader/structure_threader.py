@@ -149,6 +149,8 @@ def structure_threader(wrapped_prog, arg):
         arg.replicates = [1]
         if arg.supervised == True:
             jobs = list(itertools.product([1], arg.replicates))[::-1]
+            arg.noplot = True
+            arg.noclumpp = True
         else:
             jobs = list(itertools.product(arg.k_list, arg.replicates))[::-1]
     else:
