@@ -3,7 +3,7 @@ In the [*tests/data/* directory](https://gitlab.com/StuntsPT/Structure_threader/
 
 
 ## BigTestData.str.tar.xz
-This file is a *fastStructure* formatted input file which is used for the *fastStructure* unit tests. This is a large SNP file (500 SNPs across 500 individuals) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftools) with the following criteria:
+This file is a *fastStructure* formatted input file which is used for the *fastStructure* unit tests. This is a large SNP file (1000 SNPs across 500 individuals) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using [vcftools](https://github.com/vcftools/vcftools) with the following criteria:
 
 * only biallelic, non-singleton SNV sites
 * SNVs must be at lest 2KB apart from each other

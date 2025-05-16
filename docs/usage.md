@@ -44,7 +44,7 @@ Using the `run` mode, the program currently takes the following arguments:
       * Execution method (--exec_mode)
       * Initialization method (--init)
       * Seed (--nad_seed) [default: 42]
-      * Supervised run (--supervised)
+      * If the run is supervised (--supervised) [default: False]
 
 
 Example run:

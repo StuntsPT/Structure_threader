@@ -4,7 +4,7 @@
 
 ### I'm using Ubuntu 24.04 and have issues installing *Structure_threader* with `pip` (or `pipx`). Why?
 
-Some dependencies currently rely on a version of Python older than what is included in the latest Ubuntu releases. As such, we recommend using a container, if possible, or a PPA for older Python releases. For more information, check out the [installation page](install.md).
+Some dependencies currently rely on a version of Python older than what is included in the latest Ubuntu releases. As such, we recommend an alternative installation method. For more information, check out the [installation page](install.md).
 
 ### *Structure_threader* gives me strange errors running the Clumppling analysis!
 
