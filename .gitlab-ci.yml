@@ -2,7 +2,7 @@ stages:
   - tests
   - deployment
 
-image: python:3.7-slim
+image: python:3.11-slim
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
@@ -23,8 +23,8 @@ tests:
     stage: tests
     script:
       - apt-get update
-      - apt-get install xz-utils
-      - apt-get install -y --force-yes r-base libcurl4-openssl-dev libssl-dev libxml2 libxml2-dev libfreetype6-dev libfontconfig-dev libharfbuzz-dev libfribidi-dev libpng-dev libtiff5-dev libjpeg-dev
+      - apt-get install -y xz-utils
+      - apt-get install -y r-base r-cran-devtools r-cran-biocmanager
       - python -V               # Print out python version for debugging
       - pip install virtualenv
       - virtualenv venv
