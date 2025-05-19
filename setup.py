@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2016-2021 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2016-2025 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,12 +17,7 @@
 
 
 import sys
-try:
-    from setuptools import setup
-except ImportError:
-    import ez_setup
-    ez_setup.use_setuptools()
-    from setuptools import setup
+from setuptools import setup
 
 
 class NotSupportedException(BaseException):
