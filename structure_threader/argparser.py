@@ -62,7 +62,7 @@ def argument_parser(args):
 
     # Group options
     main_exec_ex = main_exec.add_mutually_exclusive_group(required=True)
-    k_opts = k_opts.add_mutually_exclusive_group(required=True)
+    k_opts = k_opts.add_mutually_exclusive_group(required=("-st", "-fs", "-mv", "-als") in sys.argv)
     id_opts = id_opts.add_mutually_exclusive_group(required=False)
 
     main_exec_ex.add_argument("-st", dest="external_prog", type=str,
