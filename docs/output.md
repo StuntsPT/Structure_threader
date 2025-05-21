@@ -3,7 +3,7 @@
 The program will inform the user of what run is currently being processed by
 outputting the command it is running to STDOUT, such as this:
 
-```
+```console
 Running: /opt/structure/bin/structure -K 1 -i input_file.structure -o results_admix/K1_rep10
 ```
 
@@ -12,9 +12,7 @@ the `outpath` argument.
 
 When all tasks are performed the program will exit with the message:
 ```console
-```
 $ INFO: All *x* jobs finished successfully.
-```
 ```
 After these jobs are run, the program will use [Structure Harvester](https://alumni.soe.ucsc.edu/~dearl/software/structureHarvester/) (or "fastChooseK.py" if wrapping *fastStructure*) to infer the optimal value of "K".
 Finally, the program will create plots with the inferred clustering, one for each calculated value of "K".
