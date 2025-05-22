@@ -1,0 +1,2 @@
+#!/bin/sh
+# interim.sh is called in between test runs for when a test profile is set via TimesToRun to execute multiple times. This is useful for restoring a program's state or any other changes that need to be made in between runs.

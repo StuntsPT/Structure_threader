@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--Phoronix Test Suite v10.8.5-->
+<PhoronixTestSuite>
+  <Downloads>
+    <Package>
+      <URL>https://github.com/bobverity/MavericK/archive/refs/tags/v1.0.5.tar.gz</URL>
+      <MD5></MD5>
+      <SHA256>8f333495e4ce97c99edb504dadc0d3ab85173f163693455fa1e02eeb84f799a3</SHA256>
+      <FileName></FileName>
+      <FileSize>44767</FileSize>
+      <PlatformSpecific>Linux,MacOSX</PlatformSpecific>
+      <ArchitectureSpecific>x86_64</ArchitectureSpecific>
+      <Optional>FA&#xCC;SE</Optional>
+    </Package>
+    <Package>
+      <URL>https://gitlab.com/StuntsPT/Structure_threader/-/raw/v2-experimental/tests/data/Reduced_dataset.structure</URL>
+      <MD5></MD5>
+      <SHA256>0f829a6aa2f7badfdba14525e380d2ef4892c52dc151ed8daf5e04e3a251c652</SHA256>
+      <FileName></FileName>
+      <FileSize>4691</FileSize>
+      <PlatformSpecific></PlatformSpecific>
+      <ArchitectureSpecific></ArchitectureSpecific>
+      <Optional>FALSE</Optional>
+    </Package>
+    <Package>
+      <URL>https://gitlab.com/StuntsPT/Structure_threader/-/raw/v2-experimental/tests/data/parameters.txt</URL>
+      <MD5></MD5>
+      <SHA256>a368a75954bc6fec6f5b7785345ca67e9808be7331da75e4a896dca58798668c</SHA256>
+      <FileName></FileName>
+      <FileSize>547</FileSize>
+      <PlatformSpecific></PlatformSpecific>
+      <ArchitectureSpecific></ArchitectureSpecific>
+      <Optional>FALSE</Optional>
+    </Package>
+  </Downloads>
+</PhoronixTestSuite>
