@@ -209,13 +209,13 @@ Keep in mind that *Neural ADMIXTURE* can take input in four distinct file format
 [PLINK 2](https://www.cog-genomics.org/plink/2.0/formats),
 [VCF](https://samtools.github.io/hts-specs/VCFv4.2.pdf) and
 [HDF5](https://www.hdfgroup.org/solutions/hdf5/).
-In order to use the PLINK format, three files are required:
+In order to use the PLINK format, the following three files are required:
 
 * `file.bed`
 * `file.fam`
 * `file.bim`
 
-And in order to use the PLINK 2 format, three files are also required:
+In order to use the PLINK 2 format, the following three files are required:
 
 * `file.pgen`
 * `file.psam`

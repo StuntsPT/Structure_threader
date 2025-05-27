@@ -1,4 +1,4 @@
-site_name: 'Structure_threader manual'
+site_name: 'Structure_threader Manual'
 #site_favicon: 'assets/Icon.png'
 site_author: Francisco Pina-Martins
 repo_url: https://gitlab.com/StuntsPT/Structure_threader
@@ -6,8 +6,8 @@ edit_uri: tree/master/docs
 
 nav:
     - 'Introduction': 'index.md'
-    - 'Installation & dependencies': 'install.md'
-    - 'External programs': 'external.md'
+    - 'Installation & Dependencies': 'install.md'
+    - 'External Programs': 'external.md'
     - 'Usage': 'usage.md'
     - 'Output': 'output.md'
     - 'Test Data': 'test_data.md'
@@ -15,5 +15,5 @@ nav:
     - 'Benchmarking': 'benchmark.md'
     - 'Citation': 'citation.md'
     - 'Future Plans': 'future.md'
-    - 'FAQ': 'faq.md'
+    - 'Frequently Asked Questions': 'faq.md'
 theme: readthedocs

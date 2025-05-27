@@ -11,7 +11,7 @@ Python 3.9 or later (3.11 recommended). Due to issues in some dependencies, vers
 The main program uses modules from the standard library and [Clumppling](https://github.com/PopGenClustering/Clumppling).  
 In order to draw the plots, matplotlib >= 1.4 is required (installed automatically as a dependency when installed via `pip`).  
 To run "fastChooseK.py" (fastStructure wrapper only), numpy is also required (installed automatically as a dependency when installed via `pip`).  
-Neural ADMIXTURE has optional support for the [Plink2](https://www.cog-genomics.org/plink/2.0/) (`.pgen`) binary format, but [pgenlib](https://pypi.org/project/Pgenlib/) is required (installed automatically as a dependency when installed via `pip`).  
+Neural ADMIXTURE has optional support for the [PLINK 2](https://www.cog-genomics.org/plink/2.0/) (`.pgen`) binary format, but [Pgenlib](https://pypi.org/project/Pgenlib/) is required (installed automatically as a dependency when installed via `pip`).  
 In order to use "ALStructure", you need to have [R](https://www.r-project.org/) installed too (must be installed manually, as `pip` can't handle installing R or dependencies).
 
 
