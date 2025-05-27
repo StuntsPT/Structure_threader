@@ -137,7 +137,7 @@ def argument_parser(args):
                          help="File with population information.",
                          metavar="indfile", default=None)
 
-    misc_opts.add_argument("-t", dest="threads", type=int, required=True,
+    misc_opts.add_argument("-t", dest="threads", type=int, required=("-st", "-fs", "-mv", "-als") in sys.argv,
                            help="Number of threads to use "
                                 "(default:%(default)s).\n",
                            metavar="int", default=4)
