@@ -10,7 +10,7 @@ WORKDIR /analysis
 # Install necessary dependencies from main Debian repository and
 # clean apt cache to reduce image size
 RUN apt-get update && apt-get upgrade -y && \
-  apt-get install xz-utils && \
+  apt-get install -y xz-utils && \
   apt-get install -y r-base r-cran-devtools r-cran-biocmanager && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
