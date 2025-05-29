@@ -5,7 +5,7 @@ The scripts to draw the speedup plots and the barplots can be found there as wel
 You will also find relevant documentation, which is reproduced here.
 
 
-## Directory contents:
+## Main files
 
 * benchmark.sh
 * benchmark_fast.sh

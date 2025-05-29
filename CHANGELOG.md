@@ -1,5 +1,35 @@
 # *Structure_threader* changelog
 
+## Changes since v1.3.11
+
+## New features
+* *Structure_threader* now supports Neural ADMIXTURE.
+    * *PLINK 2* support is included for Neural ADMIXTURE.
+    * Supervised runs are supported, but don't include post-run analysis.
+    * More information can be found in the [official Neural ADMIXTURE repo](https://github.com/AI-sandbox/neural-admixture)
+* An official Docker image is now available. The Dockerfile can be found in this repo, under helper_scripts.
+* Implements a CLUMPP-like analysis using Clumppling.
+* Added support for .vcf.gz files (ALStructure and Neural ADMIXTURE).
+* The resulting .tsv file for ALStructure is now deleted post-run.
+* More information is now shown in each individual step of the run.
+
+## Bug fixes
+* Fixes Plotly HTML file not being properly formatted.
+* Fixes recent deprecations in setup.py
+
+## Documentation
+* Added more information about test data creation.
+* Added FAQ due to recent changes.
+* Updated install instructions.
+* Updated stale links.
+* Misc changes.
+
+## Other changes
+* Test files have been remade due to changes in the upstream data.
+* Restructured the source tree.
+
+---
+
 ## Changes since v1.3.10
 
 ## Plotting

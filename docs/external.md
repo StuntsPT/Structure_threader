@@ -17,7 +17,7 @@ All scripts default the programs' install locations to ~/Software/<program_name>
 This script will download and install STRUCTURE.
 
 
-#### Requirements:
+#### Requirements
 * a C compiler with [Fortran](https://fortran-lang.org/) support (e.g. GCC).
 * Cmake is required to build LAPACK
 
@@ -50,7 +50,7 @@ distribution based on these with the following command:
 $ sudo apt install cython3 python3-numpy python3-scipy gsl-bin
 ```
 
-### Important note:
+### Important note
 If you are relying on the GNU Scientific Library that was installed using the
 `install_faststructure` script, you will need to make your system aware of
 where these libraries are.
@@ -68,7 +68,7 @@ Where `$install_dir` is the directory defined in `install_faststructure.sh`.
 This script will download, compile and install MavericK.
 
 
-#### Requirements:
+#### Requirements
 * a fairly recent C compiler (e.g. GCC 6.1 and above).
 
 This should be available in every HPC environment.

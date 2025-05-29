@@ -39,12 +39,13 @@ Using the `run` mode, the program currently takes the following arguments:
     * Add extra arguments to pass to the wrapped program (--extra_opts) [Example: prior=logistic seed=123]
     * Define a random seed starting value (--seed) [default:1235813]
     * Neural ADMIXTURE exclusive options:
-      * Number of CPUs to use (--nad_cpus)
-      * Number of GPUs to use (--nad_gpus)
-      * Execution method (--exec_mode)
-      * Initialization method (--init)
-      * Seed (--nad_seed) [default: 42]
-      * If the run is supervised (--supervised) [default: False]
+        * Number of CPUs to use (--nad_cpus)
+        * Number of GPUs to use (--nad_gpus)
+        * Initialization method (--init)
+        * Execution method (--exec_mode) [default: train]
+        * Seed (--nad_seed) [default: 42]
+        * If the run is supervised (--supervised) [default: False]
+        * Single-column population file (--nad_pop)
 
 
 Example run:
@@ -117,6 +118,8 @@ Location_2  21  2
 
 You can use any order you like using this scheme. Also note that the "split bars" that split the populations in your plot will correspond to the number provided in column 2.
 
+**Please note that this `popfile` is different from the one expected by Neural ADMIXTURE, and so if you wish to use a single-column `popfile` with Neural ADMIXTURE, we provide a separate option (`--nad_pop`).**
+
 ## Using an `indfile`
 The `indfile` works in a similar fashion to the `popfile` but discriminates each individual sample in the output file. This file can be provided with the --ind option and is particularly useful when you have no knowledge of the populations or when individuals from the same population are not clustered together in the input file.
 
@@ -134,7 +137,7 @@ Ind2
 Ind3
 ```
 
-#### Note that this **will not re-order** the columns in your plot - this will simply **change the individual labels**! In order to avoid problems, **triple check** that the `indfile` order is the same as in your original input file.
+**NOTE: this WILL NOT RE-ORDER the columns in your plot - this will simply CHANGE THE INDIVIDUAL LABELS! In order to avoid problems, TRIPLE CHECK that the `indfile` order is the same as in your original input file.**
 
 If you provide the second column with the population name, the x-axis labels of the resulting plots will only display the population names. However, the .html plots will also display the name of the individual sample names when hovering the mouse over their respective bars. An example of a two column `indfile`:
 
@@ -144,7 +147,7 @@ Ind2    PopB
 Ind3    PopA
 ```
 
-#### Like previously, this option will also not reorder the plot columns! It simply changes the labels.
+**Like previously, this option will also not reorder the plot columns! It simply changes the labels.**
 
 
 Adding a third column will allow you to change the order of **the populations** in the generated plots. In this example:
@@ -159,7 +162,7 @@ The individuals of "PopB" will appear first, and then the individuals of "PopA".
 
 **Note:** While `popfiles` and `indfiles` are a simple and convenient way to **change the population order**, they are not meant to change **individual order** (albeit individuals will be moved in the plot when population order changes) in the plot. If you are not happy with the individual order in your plot, the best way to change it is in the input file. I can implement a "plot order changer" routine if there is enough demand for it, though (you can provide feedback by commenting on the issue either on [gitlab](https://gitlab.com/StuntsPT/Structure_threader/-/issues/93) or [github](https://github.com/StuntsPT/Structure_threader/issues/91)). 
 
-## fastStructure Warning:
+## fastStructure Warning
 Keep in mind that *fastStructure* can take input in two distinct file formats:
 [PLINK](https://www.cog-genomics.org/plink/1.9/input) and
 [STRUCTURE](https://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
@@ -185,7 +188,7 @@ Ind2    col1  col2  col3  col4  col5 1    2   1   3
 
 ```
 
-## ALStructure Warning:
+## ALStructure Warning
 Keep in mind that *ALStructure* can take input in two distinct file formats:
 [PLINK](https://www.cog-genomics.org/plink/1.9/input) and
 [VCF](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
@@ -203,7 +206,7 @@ In order to use a `VCF` formatted file, it is only required that you point at it
 Don't forget to look at the [Output section](output.md) for information on how the data is presented after a successful (or not) run.
 
 
-## Neural ADMIXTURE Warning:
+## Neural ADMIXTURE Warning
 Keep in mind that *Neural ADMIXTURE* can take input in four distinct file formats:
 [PLINK](https://www.cog-genomics.org/plink/1.9/input),
 [PLINK 2](https://www.cog-genomics.org/plink/2.0/formats),
@@ -226,5 +229,5 @@ file for Neural ADMIXTURE and *Structure_threader* will assume the
 other two exist in the same path.
 
 
-## Using *MavericK*:
+## Using *MavericK*
 *MavericK* is thoroughly documented. Although the original website is no longer accessible, you can find the paper in which it was originally mentioned [here](https://doi.org/10.1534/genetics.115.180992). The documentation is available under "Supplementary data" as "FileS2" (PDF format).
