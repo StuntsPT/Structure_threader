@@ -72,6 +72,7 @@ setup(
               "structure_threader.skeletons"],
     install_requires=["clumppling",
                       "neural-admixture",
+                      "pandera<0.24.0",
                       "Pgenlib",
                       "plotly==5.24.1",
                       "colorlover",
