@@ -17,8 +17,8 @@ pip install structure-threader
 [PyPI](https://pypi.python.org/pypi/structure-threader/). It can be
 installed by simply running the above command. If you are on a \*nix like
 platform, you can use the `--user` option if you can't or don't want to install
-the program as `root` user. Binaries for Structure, fastStructure and
-*MavericK* are also distributed for GNU/Linux and macOS. Please note that the macOS binaries included are compiled for x64 and not ARM64, so it will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
+the program as `root` user. Optional binaries for Structure, fastStructure and
+*MavericK* are also distributed for GNU/Linux and macOS and can be installed if an environment variable is set (`ST_INSTALL_BINARIES=True`). Please note that the macOS binaries included are compiled for x64 and not ARM64, so they will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
 please [check the
 manual](https://structure-threader.readthedocs.io/en/latest/install/).
 
