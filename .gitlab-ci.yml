@@ -7,6 +7,7 @@ image: python:3.11-slim
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
+  ST_INSTALL_BINARIES: "True"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
 
 # Pip's cache doesn't store the python packages

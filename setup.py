@@ -17,6 +17,7 @@
 
 
 import sys
+import os
 from setuptools import setup
 
 
@@ -28,7 +29,7 @@ if sys.version_info.major < 3:
     raise NotSupportedException("Only Python 3.x Supported")
 
 
-def platform_detection(install_binaries=True):
+def platform_detection(install_binaries=False):
     """
     Detect the platform and adapt the binaries location.
     """
@@ -50,7 +51,8 @@ def platform_detection(install_binaries=True):
 
 
 # Set some variables (PKGBUILD inspired)
-DATA_FILES = platform_detection()
+binaries = os.environ.get('ST_INSTALL_BINARIES', '').lower() == "true"
+DATA_FILES = platform_detection(binaries)
 try:
     DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
 except TypeError:
