@@ -340,12 +340,6 @@ def clumppling_run(wrapped_prog, arg):
         wrapped_prog_f = "fastStructure"
         input_dir = arg.outpath
 
-        for file in os.listdir(arg.outpath):
-            if file == "fS_run_K.1.meanQ": # placeholder until Clumppling releases version with fix
-                full_file_path = os.path.join(arg.outpath, file)
-                os.rename(full_file_path, f"{full_file_path}.bak")
-                break
-
     elif wrapped_prog == "maverick":
         wrapped_prog_f = "generalQ"
 

@@ -4,9 +4,10 @@
 
 ## New features
 * *Structure_threader* now supports Neural ADMIXTURE.
-    * *PLINK 2* support is included for Neural ADMIXTURE.
+    * *PLINK 2* support is included for Neural ADMIXTURE when installed via `pip` with `ST_INSTALL_BINARIES=True`.
     * Supervised runs are supported, but don't include post-run analysis.
     * More information can be found in the [official Neural ADMIXTURE repo](https://github.com/AI-sandbox/neural-admixture)
+* Structure_threader is now available in [Bioconda](https://bioconda.github.io/)!
 * An official Docker image is now available. The Dockerfile can be found in this repo, under helper_scripts.
 * Implements a CLUMPP-like analysis using Clumppling.
 * Added support for .vcf.gz files (ALStructure and Neural ADMIXTURE).
@@ -27,6 +28,7 @@
 ## Other changes
 * Test files have been remade due to changes in the upstream data.
 * Restructured the source tree.
+* **Binaries are no longer inluded in the default pip installation.** When installing, you can use the environment variable `ST_INSTALL_BINARIES=True` to include binaries and Neural ADMIXTURE (along with *PLINK 2* support for it)
 
 ---
 
