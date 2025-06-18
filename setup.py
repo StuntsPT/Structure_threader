@@ -53,6 +53,17 @@ def platform_detection(install_binaries=False):
 # Set some variables (PKGBUILD inspired)
 binaries = os.environ.get('ST_INSTALL_BINARIES', '').lower() == "true"
 DATA_FILES = platform_detection(binaries)
+requirements = ["clumppling",
+                "plotly==5.24.1",
+                "colorlover",
+                "numpy>=1.12.1",
+                "matplotlib"]
+bin_requirements = ["neural-admixture",
+                    "pandera<0.24.0",
+                    "Pgenlib"]
+if binaries:
+    requirements += bin_requirements
+
 try:
     DATA_FILES[0][1].append("structure_threader/wrappers/alstructure_wrapper.R")
 except TypeError:
@@ -72,14 +83,7 @@ setup(
               "structure_threader.colorer",
               "structure_threader.wrappers",
               "structure_threader.skeletons"],
-    install_requires=["clumppling",
-                      "neural-admixture",
-                      "pandera<0.24.0",
-                      "Pgenlib",
-                      "plotly==5.24.1",
-                      "colorlover",
-                      "numpy>=1.12.1",
-                      "matplotlib"],
+    install_requires=requirements,
     description=("A program to parallelize runs of 'Structure', "
                  "'fastStructure' and 'MavericK'."),
     url=URL,
