@@ -1,6 +1,6 @@
 # Binary building
 
-For your conveninence, we have pre-built binaries of STRUCTURE,
+For your conveninence, we have pre-built binaries of Structure,
 fastStructure and MavericK. They are provided with the package under
 `structure_threader/bins/$platform/`.
 
@@ -22,10 +22,10 @@ compatible with later Mac OS X and macOS releases (if using an Apple silicon
 Mac, e.g. 2020 Macbook Air with Apple M1, you must have
 [Rosetta 2](https://support.apple.com/102527)).
 
-## STRUCTURE
+## Structure
 
-STRUCTURE is relatively simple to build. Source code can be obtained from the
- [STRUCTURE website](http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz). To build the binary, we used our helper
+Structure is relatively simple to build. Source code can be obtained from the
+ [Structure website](http://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_kernel_source.tar.gz). To build the binary, we used our helper
  script "install_structure.sh". The binary version is 2.3.4.
 
 

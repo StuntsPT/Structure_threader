@@ -7,7 +7,7 @@
     * *PLINK 2* support is included for Neural ADMIXTURE when installed via `pip` with `ST_INSTALL_BINARIES=True`.
     * Supervised runs are supported, but don't include post-run analysis.
     * More information can be found in the [official Neural ADMIXTURE repo](https://github.com/AI-sandbox/neural-admixture)
-* Structure_threader is now available in [Bioconda](https://bioconda.github.io/)!
+* Structure_threader is now available in [Bioconda](https://bioconda.github.io/recipes/structure_threader/README.html)!
 * An official Docker image is now available. The Dockerfile can be found in this repo, under helper_scripts.
 * Implements a CLUMPP-like analysis using Clumppling.
 * Added support for .vcf.gz files (ALStructure and Neural ADMIXTURE).
@@ -15,8 +15,8 @@
 * More information is now shown in each individual step of the run.
 
 ## Bug fixes
-* Fixes Plotly HTML file not being properly formatted.
-* Fixes recent deprecations in setup.py
+* Fixes Plotly HTML file not being properly formatted (locked Plotly to versions under 6.0.0).
+* Fixes recent deprecations in setup.py.
 
 ## Documentation
 * Added more information about test data creation.
@@ -28,7 +28,7 @@
 ## Other changes
 * Test files have been remade due to changes in the upstream data.
 * Restructured the source tree.
-* **Binaries are no longer inluded in the default pip installation.** When installing, you can use the environment variable `ST_INSTALL_BINARIES=True` to include binaries and Neural ADMIXTURE (along with *PLINK 2* support for it)
+* **Binaries are no longer included in the default pip installation.** When installing, you can use the environment variable `ST_INSTALL_BINARIES=True` to include binaries and Neural ADMIXTURE (along with *PLINK 2* support for it)
 
 ---
 

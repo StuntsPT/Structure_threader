@@ -13,12 +13,12 @@ Using the `run` mode, the program currently takes the following arguments:
 * I/O arguments:
     * Input file (-i)
     * Output directory (-o)
-    * Path to parameters_file (`mainparams` for STRUCTURE [will assume `extraparams` exists in the same directory] or `parameters.txt` for MavericK; --params)
+    * Path to parameters_file (`mainparams` for Structure [will assume `extraparams` exists in the same directory] or `parameters.txt` for MavericK; --params)
 * Individual/Population identification options:
     * Path to popfile (--pop) [See below for more information]
     * Path to indfile (--ind) [See below for more information]
 * External program location - you have to pass one and only one of the following arguments:
-    * *STRUCTURE* location (if you want to run *STRUCTURE*; -st)
+    * *Structure* location (if you want to run *Structure*; -st)
     * *fastStructure* location (if you want to run *fastStructure*; -fs)
     * *MavericK* location (if you want to run *MavericK*; -mv)
     * *ALStructure_wrapper.R* location (if you want to run *ALStructure*; -als)
@@ -55,11 +55,11 @@ structure_threader run -K Ks -R replicates -i infile -o outpath -t num_of_thread
 ```
 
 Where `-K` is the number of "Ks" to run, `-R` is the number of replicate runs for
-each value of "K", `-i` is the input file for *STRUCTURE*, `-o` is the directory where the output results should be stored,
-`-t` is the number of threads to use, `-st` the path for the *STRUCTURE* binary.
+each value of "K", `-i` is the input file for *Structure*, `-o` is the directory where the output results should be stored,
+`-t` is the number of threads to use, `-st` the path for the *Structure* binary.
 
 The program should be run in the same directory where the files "mainparams" and
-"extraparams" for your *STRUCTURE* run are placed. Please see [Installation](install.md) for information on how to achieve this.
+"extraparams" for your *Structure* run are placed. Please see [Installation](install.md) for information on how to achieve this.
 Alternatively, you can specify the path to a `mainparams` (or `parameters.txt if wrapping *MavericK*) file. *Structure_threader* will look for an `extraparams` file in the same location and pass all read parameters to the wrapped program. This can be achieved using the `--params` switch.
 
 ### `plot` mode
@@ -90,7 +90,7 @@ Here, *Structure_threader* will search the current directory for all FastStructu
 
 ### `params` mode
 
-Using the `params` mode, *Structure_threader* generate a skeleton `mainparams` and `extraparams` that you should edit to facilitate *STRUCTURE* runs. Most options have been preset to a commonly used default value, but some of them are set to "CHANGEME" since providing a default value here makes no sense, since it depends on each dataset.
+Using the `params` mode, *Structure_threader* generate a skeleton `mainparams` and `extraparams` that you should edit to facilitate *Structure* runs. Most options have been preset to a commonly used default value, but some of them are set to "CHANGEME" since providing a default value here makes no sense, since it depends on each dataset.
 The `params` mode takes only one option:
 
 * Output directory (path to where the skeleton parameter files should be written; -o)
@@ -165,7 +165,7 @@ The individuals of "PopB" will appear first, and then the individuals of "PopA".
 ## fastStructure Warning
 Keep in mind that *fastStructure* can take input in two distinct file formats:
 [PLINK](https://www.cog-genomics.org/plink/1.9/input) and
-[STRUCTURE](https://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
+[Structure](https://web.stanford.edu/group/pritchardlab/software/structure-data_v.2.3.1.html).
 In order to use the PLINK format, three files are required:
 
 * `file.bed`
@@ -175,7 +175,7 @@ In order to use the PLINK format, three files are required:
 You can enter any of them (but just one of them) as the input file and
 *Structure_threader* will assume the other two exist in the same path.
 If the input file specified by the *-i* switch in *Structure_threader* has an
-extension different from either of the three mentioned above, *Structure_threader* will assume the input is in the STRUCTURE format, which has some peculiarities:
+extension different from either of the three mentioned above, *Structure_threader* will assume the input is in the Structure format, which has some peculiarities:
 *fastStructure* requires your input file to have each individual represented in
 two rows (one for each allele), and six "bogus" columns before the actual data.
 **No Header is allowed**. Here is a short example:

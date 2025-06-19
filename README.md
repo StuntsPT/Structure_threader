@@ -1,6 +1,7 @@
 # Structure_threader
-A program to parallelize the runs of [Structure](https://web.stanford.edu/group/pritchardlab/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](https://github.com/bobverity/MavericK), [ALStructure](https://github.com/StoreyLab/alstructure) and [Neural ADMIXTURE](https://github.com/AI-sandbox/neural-admixture) software.
+A program to automate and parallelize the runs of [Structure](https://web.stanford.edu/group/pritchardlab/structure.html),  [fastStructure](https://rajanil.github.io/fastStructure/), [MavericK](https://github.com/bobverity/MavericK), [ALStructure](https://github.com/StoreyLab/alstructure) and [Neural ADMIXTURE](https://github.com/AI-sandbox/neural-admixture) software.
 
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/structure_threader/README.html)
 [![Pipeline Status](https://gitlab.com/StuntsPT/Structure_threader/badges/master/pipeline.svg)](https://gitlab.com/StuntsPT/Structure_threader/pipelines)
 [![Documentation Status](https://readthedocs.org/projects/structure-threader/badge/?version=latest)](https://structure-threader.readthedocs.io/en/latest/?badge=latest)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/becafd10f0bc4904b6d2857cf4c47ea4)](https://www.codacy.com/gh/StuntsPT/Structure_threader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=StuntsPT/Structure_threader&amp;utm_campaign=Badge_Grade)
@@ -10,15 +11,16 @@ A program to parallelize the runs of [Structure](https://web.stanford.edu/group/
 ## Installation
 
 ```bash
-pip install structure-threader
+$ conda create -n stenv python=3.11
+$ conda activate stenv
+(stenv) $ conda install structure_threader
 ```
 
-*Structure_threader* is available on
-[PyPI](https://pypi.python.org/pypi/structure-threader/). It can be
-installed by simply running the above command. If you are on a \*nix like
-platform, you can use the `--user` option if you can't or don't want to install
-the program as `root` user. Binaries for Structure, fastStructure and
-*MavericK* are also distributed for GNU/Linux and macOS. Please note that the macOS binaries included are compiled for x64 and not ARM64, so it will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
+*Structure_threader* is available on [Bioconda](https://bioconda.github.io/recipes/structure_threader/README.html) and
+[PyPI](https://pypi.python.org/pypi/structure_threader/). It's best installed by running the above commands. If you install using `pip`, and are on a \*nix like
+platform, you can use the `--user` option if you can't (or don't) want to install
+the program as the `root` user. Binaries for Structure, fastStructure and
+*MavericK* are also distributed through PyPI for GNU/Linux and macOS, and are installed when the environment variable `ST_INSTALL_BINARIES=True` is set. Please note that the macOS binaries included in the PyPI version (and stored in this repository) are only compiled for x64, so it will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
 please [check the
 manual](https://structure-threader.readthedocs.io/en/latest/install/).
 

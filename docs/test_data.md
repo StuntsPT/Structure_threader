@@ -21,8 +21,8 @@ This was the criteria that was used on the *admixture* [analysis of the 1000 gen
 The file was then converted to structure format with [PGDSpider](http://www.cmpg.unibe.ch/software/PGDSpider/). The settings used for generating the SPID conversion file were the following:
 
 * Default options on the VCF input tab
-* On the STRUCTURE output tab:
-    * Save more specific fastSTRUCTURE format? -> Yes
+* On the Structure output tab:
+    * Save more specific fastStructure format? -> Yes
     * Specify which data (...) -> SNPs  
 
 The SPID file is included in the repository with the rest of the test data.  
@@ -71,7 +71,7 @@ These files are *VCF* formatted. They were obtained in the exact same way as `Bi
 
 
 ## SmallTestData.structure
-This file is a Structure formatted input file which was used to benchmark STRUCTURE and *MavericK*. This is a medium sized SNP file (80 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
+This file is a Structure formatted input file which was used to benchmark Structure and *MavericK*. This is a medium sized SNP file (80 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
 
 
 The used commands were:
@@ -80,7 +80,7 @@ The used commands were:
 
 
 ## Reduced_dataset.structure
-This file is a Structure formatted input file which is used in the field tests for STRUCTURE. This is a small sized SNP file (29 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
+This file is a Structure formatted input file which is used in the field tests for Structure. This is a small sized SNP file (29 SNPs) which was obtained from the [1000 genomes project](http://www.1000genomes.org). The file was downloaded from [chromossome 22](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz), and was then filtered using vcftools following the same criteria and commands as the BigTestData.str file.
 
 The used commands were:
 
@@ -88,7 +88,7 @@ The used commands were:
 
 
 ## extraparams and mainparams
-The *STRUCTURE* parameter files that were used in the benchmarking process.
+The *Structure* parameter files that were used in the benchmarking process.
 
 
 ## parameters.txt

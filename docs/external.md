@@ -8,13 +8,13 @@ which contain commands to compile and install *MavericK*, *Structure* **and**
 the next few sections.
 
 ## Structure_threader helper scripts
-The directory "helper_scripts" contains three scripts that will install *STRUCTURE*, *fastStructre* and *MavericK* respectively in a *semi* automatic way.
+The directory "helper_scripts" contains three scripts that will install *Structure*, *fastStructre* and *MavericK* respectively in a *semi* automatic way.
 
 All scripts default the programs' install locations to ~/Software/<program_name>. You can change this in the scripts themselves should you wish to change this location.
 
 
 ### install_structure.sh
-This script will download and install STRUCTURE.
+This script will download and install Structure.
 
 
 #### Requirements

@@ -1,7 +1,4 @@
 # Unversioned
-numpy
-matplotlib
-clumppling
 neural-admixture
 Pgenlib
 pytest
@@ -9,3 +6,6 @@ pytest
 # Version required
 plotly == 5.24.1
 pandera < 0.24.0
+numpy >= 1.12.1
+matplotlib >=1.4
+clumppling >=0.3.2
