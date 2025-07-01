@@ -329,7 +329,7 @@ def plots_only(arg):
 
 def clumppling_run(wrapped_prog, arg):
     """
-    Handles arrugments and runs an analysis on the output data using Clumppling.
+    Handles arrugments and runs an alignment on the output data using Clumppling.
     Assumes wrapped software output folder as input for Clumppling.
     """
     if wrapped_prog == "structure":
@@ -431,7 +431,7 @@ def clumppling_run(wrapped_prog, arg):
 
     args = argparser.argparse.Namespace(**args_dict)
 
-    logging.info("Running Clumppling analysis on the results...")
+    logging.info("Running Clumppling alignment on the results...")
     try:
         clumppling_main(args)
 
@@ -453,7 +453,7 @@ def clumppling_run(wrapped_prog, arg):
                 shutil.rmtree(os.path.join(arg.outpath, file))
 
     except Exception as e:
-        print(f"An error occurred during Clumppling analysis: {e}")
+        print(f"An error occurred during Clumppling alignment: {e}")
 
 
 def full_run(arg):

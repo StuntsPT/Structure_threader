@@ -10,6 +10,6 @@ As of version 2.0.0, `.vcf.gz` filetype is supported for both *ALStructure* and 
 
 Some dependencies currently rely on a version of Python older than what is included in the latest Ubuntu releases. As such, we recommend an alternative installation method. For more information, check out the [installation page](install.md).
 
-### *Structure_threader* gives me strange errors running the *Clumppling* analysis!
+### *Structure_threader* gives me strange errors running the *Clumppling* alignment!
 
 *Clumppling* only works with Python versions lower than 3.12 (such as 3.11). As such, for the least problematic experience, we recommend using Python 3.11 for now.
