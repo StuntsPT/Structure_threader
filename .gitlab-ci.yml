@@ -2,6 +2,12 @@ stages:
   - tests
   - deployment
 
+# Static Application Security Testing (SAST)
+sast:
+  stage: tests
+include:
+- template: Security/SAST.gitlab-ci.yml
+
 image: python:3.11-slim
 
 # Change pip's cache directory to be inside the project directory since we can
@@ -9,6 +15,7 @@ image: python:3.11-slim
 variables:
   ST_INSTALL_BINARIES: "True"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+  SAST_EXCLUDED_PATHS: "venv/"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
