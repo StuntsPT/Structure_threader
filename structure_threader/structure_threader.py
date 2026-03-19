@@ -23,12 +23,16 @@ import subprocess
 import itertools
 import shutil
 import logging
+import contextlib
 import pandas as pd
 
 from multiprocessing import Pool
 from random import choice
 from functools import partial
-from clumppling.__main__ import main as clumppling_main
+
+_devnull = open(os.devnull, 'w')
+with contextlib.redirect_stdout(_devnull), contextlib.redirect_stderr(_devnull):
+    from clumppling.__main__ import main as clumppling_main
 
 try:
     import plotter.structplot as sp
@@ -332,16 +336,20 @@ def clumppling_run(wrapped_prog, arg):
     Handles arrugments and runs an alignment on the output data using Clumppling.
     Assumes wrapped software output folder as input for Clumppling.
     """
+    plot_type = "graph"
     if wrapped_prog == "structure":
         wrapped_prog_f = wrapped_prog
+        extension = "_f"
         input_dir = arg.outpath
 
     elif wrapped_prog == "faststructure":
         wrapped_prog_f = "fastStructure"
+        extension = ".Q"
         input_dir = arg.outpath
 
     elif wrapped_prog == "maverick":
         wrapped_prog_f = "generalQ"
+        extension = ".Q"
 
         out_dir_list = []
         for file in os.listdir(arg.outpath):
@@ -370,6 +378,7 @@ def clumppling_run(wrapped_prog, arg):
 
     elif wrapped_prog == "alstructure":
         wrapped_prog_f = "generalQ"
+        extension = ".Q"
 
         input_dir = arg.outpath + "/clumpp_temp"
         if not os.path.exists(input_dir):
@@ -391,6 +400,8 @@ def clumppling_run(wrapped_prog, arg):
 
     elif wrapped_prog == "neuraladmixture":
         wrapped_prog_f = "admixture"
+        extension = ".Q"
+        plot_type = "major"
 
         out_dir_list = []
         for file in os.listdir(arg.outpath):
@@ -414,10 +425,12 @@ def clumppling_run(wrapped_prog, arg):
         return
 
     args_dict = {
-        'input_path': input_dir,
-        'output_path': f"{arg.outpath}/clumpp",
-        'input_format': wrapped_prog_f,
-        'vis': 1,  # Default value for visualization
+        'input': input_dir,
+        'output': f"{arg.outpath}/clumpp",
+        'format': wrapped_prog_f,
+        'ind_labels': arg.indfile if arg.indfile is not None else "",
+        'extension': extension,
+        'remove_missing': True,
         'cd_param': 1.0,  # Default value for community detection parameter
         'use_rep': 0,  # Default value for using representative replicate
         'merge_cls': 0,  # Default value for merging clusters
@@ -426,7 +439,27 @@ def clumppling_run(wrapped_prog, arg):
         'plot_modes_withinK': 0,  # Default value for displaying modes for each K
         'plot_major_modes': 0,  # Default value for displaying major modes
         'plot_all_modes': 0,  # Default value for displaying all aligned modes
-        'custom_cmap': ''  # Default value for custom colormap
+        'custom_cmap': '',  # Default value for custom colormap
+        'cd_method': "louvain",
+        'cd_res': 1.0,
+        'test_comm': True,
+        'comm_min': 1e-6,
+        'comm_max': 1e-2,
+        'merge': True,
+        'use_rep': True,
+        'use_best_pair': True,
+        'vis': True,
+        'plot_type': plot_type,
+        'fig_format': "svg",
+        'alt_color': False,
+        'regroup_ind': True,
+        'reorder_within_group': True,
+        'reorder_by_max_k': True,
+        'ordered_uniq_labels': "",
+        'order_cls_by_label': True,
+        'plot_unaligned': False,
+        'include_cost': True,
+        'include_label': True,
     }
 
     args = argparser.argparse.Namespace(**args_dict)
