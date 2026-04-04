@@ -1,0 +1,147 @@
+# Structure_threader Snakemake workflow
+#
+# Supported wrappers: structure, faststructure
+#
+# Pipeline DAG per wrapper:
+#
+#   STRUCTURE:
+#     prepare_dirs
+#       └─► run_structure (K × R jobs, parallel)
+#               └─► bestk_structure   (Evanno / structureHarvester)
+#                       └─► plot_structure
+#
+#   fastSTRUCTURE:
+#     prepare_dirs
+#       └─► run_faststructure (one job per K, parallel)
+#               └─► bestk_faststructure  (fastChooseK)
+#                       └─► plot_faststructure
+#
+# All parameters come from config.yaml (written by the CLI shim).
+
+import os
+import random
+import itertools
+
+# ---------------------------------------------------------------------------
+# Config helpers
+# ---------------------------------------------------------------------------
+
+def _require(key):
+    val = config.get(key)
+    if not val:
+        raise ValueError(f"[structure_threader] '{key}' is required in config.")
+    return val
+
+
+# ---------------------------------------------------------------------------
+# Resolve shared parameters
+# ---------------------------------------------------------------------------
+
+WRAPPER  = _require("wrapper")           # "structure" | "faststructure"
+INFILE   = os.path.abspath(_require("infile"))
+OUTDIR   = os.path.abspath(_require("outdir"))
+
+K_LIST   = list(range(1, config["K"] + 1)) if isinstance(config.get("K"), int) \
+           else list(config.get("K_list", []))
+if not K_LIST:
+    raise ValueError("[structure_threader] Provide 'K' (int) or 'K_list' (list) in config.")
+
+SEED     = config.get("seed", 1235813)
+POPFILE  = config.get("popfile")
+INDFILE  = config.get("indfile")
+NO_TESTS = config.get("no_tests", False)
+NO_PLOTS = config.get("no_plots", False)
+BW       = config.get("blacknwhite", False)
+USE_IND  = config.get("use_ind_labels", False)
+THREADS  = config.get("threads", 4)
+
+# STRUCTURE-specific
+REPLICATES  = list(range(1, config.get("replicates", 20) + 1))
+MAINPARAMS  = config.get("mainparams")
+
+# fastSTRUCTURE-specific
+FS_PRIOR    = config.get("fs_prior", "simple")   # "simple" | "logistic"
+
+# Container images
+STRUCTURE_IMAGE = config.get(
+    "structure_image",
+    "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
+)
+FASTSTRUCTURE_IMAGE = config.get(
+    "faststructure_image",
+    "docker://quay.io/biocontainers/faststructure:1.0--py27h549429d_0"
+)
+
+# ---------------------------------------------------------------------------
+# Per-run seed map for STRUCTURE (mirrors seed_generator() in structure_wrapper)
+# ---------------------------------------------------------------------------
+
+def _make_seed_map(seed, k_list, replicates):
+    """Return {(k, rep): seed_string}."""
+    jobs = list(itertools.product(k_list, replicates))[::-1]
+    random.seed(seed)
+    return {(k, r): str(random.randrange(10_000_000)) for k, r in jobs}
+
+SEED_MAP = _make_seed_map(SEED, K_LIST, REPLICATES)
+
+# ---------------------------------------------------------------------------
+# Sentinel paths (used by both rule files and rule all)
+# ---------------------------------------------------------------------------
+
+DIRS_SENTINEL = os.path.join(OUTDIR, ".dirs_ready")
+
+def bestk_sentinel():
+    return os.path.join(OUTDIR, "bestK", "bestK.txt")
+
+def plot_sentinel():
+    return os.path.join(OUTDIR, "plots", "plots.done")
+
+# STRUCTURE output files
+def all_structure_f_files():
+    return [os.path.join(OUTDIR, f"str_K{k}_rep{r}_f")
+            for k in K_LIST for r in REPLICATES]
+
+# fastSTRUCTURE output files (one meanQ per K, no replicates)
+def all_fs_meanq_files():
+    return [os.path.join(OUTDIR, f"fS_run_K.{k}.meanQ") for k in K_LIST]
+
+# ---------------------------------------------------------------------------
+# Rules that must always run on the host (never containerised)
+# ---------------------------------------------------------------------------
+
+localrules: all, prepare_dirs
+
+
+# ---------------------------------------------------------------------------
+# Target rule
+# ---------------------------------------------------------------------------
+
+def _targets():
+    t = []
+    if WRAPPER == "structure":
+        t += all_structure_f_files()
+    elif WRAPPER == "faststructure":
+        t += all_fs_meanq_files()
+    if not NO_TESTS:
+        t.append(bestk_sentinel())
+    if not NO_PLOTS:
+        t.append(plot_sentinel())
+    return t
+
+rule all:
+    input: _targets()
+
+
+# ---------------------------------------------------------------------------
+# Include wrapper-specific rules
+# ---------------------------------------------------------------------------
+
+include: "rules/common.smk"
+
+if WRAPPER == "structure":
+    include: "rules/structure.smk"
+elif WRAPPER == "faststructure":
+    include: "rules/faststructure.smk"
+else:
+    raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
+                     "Supported: structure, faststructure")
