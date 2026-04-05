@@ -1,6 +1,6 @@
 # Structure_threader Snakemake workflow
 #
-# Supported wrappers: structure, faststructure, maverick
+# Supported wrappers: structure, faststructure, maverick, alstructure
 #
 # Pipeline DAG per wrapper:
 #
@@ -15,6 +15,13 @@
 #   MavericK:
 #     prepare_dirs → run_maverick (K parallel jobs)
 #                        └─► merge_maverick (aggregation + bestK) → plot
+#
+#   ALStructure:
+#     prepare_dirs → prepare_alstructure_input (VCF→TSV conversion, host-side)
+#                        └─► run_alstructure (K sequential jobs, threads=1)
+#                                └─► bestk_alstructure (all K, no method)
+#                                        └─► plot
+#                                └─► cleanup_alstructure_input (removes TSV)
 #
 # All parameters come from config.yaml (written by the CLI shim).
 
@@ -37,7 +44,7 @@ def _require(key):
 # Resolve shared parameters
 # ---------------------------------------------------------------------------
 
-WRAPPER  = _require("wrapper")       # "structure" | "faststructure" | "maverick"
+WRAPPER  = _require("wrapper")
 INFILE   = os.path.abspath(_require("infile"))
 OUTDIR   = os.path.abspath(_require("outdir"))
 
@@ -45,6 +52,13 @@ K_LIST   = list(range(1, config["K"] + 1)) if isinstance(config.get("K"), int) \
            else list(config.get("K_list", []))
 if not K_LIST:
     raise ValueError("[structure_threader] Provide 'K' (int) or 'K_list' (list) in config.")
+
+# ALStructure cannot handle K=1 — strip it here so all downstream rules
+# see the corrected list. The shim also strips it, but we guard here too.
+if WRAPPER == "alstructure":
+    K_LIST = [k for k in K_LIST if k != 1]
+    if not K_LIST:
+        raise ValueError("[structure_threader] ALStructure requires at least one K > 1.")
 
 SEED     = config.get("seed", 1235813)
 POPFILE  = config.get("popfile")
@@ -55,6 +69,10 @@ BW       = config.get("blacknwhite", False)
 USE_IND  = config.get("use_ind_labels", False)
 THREADS  = config.get("threads", 4)
 
+# ALStructure forces sequential execution regardless of -t
+if WRAPPER == "alstructure":
+    THREADS = 1
+
 # STRUCTURE-specific
 REPLICATES = list(range(1, config.get("replicates", 20) + 1))
 MAINPARAMS = config.get("mainparams")
@@ -63,8 +81,27 @@ MAINPARAMS = config.get("mainparams")
 FS_PRIOR   = config.get("fs_prior", "simple")
 
 # MavericK-specific
-# Parameters file is mandatory for MavericK; the shim enforces this.
 MAV_PARAMS = os.path.abspath(config["mav_params"]) if config.get("mav_params") else None
+
+# ALStructure-specific: resolve infile and intermediate TSV path at DAG-build time
+# (needed in both _targets() and alstructure.smk)
+def _als_infile_and_tsv():
+    if INFILE.endswith((".bed", ".fam", ".bim")):
+        return INFILE[:-4], None
+    elif INFILE.endswith(".vcf.gz"):
+        vcf = INFILE[:-3]
+        tsv = vcf[:-4] + ".tsv"
+        return tsv, tsv
+    elif INFILE.endswith(".vcf"):
+        tsv = INFILE[:-4] + ".tsv"
+        return tsv, tsv
+    else:
+        return INFILE, None
+
+if WRAPPER == "alstructure":
+    ALS_RSCRIPT_INFILE, ALS_TSV_TO_CLEAN = _als_infile_and_tsv()
+else:
+    ALS_RSCRIPT_INFILE, ALS_TSV_TO_CLEAN = None, None
 
 # Container images
 STRUCTURE_IMAGE = config.get(
@@ -79,9 +116,13 @@ MAVERICK_IMAGE = config.get(
     "maverick_image",
     "docker://quay.io/biocontainers/maverick:1.0.5--h9948957_0"
 )
+ALSTRUCTURE_IMAGE = config.get(
+    "alstructure_image",
+    "docker://docker.io/stunts/alstructure:e355411_0"
+)
 
 # ---------------------------------------------------------------------------
-# Per-run seed map for STRUCTURE (mirrors seed_generator() in structure_wrapper)
+# Per-run seed map for STRUCTURE
 # ---------------------------------------------------------------------------
 
 def _make_seed_map(seed, k_list, replicates):
@@ -94,9 +135,6 @@ SEED_MAP = _make_seed_map(SEED, K_LIST, REPLICATES)
 
 # ---------------------------------------------------------------------------
 # MavericK alpha failsafe helper
-# Mirrors mav_alpha_failsafe() in maverick_wrapper.py.
-# Returns a string of extra CLI arguments for a given K value, or "".
-# Called as a lambda in run_maverick's params block.
 # ---------------------------------------------------------------------------
 
 def _mav_alpha_args(k_val):
@@ -124,6 +162,14 @@ def _mav_alpha_args(k_val):
 # ---------------------------------------------------------------------------
 
 DIRS_SENTINEL = os.path.join(OUTDIR, ".dirs_ready")
+ALS_INPUT_SENTINEL = os.path.join(OUTDIR, ".alstructure_input_ready")
+# Bundled R wrapper script — lives in the repo alongside the Snakefile.
+# Declared as a rule input so Snakemake tracks it and Apptainer bind-mounts
+# its parent directory automatically.
+ALS_WRAPPER_R = os.path.join(
+    os.path.dirname(os.path.abspath(workflow.snakefile)),
+    "wrappers", "alstructure_wrapper.R"
+)
 
 def bestk_sentinel():
     return os.path.join(OUTDIR, "bestK", "bestK.txt")
@@ -141,6 +187,9 @@ def all_fs_meanq_files():
 def all_mav_qmatrix_files():
     return [os.path.join(OUTDIR, f"mav_K{k}", f"outputQmatrix_ind_K{k}.csv")
             for k in K_LIST]
+
+def all_als_qfiles():
+    return [os.path.join(OUTDIR, f"alstr_K{k}") for k in K_LIST]
 
 # ---------------------------------------------------------------------------
 # Rules that must always run on the host (never containerised)
@@ -161,7 +210,14 @@ def _targets():
         t += all_fs_meanq_files()
     elif WRAPPER == "maverick":
         t += all_mav_qmatrix_files()
-    if not NO_TESTS:
+    elif WRAPPER == "alstructure":
+        t += all_als_qfiles()
+        # Always write bestk sentinel for alstructure (notests is always True)
+        t.append(bestk_sentinel())
+        # Cleanup sentinel if VCF input was used
+        if ALS_TSV_TO_CLEAN:
+            t.append(os.path.join(OUTDIR, ".alstructure_cleanup_done"))
+    if WRAPPER != "alstructure" and not NO_TESTS:
         t.append(bestk_sentinel())
     if not NO_PLOTS:
         t.append(plot_sentinel())
@@ -183,6 +239,8 @@ elif WRAPPER == "faststructure":
     include: "rules/faststructure.smk"
 elif WRAPPER == "maverick":
     include: "rules/maverick.smk"
+elif WRAPPER == "alstructure":
+    include: "rules/alstructure.smk"
 else:
     raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
-                     "Supported: structure, faststructure, maverick")
+                     "Supported: structure, faststructure, maverick, alstructure")

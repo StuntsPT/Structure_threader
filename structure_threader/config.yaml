@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------------
 # Wrapper selection  (-st / -fs / -mv)
 # ---------------------------------------------------------------------------
-wrapper: "structure"          # "structure" | "faststructure" | "maverick"
+wrapper: "structure"          # "structure" | "faststructure" | "maverick" | "alstructure"
 
 # ---------------------------------------------------------------------------
 # Input / Output  (-i, -o)
@@ -74,3 +74,4 @@ extra_opts: ""
 structure_image:     "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
 faststructure_image: "docker://quay.io/biocontainers/faststructure:1.0--py27h549429d_0"
 maverick_image:      "docker://quay.io/biocontainers/maverick:1.0.5--hd03093a_3"
+alstructure_image:   "docker://quay.io/biocontainers/r-alstructure:0.1.1--r43h785f33e_3"

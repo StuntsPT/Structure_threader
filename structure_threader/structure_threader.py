@@ -35,7 +35,7 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _DEFAULT_SNAKEFILE = os.path.join(_SCRIPT_DIR, "Snakefile")
-_PORTED = {"structure", "faststructure", "maverick"}
+_PORTED = {"structure", "faststructure", "maverick", "alstructure"}
 
 
 # ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ def build_parser():
                          help="Wrap MavericK.")
     prog_ex.add_argument("-als", dest="wrapper", action="store_const",
                          const="alstructure",
-                         help="Wrap ALStructure (not yet ported).")
+                         help="Wrap ALStructure.")
     prog_ex.add_argument("-nad", dest="wrapper", action="store_const",
                          const="neuraladmixture",
                          help="Wrap NeuralAdmixture (not yet ported).")
@@ -139,6 +139,8 @@ def build_parser():
                     default=None, metavar="URI")
     sm.add_argument("--maverick-image",      dest="maverick_image",
                     default=None, metavar="URI")
+    sm.add_argument("--alstructure-image",   dest="alstructure_image",
+                    default=None, metavar="URI")
 
     # ── plot ───────────────────────────────────────────────────────────────
     plot = subs.add_parser("plot", help="Re-draw plots from existing results.")
@@ -186,6 +188,23 @@ def handle_run(arg):
     if arg.wrapper == "maverick" and not arg.params:
         logging.error("-mv requires --params (MavericK parameters file).")
         sys.exit(1)
+    if arg.wrapper == "alstructure":
+        # K=1 is unsupported by ALStructure; strip it with a warning
+        k_list = arg.K_list if arg.K_list else list(range(1, arg.K + 1))
+        if 1 in k_list:
+            logging.warning("ALStructure cannot run K=1 — removing it from the K list.")
+        # The Snakefile also strips K=1, but we update K/K_list here so the
+        # config reflects what will actually run.
+        k_list = [k for k in k_list if k != 1]
+        if not k_list:
+            logging.error("No valid K values after removing K=1.")
+            sys.exit(1)
+        if arg.K_list:
+            arg.K_list = k_list
+        else:
+            # Express as K_list so the exact values are preserved
+            arg.K_list = k_list
+            arg.K = None
 
     # File existence checks
     checks = [("infile", arg.infile)]
@@ -233,7 +252,8 @@ def handle_run(arg):
 
     for attr, key in [("structure_image",     "structure_image"),
                       ("faststructure_image", "faststructure_image"),
-                      ("maverick_image",      "maverick_image")]:
+                      ("maverick_image",      "maverick_image"),
+                      ("alstructure_image",  "alstructure_image")]:
         val = getattr(arg, attr, None)
         if val:
             cfg[key] = val
@@ -266,6 +286,14 @@ def handle_run(arg):
             bind_paths.add(os.path.dirname(os.path.abspath(arg.popfile)))
         if arg.indfile:
             bind_paths.add(os.path.dirname(os.path.abspath(arg.indfile)))
+        if arg.wrapper == "alstructure":
+            # The bundled alstructure_wrapper.R must be reachable inside the
+            # container. Bind-mount the wrappers/ directory from the repo.
+            wrappers_dir = os.path.join(
+                os.path.dirname(os.path.abspath(arg.snakefile)), "wrappers"
+            )
+            if os.path.isdir(wrappers_dir):
+                bind_paths.add(wrappers_dir)
         cmd += ["--singularity-args", "--bind " + ",".join(sorted(bind_paths))]
 
     if arg.use_docker:
@@ -303,6 +331,9 @@ def handle_plot(arg):
     elif arg.program == "maverick":
         infiles = [os.path.join(results_path, f"mav_K{k}",
                                 f"outputQmatrix_ind_K{k}.csv")
+                   for k in bestk]
+    elif arg.program == "alstructure":
+        infiles = [os.path.join(results_path, f"alstr_K{k}")
                    for k in bestk]
     else:
         logging.error(f"plot for '{arg.program}' not yet ported.")

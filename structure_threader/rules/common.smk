@@ -94,6 +94,7 @@ rule plot:
     input:
         files   = (all_structure_f_files()   if WRAPPER == "structure"
                    else all_fs_meanq_files() if WRAPPER == "faststructure"
+                   else all_als_qfiles()     if WRAPPER == "alstructure"
                    else all_mav_qmatrix_files()),
         bestk_f = bestk_sentinel() if not NO_TESTS else [],
     output:
@@ -136,6 +137,9 @@ rule plot:
         elif WRAPPER == "maverick":
             plt_files = [os.path.join(OUTDIR, f"mav_K{k}",
                                       f"outputQmatrix_ind_K{k}.csv")
+                         for k in K_LIST]
+        elif WRAPPER == "alstructure":
+            plt_files = [os.path.join(OUTDIR, f"alstr_K{k}")
                          for k in K_LIST]
 
         logging.info("Drawing admixture plots …")
