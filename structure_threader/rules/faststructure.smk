@@ -44,7 +44,7 @@ rule run_faststructure:
     container:
         FASTSTRUCTURE_IMAGE
     shell:
-        """
+        r"""
         # Determine format flag
         if [ "{params.use_bed}" = "True" ]; then
             FMT="bed"

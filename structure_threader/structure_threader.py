@@ -1,32 +1,27 @@
 #!/usr/bin/env python3
 """
-structure_threader.py  —  drop-in CLI shim for the Snakemake-based workflow.
-
-Accepts (almost) the same arguments as the original structure_threader,
-translates them into a config.yaml, and invokes Snakemake.
+structure_threader  —  Snakemake-based wrapper for population structure programs.
 
 Usage examples:
 
-  # STRUCTURE — fully containerised
-  structure_threader_smk run -st structure -K 6 -R 10 \\
-      -i data/mydata.str -o results/ -t 8 --use-singularity
+  # STRUCTURE — containerised
+  structure_threader run -st -K 6 -R 10 -i data/mydata.str -o results/ \\
+      --params data/mainparams -t 8 --use-singularity
 
-  # fastSTRUCTURE — fully containerised
-  structure_threader_smk run -fs fastStructure -K 6 \\
-      -i data/mydata.str -o results/ -t 8 --pop data/pops.txt --use-singularity
+  # fastSTRUCTURE — containerised
+  structure_threader run -fs -K 6 -i data/mydata.str -o results/ \\
+      --pop data/pops.txt -t 8 --use-singularity
+
+  # MavericK — containerised
+  structure_threader run -mv -K 6 -i data/mydata.str -o results/ \\
+      --params data/parameters.txt -t 8 --use-singularity
 
   # Re-plot from existing results
-  structure_threader_smk plot -i results/ -f structure -K 3 -o results/plots/ \\
+  structure_threader plot -i results/ -f structure -K 3 -o results/plots/ \\
       --pop data/populations.txt
 
   # Generate STRUCTURE skeleton parameter files
-  structure_threader_smk params -o data/
-
-New arguments (Snakemake pass-through):
-  --use-singularity   Run rules inside Singularity/Apptainer containers
-  --use-docker        Run rules inside Docker containers
-  --use-conda         Use per-rule conda environments
-  --snakemake-args    Extra arguments forwarded verbatim to Snakemake
+  structure_threader params -o data/
 """
 
 import argparse
@@ -40,6 +35,7 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _DEFAULT_SNAKEFILE = os.path.join(_SCRIPT_DIR, "Snakefile")
+_PORTED = {"structure", "faststructure", "maverick"}
 
 
 # ---------------------------------------------------------------------------
@@ -48,7 +44,7 @@ _DEFAULT_SNAKEFILE = os.path.join(_SCRIPT_DIR, "Snakefile")
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="structure_threader_smk",
+        prog="structure_threader",
         description="structure_threader — Snakemake edition.",
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -59,10 +55,13 @@ def build_parser():
     run = subs.add_parser("run", help="Perform a full run.")
 
     io = run.add_argument_group("Input / Output")
-    io.add_argument("-i",       dest="infile",     required=True, metavar="FILE")
-    io.add_argument("-o",       dest="outdir",     required=True, metavar="DIR")
-    io.add_argument("--params", dest="mainparams", default=None,  metavar="FILE",
-                    help="mainparams file [STRUCTURE only].")
+    io.add_argument("-i",       dest="infile",     required=True, metavar="FILE",
+                    help="Input file.")
+    io.add_argument("-o",       dest="outdir",     required=True, metavar="DIR",
+                    help="Output directory.")
+    io.add_argument("--params", dest="params",     default=None,  metavar="FILE",
+                    help="Parameter file (mainparams for STRUCTURE, "
+                         "parameters.txt for MavericK).")
 
     prog = run.add_argument_group("Wrapped program (mutually exclusive)")
     prog_ex = prog.add_mutually_exclusive_group(required=True)
@@ -74,7 +73,7 @@ def build_parser():
                          help="Wrap fastSTRUCTURE.")
     prog_ex.add_argument("-mv",  dest="wrapper", action="store_const",
                          const="maverick",
-                         help="Wrap MavericK (not yet ported).")
+                         help="Wrap MavericK.")
     prog_ex.add_argument("-als", dest="wrapper", action="store_const",
                          const="alstructure",
                          help="Wrap ALStructure (not yet ported).")
@@ -84,17 +83,23 @@ def build_parser():
 
     k = run.add_argument_group("K options (provide exactly one)")
     k_ex = k.add_mutually_exclusive_group(required=True)
-    k_ex.add_argument("-K",     dest="K",      type=int,       metavar="INT")
-    k_ex.add_argument("-Klist", dest="K_list", nargs="+", type=int, metavar="INT")
+    k_ex.add_argument("-K",     dest="K",      type=int,       metavar="INT",
+                      help="Run K=1…K.")
+    k_ex.add_argument("-Klist", dest="K_list", nargs="+", type=int, metavar="INT",
+                      help="Explicit list of K values.")
 
     ro = run.add_argument_group("Run options")
-    ro.add_argument("-R",  dest="replicates", type=int, default=20, metavar="INT",
+    ro.add_argument("-R",           dest="replicates", type=int, default=20,
+                    metavar="INT",
                     help="Replicates per K [STRUCTURE only, default: 20].")
-    ro.add_argument("-t",  dest="threads",    type=int, default=4,  metavar="INT",
+    ro.add_argument("-t",           dest="threads",    type=int, default=4,
+                    metavar="INT",
                     help="Parallel jobs / Snakemake --cores (default: 4).")
-    ro.add_argument("--seed",      dest="seed",     type=int, default=1235813)
-    ro.add_argument("--extra_opts",dest="extra_opts",default="", metavar="STR")
-    ro.add_argument("--prior",     dest="fs_prior", default="simple",
+    ro.add_argument("--seed",       dest="seed",       type=int, default=1235813,
+                    metavar="INT")
+    ro.add_argument("--extra_opts", dest="extra_opts", default="", metavar="STR",
+                    help="Extra flags passed verbatim to the wrapped program.")
+    ro.add_argument("--prior",      dest="fs_prior",   default="simple",
                     choices=["simple", "logistic"],
                     help="fastSTRUCTURE prior (default: simple).")
 
@@ -103,33 +108,47 @@ def build_parser():
     ids_ex.add_argument("--pop", dest="popfile", default=None, metavar="FILE")
     ids_ex.add_argument("--ind", dest="indfile", default=None, metavar="FILE")
 
-    pl = run.add_argument_group("Plot / analysis options")
-    pl.add_argument("--no_tests",  dest="no_tests",    action="store_true")
-    pl.add_argument("--no_plots",  dest="no_plots",    action="store_true")
-    pl.add_argument("-bw",         dest="blacknwhite",  action="store_true")
-    pl.add_argument("--use-ind-labels", dest="use_ind", action="store_true")
+    pl = run.add_argument_group("Analysis / plot options")
+    pl.add_argument("--no_tests",       dest="no_tests",    action="store_true",
+                    help="Skip bestK estimation.")
+    pl.add_argument("--no_plots",       dest="no_plots",    action="store_true",
+                    help="Skip plot generation.")
+    pl.add_argument("-bw",              dest="blacknwhite", action="store_true",
+                    help="Greyscale plots.")
+    pl.add_argument("--use-ind-labels", dest="use_ind",     action="store_true",
+                    help="Label individuals rather than populations.")
 
     sm = run.add_argument_group("Snakemake / container options")
-    sm.add_argument("--use-singularity", dest="use_singularity", action="store_true")
-    sm.add_argument("--use-docker",      dest="use_docker",      action="store_true")
-    sm.add_argument("--use-conda",       dest="use_conda",       action="store_true")
-    sm.add_argument("--snakefile",       dest="snakefile",
+    sm.add_argument("--use-singularity",     dest="use_singularity",
+                    action="store_true",
+                    help="Run rules inside Singularity/Apptainer containers.")
+    sm.add_argument("--use-docker",          dest="use_docker",
+                    action="store_true",
+                    help="Run rules inside Docker containers.")
+    sm.add_argument("--use-conda",           dest="use_conda",
+                    action="store_true",
+                    help="Use per-rule conda environments.")
+    sm.add_argument("--snakefile",           dest="snakefile",
                     default=_DEFAULT_SNAKEFILE, metavar="FILE")
-    sm.add_argument("--snakemake-args",  dest="snakemake_args",
-                    default="", metavar="STR")
+    sm.add_argument("--snakemake-args",      dest="snakemake_args",
+                    default="", metavar="STR",
+                    help="Extra arguments forwarded verbatim to Snakemake.")
     sm.add_argument("--structure-image",     dest="structure_image",
                     default=None, metavar="URI")
     sm.add_argument("--faststructure-image", dest="faststructure_image",
                     default=None, metavar="URI")
+    sm.add_argument("--maverick-image",      dest="maverick_image",
+                    default=None, metavar="URI")
 
     # ── plot ───────────────────────────────────────────────────────────────
     plot = subs.add_parser("plot", help="Re-draw plots from existing results.")
-
     pm = plot.add_argument_group("Main options")
-    pm.add_argument("-i", dest="results_path", required=True, metavar="DIR")
+    pm.add_argument("-i", dest="results_path", required=True,  metavar="DIR")
     pm.add_argument("-f", dest="program",      required=True,
-                   choices=["structure", "faststructure", "maverick", "alstructure"])
-    pm.add_argument("-K", dest="bestk",        required=True, nargs="+", metavar="INT")
+                   choices=["structure", "faststructure", "maverick",
+                             "alstructure"])
+    pm.add_argument("-K", dest="bestk",        required=True, nargs="+",
+                   metavar="INT")
     pm.add_argument("-o", dest="outpath",      default=".", metavar="DIR")
     pe = plot.add_argument_group("Extra options")
     pe.add_argument("-bw",              dest="blacknwhite", action="store_true")
@@ -140,9 +159,9 @@ def build_parser():
     ps_ex.add_argument("--ind", dest="indfile", default=None, metavar="FILE")
 
     # ── params ─────────────────────────────────────────────────────────────
-    params = subs.add_parser("params",
-                             help="Generate skeleton STRUCTURE parameter files.")
-    params.add_argument("-o", dest="outpath", required=True, metavar="DIR")
+    params_cmd = subs.add_parser(
+        "params", help="Generate skeleton STRUCTURE parameter files.")
+    params_cmd.add_argument("-o", dest="outpath", required=True, metavar="DIR")
 
     return parser
 
@@ -151,28 +170,33 @@ def build_parser():
 # Subcommand handlers
 # ---------------------------------------------------------------------------
 
-_PORTED = {"structure", "faststructure"}
-
 def handle_run(arg):
     if arg.wrapper not in _PORTED:
         logging.error(
-            f"Wrapper '{arg.wrapper}' is not yet ported to the Snakemake edition.\n"
-            f"Available: {', '.join(sorted(_PORTED))}.\n"
+            f"Wrapper '{arg.wrapper}' is not yet ported to the Snakemake "
+            f"edition.\nAvailable: {', '.join(sorted(_PORTED))}.\n"
             "Use the original structure_threader for other wrappers."
         )
         sys.exit(1)
 
-    # fastSTRUCTURE requires --pop or --ind
+    # Wrapper-specific validation
     if arg.wrapper == "faststructure" and not arg.popfile and not arg.indfile:
         logging.error("-fs requires either --pop or --ind.")
         sys.exit(1)
+    if arg.wrapper == "maverick" and not arg.params:
+        logging.error("-mv requires --params (MavericK parameters file).")
+        sys.exit(1)
 
-    # Sanity checks
-    for label, path in [("infile",     arg.infile),
-                         ("mainparams", arg.mainparams),
-                         ("popfile",    arg.popfile),
-                         ("indfile",    arg.indfile)]:
-        if path and not os.path.isfile(path):
+    # File existence checks
+    checks = [("infile", arg.infile)]
+    if arg.params:
+        checks.append(("params", arg.params))
+    if arg.popfile:
+        checks.append(("popfile", arg.popfile))
+    if arg.indfile:
+        checks.append(("indfile", arg.indfile))
+    for label, path in checks:
+        if not os.path.isfile(path):
             logging.error(f"{label} not found: {path}")
             sys.exit(1)
 
@@ -184,15 +208,22 @@ def handle_run(arg):
         "replicates":     arg.replicates,
         "seed":           arg.seed,
         "threads":        arg.threads,
-        "mainparams":     os.path.abspath(arg.mainparams) if arg.mainparams else None,
-        "popfile":        os.path.abspath(arg.popfile)    if arg.popfile    else None,
-        "indfile":        os.path.abspath(arg.indfile)    if arg.indfile    else None,
+        "popfile":        os.path.abspath(arg.popfile) if arg.popfile else None,
+        "indfile":        os.path.abspath(arg.indfile) if arg.indfile else None,
         "no_tests":       arg.no_tests,
         "no_plots":       arg.no_plots,
         "blacknwhite":    arg.blacknwhite,
         "use_ind_labels": arg.use_ind,
         "extra_opts":     arg.extra_opts,
         "fs_prior":       arg.fs_prior,
+        # Wrapper-specific params file — stored under its own key so both
+        # STRUCTURE mainparams and MavericK parameters.txt can coexist.
+        "mainparams":     (os.path.abspath(arg.params)
+                           if arg.params and arg.wrapper == "structure"
+                           else None),
+        "mav_params":     (os.path.abspath(arg.params)
+                           if arg.params and arg.wrapper == "maverick"
+                           else None),
     }
 
     if arg.K is not None:
@@ -200,10 +231,12 @@ def handle_run(arg):
     else:
         cfg["K_list"] = arg.K_list
 
-    if arg.structure_image:
-        cfg["structure_image"] = arg.structure_image
-    if arg.faststructure_image:
-        cfg["faststructure_image"] = arg.faststructure_image
+    for attr, key in [("structure_image",     "structure_image"),
+                      ("faststructure_image", "faststructure_image"),
+                      ("maverick_image",      "maverick_image")]:
+        val = getattr(arg, attr, None)
+        if val:
+            cfg[key] = val
 
     # Write config
     os.makedirs(arg.outdir, exist_ok=True)
@@ -224,12 +257,11 @@ def handle_run(arg):
 
     if arg.use_singularity:
         cmd.append("--use-singularity")
-        # Collect all host paths the container shell needs to reach
         bind_paths = set()
         bind_paths.add(os.path.dirname(os.path.abspath(arg.infile)))
         bind_paths.add(os.path.abspath(arg.outdir))
-        if arg.mainparams:
-            bind_paths.add(os.path.dirname(os.path.abspath(arg.mainparams)))
+        if arg.params:
+            bind_paths.add(os.path.dirname(os.path.abspath(arg.params)))
         if arg.popfile:
             bind_paths.add(os.path.dirname(os.path.abspath(arg.popfile)))
         if arg.indfile:
@@ -240,13 +272,11 @@ def handle_run(arg):
         cmd.append("--use-docker")
     if arg.use_conda:
         cmd.append("--use-conda")
-
     if arg.snakemake_args:
         cmd.extend(arg.snakemake_args.split())
 
     logging.info("Invoking Snakemake:\n  " + " ".join(cmd))
-    result = subprocess.run(cmd)
-    sys.exit(result.returncode)
+    sys.exit(subprocess.run(cmd).returncode)
 
 
 def handle_plot(arg):
@@ -265,9 +295,15 @@ def handle_plot(arg):
     bestk        = [int(k) for k in arg.bestk]
 
     if arg.program == "structure":
-        infiles = [os.path.join(results_path, f"str_K{k}_rep1_f") for k in bestk]
+        infiles = [os.path.join(results_path, f"str_K{k}_rep1_f")
+                   for k in bestk]
     elif arg.program == "faststructure":
-        infiles = [os.path.join(results_path, f"fS_run_K.{k}.meanQ") for k in bestk]
+        infiles = [os.path.join(results_path, f"fS_run_K.{k}.meanQ")
+                   for k in bestk]
+    elif arg.program == "maverick":
+        infiles = [os.path.join(results_path, f"mav_K{k}",
+                                f"outputQmatrix_ind_K{k}.csv")
+                   for k in bestk]
     else:
         logging.error(f"plot for '{arg.program}' not yet ported.")
         sys.exit(1)
@@ -313,7 +349,6 @@ def main():
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(0)
-
     arg = parser.parse_args()
 
     if arg.main_op == "run":

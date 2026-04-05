@@ -1,12 +1,11 @@
 # structure_threader config
 # -------------------------------------------------------
-# All options map 1-to-1 to the original CLI flags.
 # The CLI shim writes this file automatically; you can also edit it directly.
 
 # ---------------------------------------------------------------------------
-# Wrapper selection  (-st / -fs)
+# Wrapper selection  (-st / -fs / -mv)
 # ---------------------------------------------------------------------------
-wrapper: "structure"          # "structure" | "faststructure"
+wrapper: "structure"          # "structure" | "faststructure" | "maverick"
 
 # ---------------------------------------------------------------------------
 # Input / Output  (-i, -o)
@@ -17,16 +16,16 @@ outdir: "results/"
 # ---------------------------------------------------------------------------
 # K values  (-K or -Klist)
 # ---------------------------------------------------------------------------
-K: 6                          # runs K=1..6;  comment out if using K_list
+K: 6
 # K_list: [2, 4, 6]
 
 # ---------------------------------------------------------------------------
-# Replicates  (-R)   [STRUCTURE only — fastSTRUCTURE ignores this]
+# Replicates  (-R)   [STRUCTURE only]
 # ---------------------------------------------------------------------------
 replicates: 10
 
 # ---------------------------------------------------------------------------
-# Random seed  (--seed)
+# Random seed  (--seed)   [STRUCTURE and fastSTRUCTURE]
 # ---------------------------------------------------------------------------
 seed: 1235813
 
@@ -34,6 +33,11 @@ seed: 1235813
 # STRUCTURE parameter files  (--params)
 # ---------------------------------------------------------------------------
 mainparams: null              # e.g. "data/mainparams"
+
+# ---------------------------------------------------------------------------
+# MavericK parameter file  (--params, mandatory for -mv)
+# ---------------------------------------------------------------------------
+mav_params: null              # e.g. "data/parameters.txt"
 
 # ---------------------------------------------------------------------------
 # fastSTRUCTURE prior  (--prior)
@@ -68,4 +72,5 @@ extra_opts: ""
 # Container images  (override to use a local registry mirror)
 # ---------------------------------------------------------------------------
 structure_image:     "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
-faststructure_image: "docker://quay.io/biocontainers/faststructure:1.0--py27h9801fc8_5"
+faststructure_image: "docker://quay.io/biocontainers/faststructure:1.0--py27h549429d_0"
+maverick_image:      "docker://quay.io/biocontainers/maverick:1.0.5--hd03093a_3"

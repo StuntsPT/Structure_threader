@@ -1,20 +1,20 @@
 # Structure_threader Snakemake workflow
 #
-# Supported wrappers: structure, faststructure
+# Supported wrappers: structure, faststructure, maverick
 #
 # Pipeline DAG per wrapper:
 #
 #   STRUCTURE:
-#     prepare_dirs
-#       └─► run_structure (K × R jobs, parallel)
-#               └─► bestk_structure   (Evanno / structureHarvester)
-#                       └─► plot_structure
+#     prepare_dirs → run_structure (K × R parallel jobs)
+#                        └─► bestk → plot
 #
 #   fastSTRUCTURE:
-#     prepare_dirs
-#       └─► run_faststructure (one job per K, parallel)
-#               └─► bestk_faststructure  (fastChooseK)
-#                       └─► plot_faststructure
+#     prepare_dirs → run_faststructure (K parallel jobs)
+#                        └─► bestk → plot
+#
+#   MavericK:
+#     prepare_dirs → run_maverick (K parallel jobs)
+#                        └─► merge_maverick (aggregation + bestK) → plot
 #
 # All parameters come from config.yaml (written by the CLI shim).
 
@@ -37,7 +37,7 @@ def _require(key):
 # Resolve shared parameters
 # ---------------------------------------------------------------------------
 
-WRAPPER  = _require("wrapper")           # "structure" | "faststructure"
+WRAPPER  = _require("wrapper")       # "structure" | "faststructure" | "maverick"
 INFILE   = os.path.abspath(_require("infile"))
 OUTDIR   = os.path.abspath(_require("outdir"))
 
@@ -56,11 +56,15 @@ USE_IND  = config.get("use_ind_labels", False)
 THREADS  = config.get("threads", 4)
 
 # STRUCTURE-specific
-REPLICATES  = list(range(1, config.get("replicates", 20) + 1))
-MAINPARAMS  = config.get("mainparams")
+REPLICATES = list(range(1, config.get("replicates", 20) + 1))
+MAINPARAMS = config.get("mainparams")
 
 # fastSTRUCTURE-specific
-FS_PRIOR    = config.get("fs_prior", "simple")   # "simple" | "logistic"
+FS_PRIOR   = config.get("fs_prior", "simple")
+
+# MavericK-specific
+# Parameters file is mandatory for MavericK; the shim enforces this.
+MAV_PARAMS = os.path.abspath(config["mav_params"]) if config.get("mav_params") else None
 
 # Container images
 STRUCTURE_IMAGE = config.get(
@@ -69,7 +73,11 @@ STRUCTURE_IMAGE = config.get(
 )
 FASTSTRUCTURE_IMAGE = config.get(
     "faststructure_image",
-    "docker://quay.io/biocontainers/faststructure:1.0--py27h549429d_0"
+    "docker://quay.io/biocontainers/faststructure:1.0--py549429d_0"
+)
+MAVERICK_IMAGE = config.get(
+    "maverick_image",
+    "docker://quay.io/biocontainers/maverick:1.0.5--h9948957_0"
 )
 
 # ---------------------------------------------------------------------------
@@ -85,7 +93,34 @@ def _make_seed_map(seed, k_list, replicates):
 SEED_MAP = _make_seed_map(SEED, K_LIST, REPLICATES)
 
 # ---------------------------------------------------------------------------
-# Sentinel paths (used by both rule files and rule all)
+# MavericK alpha failsafe helper
+# Mirrors mav_alpha_failsafe() in maverick_wrapper.py.
+# Returns a string of extra CLI arguments for a given K value, or "".
+# Called as a lambda in run_maverick's params block.
+# ---------------------------------------------------------------------------
+
+def _mav_alpha_args(k_val):
+    """Return extra CLI flags for per-K alpha/alphaPropSD values, or ''."""
+    if MAV_PARAMS is None:
+        return ""
+    try:
+        import structure_threader.wrappers.maverick_wrapper as mw
+    except ImportError:
+        import sys
+        _wf_dir = os.path.dirname(os.path.abspath(workflow.snakefile))
+        sys.path.insert(0, _wf_dir)
+        import wrappers.maverick_wrapper as mw
+
+    mav_params = mw.mav_params_parser(MAV_PARAMS)
+    failsafe   = mw.mav_alpha_failsafe(mav_params, K_LIST)
+    args = []
+    for param, per_k in failsafe.items():
+        if per_k is not False and k_val in per_k:
+            args += [f"-{param}", per_k[k_val]]
+    return " ".join(args)
+
+# ---------------------------------------------------------------------------
+# Sentinel and output-file path helpers
 # ---------------------------------------------------------------------------
 
 DIRS_SENTINEL = os.path.join(OUTDIR, ".dirs_ready")
@@ -96,14 +131,16 @@ def bestk_sentinel():
 def plot_sentinel():
     return os.path.join(OUTDIR, "plots", "plots.done")
 
-# STRUCTURE output files
 def all_structure_f_files():
     return [os.path.join(OUTDIR, f"str_K{k}_rep{r}_f")
             for k in K_LIST for r in REPLICATES]
 
-# fastSTRUCTURE output files (one meanQ per K, no replicates)
 def all_fs_meanq_files():
     return [os.path.join(OUTDIR, f"fS_run_K.{k}.meanQ") for k in K_LIST]
+
+def all_mav_qmatrix_files():
+    return [os.path.join(OUTDIR, f"mav_K{k}", f"outputQmatrix_ind_K{k}.csv")
+            for k in K_LIST]
 
 # ---------------------------------------------------------------------------
 # Rules that must always run on the host (never containerised)
@@ -122,6 +159,8 @@ def _targets():
         t += all_structure_f_files()
     elif WRAPPER == "faststructure":
         t += all_fs_meanq_files()
+    elif WRAPPER == "maverick":
+        t += all_mav_qmatrix_files()
     if not NO_TESTS:
         t.append(bestk_sentinel())
     if not NO_PLOTS:
@@ -133,7 +172,7 @@ rule all:
 
 
 # ---------------------------------------------------------------------------
-# Include wrapper-specific rules
+# Include shared and wrapper-specific rules
 # ---------------------------------------------------------------------------
 
 include: "rules/common.smk"
@@ -142,6 +181,8 @@ if WRAPPER == "structure":
     include: "rules/structure.smk"
 elif WRAPPER == "faststructure":
     include: "rules/faststructure.smk"
+elif WRAPPER == "maverick":
+    include: "rules/maverick.smk"
 else:
     raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
-                     "Supported: structure, faststructure")
+                     "Supported: structure, faststructure, maverick")

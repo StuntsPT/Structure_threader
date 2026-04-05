@@ -3,14 +3,16 @@
 #   - prepare_dirs  : creates output directories on the host before any
 #                     container jobs run (Apptainer bind-mount targets must
 #                     exist before the container starts)
-#   - bestk         : runs the appropriate bestK method for the active wrapper
+#   - bestk         : runs the appropriate bestK method (structure, faststructure)
+#                     NOTE: MavericK skips this rule — merge_maverick handles it
 #   - plot          : runs structplot for the active wrapper
 
 
 # ---------------------------------------------------------------------------
 # Rule: prepare_dirs
-# Creates OUTDIR and OUTDIR/logs on the host.  All container rules depend on
-# this sentinel so directories are guaranteed to exist before any bind-mount.
+# Creates OUTDIR, OUTDIR/logs, OUTDIR/bestK, OUTDIR/plots, and for MavericK
+# a per-K mav_K{k}/ directory for each K (these must exist before Apptainer
+# tries to bind-mount them as the container's working output location).
 # ---------------------------------------------------------------------------
 
 rule prepare_dirs:
@@ -21,6 +23,9 @@ rule prepare_dirs:
         os.makedirs(os.path.join(OUTDIR, "logs"), exist_ok=True)
         os.makedirs(os.path.join(OUTDIR, "bestK"), exist_ok=True)
         os.makedirs(os.path.join(OUTDIR, "plots"), exist_ok=True)
+        if WRAPPER == "maverick":
+            for k in K_LIST:
+                os.makedirs(os.path.join(OUTDIR, f"mav_K{k}"), exist_ok=True)
         with open(output.sentinel, "w") as fh:
             fh.write("ready\n")
 
@@ -28,12 +33,12 @@ rule prepare_dirs:
 # ---------------------------------------------------------------------------
 # Rule: bestk
 # Dispatches to the correct bestK method based on WRAPPER.
+# MavericK does NOT use this rule — it uses merge_maverick instead.
 # ---------------------------------------------------------------------------
 
 rule bestk:
     input:
-        # Aggregates all primary outputs, whichever wrapper produced them
-        files = (all_structure_f_files() if WRAPPER == "structure"
+        files = (all_structure_f_files()  if WRAPPER == "structure"
                  else all_fs_meanq_files()),
     output:
         sentinel = bestk_sentinel(),
@@ -64,16 +69,15 @@ rule bestk:
             data = hc.Data()
             sh.harvestFiles(data, params.resultsdir)
             hc.calculateMeansAndSds(data)
-            # evannoMethod() populates data.deltaK via calculatePrimesDoublePrimesDeltaK
-            # but discards the bk return value from writeEvannoTableToFile.
-            # We call evannoMethod() for its side-effects, then capture bk ourselves.
+            # evannoMethod() populates data.deltaK but discards the bk return
+            # value. We call it for side-effects then capture bk ourselves.
             sh.evannoMethod(data, params.outdir)
             bestk = sh.writeEvannoTableToFile(data, params.outdir)
-            hc.writeRawOutputToFile(os.path.join(params.outdir, "summary.txt"), data)
+            hc.writeRawOutputToFile(os.path.join(params.outdir, "summary.txt"),
+                                    data)
 
         elif WRAPPER == "faststructure":
             logging.info("Inferring optimal K using fastChooseK …")
-            # fastChooseK.main() globs *.log and *.meanQ from the results dir
             bestk = fck.main(params.resultsdir, params.outdir)
 
         logging.info(f"Best K: {bestk}")
@@ -88,8 +92,9 @@ rule bestk:
 
 rule plot:
     input:
-        files   = (all_structure_f_files() if WRAPPER == "structure"
-                   else all_fs_meanq_files()),
+        files   = (all_structure_f_files()   if WRAPPER == "structure"
+                   else all_fs_meanq_files() if WRAPPER == "faststructure"
+                   else all_mav_qmatrix_files()),
         bestk_f = bestk_sentinel() if not NO_TESTS else [],
     output:
         sentinel = plot_sentinel(),
@@ -114,7 +119,6 @@ rule plot:
             sys.path.insert(0, _wf_dir)
             import plotter.structplot as sp
 
-        # Determine bestk list
         _bestk_f = (input.bestk_f[0] if isinstance(input.bestk_f, list)
                     else input.bestk_f)
         if not NO_TESTS and os.path.exists(_bestk_f):
@@ -124,23 +128,38 @@ rule plot:
             bestk = K_LIST
 
         if WRAPPER == "structure":
-            # One representative replicate per K (rep 1)
             plt_files = [os.path.join(OUTDIR, f"str_K{k}_rep1_f")
                          for k in K_LIST]
         elif WRAPPER == "faststructure":
             plt_files = [os.path.join(OUTDIR, f"fS_run_K.{k}.meanQ")
                          for k in K_LIST]
+        elif WRAPPER == "maverick":
+            plt_files = [os.path.join(OUTDIR, f"mav_K{k}",
+                                      f"outputQmatrix_ind_K{k}.csv")
+                         for k in K_LIST]
 
         logging.info("Drawing admixture plots …")
+        # bestk (from the sentinel) identifies which K values the bestK test
+        # selected. K_LIST is all tested K values.
+        #
+        # sp.main() uses its 'bestk' argument for TWO things:
+        #   1. per-K individual plots are generated for each k in bestk
+        #   2. the multi-panel ComparativePlot is generated from bestk
+        #
+        # Passing bestk=K_LIST ensures the ComparativePlot always covers every
+        # tested K, matching the original structure_threader behaviour.
+        # The bestk from the sentinel is passed as filter_k so that individual
+        # static plots (.svg) are still restricted to the best K values only.
         sp.main(
             plt_files,
-            WRAPPER,          # "structure" or "faststructure"
+            WRAPPER,
             params.outdir,
-            bestk   = bestk,
-            popfile = params.popfile,
-            indfile = params.indfile,
-            bw      = params.bw,
-            use_ind = params.use_ind,
+            bestk    = [k for k in K_LIST if k != 1],  # all K except K=1 → ComparativePlot
+            filter_k = K_LIST,       # all K → individual static SVGs for every tested K
+            popfile  = params.popfile,
+            indfile  = params.indfile,
+            bw       = params.bw,
+            use_ind  = params.use_ind,
         )
         logging.info("Plots done.")
 
