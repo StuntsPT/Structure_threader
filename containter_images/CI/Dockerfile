@@ -3,7 +3,7 @@
 #
 
 # Pull base image
-FROM snakemake/snakemake:v9.19.0
+FROM snakemake/snakemake:v9.14.5
 WORKDIR /analysis
 
 # Install necessary dependencies from main Debian repository and
