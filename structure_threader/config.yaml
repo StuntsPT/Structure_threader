@@ -69,6 +69,16 @@ use_ind_labels: false
 extra_opts: ""
 
 # ---------------------------------------------------------------------------
+# Clumppling alignment options
+# ---------------------------------------------------------------------------
+no_clumpp: false               # true → skip Clumppling entirely (--no_clumpp)
+clumppling_plot_type: "graph"  # graph | list | withinK | major | all
+clumppling_fig_format: "svg"   # svg | png | pdf | tiff | ...
+clumppling_cd_method: "louvain" # louvain | leiden | infomap | ...
+clumppling_cd_res: 1.0          # community detection resolution parameter
+clumppling_vis: true            # generate figures
+
+# ---------------------------------------------------------------------------
 # Container images  (override to use a local registry mirror)
 # ---------------------------------------------------------------------------
 structure_image:     "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
@@ -88,3 +98,4 @@ nad_gpus: 0                    # number of GPUs (0 = CPU only)
 nad_seed: 1235813              # NeuralAdmixture random seed
 
 neuraladmixture_image:   "docker://quay.io/biocontainers/neural-admixture:1.2.1--pyhdfd78af_0"
+clumppling_image:        "docker://quay.io/biocontainers/clumppling:2.0.7--pyhdfd78af_0"

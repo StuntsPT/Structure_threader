@@ -140,6 +140,27 @@ def build_parser():
                     help="Skip bestK estimation.")
     pl.add_argument("--no_plots",       dest="no_plots",    action="store_true",
                     help="Skip plot generation.")
+    pl.add_argument("--no_clumpp",      dest="no_clumpp",   action="store_true",
+                    help="Skip Clumppling alignment.")
+    pl.add_argument("--clumppling_plot_type", dest="clumppling_plot_type",
+                    default="graph",
+                    choices=["graph", "list", "withinK", "major", "all"],
+                    help="Clumppling plot type (default: graph).")
+    pl.add_argument("--clumppling_fig_format", dest="clumppling_fig_format",
+                    default="svg",
+                    help="Clumppling figure format (default: svg).")
+    pl.add_argument("--clumppling_cd_method", dest="clumppling_cd_method",
+                    default="louvain",
+                    choices=["louvain", "leiden", "infomap",
+                             "markov_clustering", "label_propagation",
+                             "walktrap", "custom"],
+                    help="Clumppling community detection method (default: louvain).")
+    pl.add_argument("--clumppling_cd_res", dest="clumppling_cd_res",
+                    type=float, default=1.0, metavar="FLOAT",
+                    help="Clumppling CD resolution parameter (default: 1.0).")
+    pl.add_argument("--clumppling_image", dest="clumppling_image",
+                    default=None, metavar="URI",
+                    help="Override the Clumppling container image URI.")
     pl.add_argument("-bw",              dest="blacknwhite", action="store_true",
                     help="Greyscale plots.")
     pl.add_argument("--use-ind-labels", dest="use_ind",     action="store_true",
@@ -281,6 +302,11 @@ def handle_run(arg):
         "indfile":        os.path.abspath(arg.indfile) if arg.indfile else None,
         "no_tests":       arg.no_tests,
         "no_plots":       arg.no_plots,
+        "no_clumpp":      arg.no_clumpp,
+        "clumppling_plot_type":   arg.clumppling_plot_type,
+        "clumppling_fig_format":  arg.clumppling_fig_format,
+        "clumppling_cd_method":   arg.clumppling_cd_method,
+        "clumppling_cd_res":      arg.clumppling_cd_res,
         "blacknwhite":    arg.blacknwhite,
         "use_ind_labels": arg.use_ind,
         "extra_opts":     arg.extra_opts,
@@ -311,7 +337,8 @@ def handle_run(arg):
                       ("faststructure_image", "faststructure_image"),
                       ("maverick_image",      "maverick_image"),
                       ("alstructure_image",  "alstructure_image"),
-                      ("neuraladmixture_image", "neuraladmixture_image")]:
+                      ("neuraladmixture_image", "neuraladmixture_image"),
+                      ("clumppling_image",      "clumppling_image")]:
         val = getattr(arg, attr, None)
         if val:
             cfg[key] = val

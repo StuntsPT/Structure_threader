@@ -1,6 +1,7 @@
 # Structure_threader Snakemake workflow
 #
 # Supported wrappers: structure, faststructure, maverick, alstructure, neuraladmixture
+# Clumppling alignment: supported for all wrappers except supervised NeuralAdmixture
 #
 # Pipeline DAG per wrapper:
 #
@@ -195,7 +196,7 @@ def all_als_qfiles():
 # Rules that must always run on the host (never containerised)
 # ---------------------------------------------------------------------------
 
-localrules: all, prepare_dirs
+localrules: all, prepare_dirs, prepare_clumppling_input
 
 
 # ===========================================================================
@@ -250,6 +251,19 @@ NEURALADMIXTURE_IMAGE = config.get(
     "neuraladmixture_image",
     "docker://docker.io/stunts/neural-admixture:1.6.7_0"
 )
+CLUMPPLING_IMAGE = config.get(
+    "clumppling_image",
+    "docker://docker.io/stunts/clumppling:2.0.7_0"
+)
+
+# Clumppling is skipped for: supervised NeuralAdmixture (single run, no alignment
+# makes sense), and when the user passes --no_clumpp.
+NO_CLUMPP = config.get("no_clumpp", False)
+
+def clumppling_sentinel():
+    return os.path.join(OUTDIR, "clumpp", ".clumppling_done")
+
+CLUMPPLING_INPUT_SENTINEL = os.path.join(OUTDIR, ".clumppling_input_ready")
 
 def all_nad_qfiles():
     if NAD_SUPERVISED:
@@ -290,6 +304,9 @@ def _targets():
         t.append(bestk_sentinel())
     if not NO_PLOTS:
         t.append(plot_sentinel())
+    # Clumppling: runs after primary outputs exist; skip for supervised NAD
+    if not NO_CLUMPP and not (WRAPPER == "neuraladmixture" and NAD_SUPERVISED):
+        t.append(clumppling_sentinel())
     return t
 
 rule all:
@@ -312,6 +329,10 @@ elif WRAPPER == "alstructure":
     include: "rules/alstructure.smk"
 elif WRAPPER == "neuraladmixture":
     include: "rules/neuraladmixture.smk"
+
+# Clumppling is always included (available for all wrappers that support it)
+if not NO_CLUMPP and not (WRAPPER == "neuraladmixture" and NAD_SUPERVISED):
+    include: "rules/clumppling.smk"
 else:
     raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
                      "Supported: structure, faststructure, maverick, alstructure, neuraladmixture")
