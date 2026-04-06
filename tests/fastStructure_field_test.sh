@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2016-2022 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2016-2026 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ NoColor='\033[0m'
 echo "Runnig fastStructure 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=$(pwd)
-str_bin=$(which fastStructure)
+str_bin=$(which fastStructure || true)
 structure_threader_exec=$(which structure_threader)
 
 tar xvfJ "${git_dir}/tests/data/BigTestData.str.tar.xz" -C "${git_dir}/tests/data/"

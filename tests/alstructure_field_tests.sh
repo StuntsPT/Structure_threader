@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2020 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2019-2026 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ NoColor='\033[0m'
 echo "Runnig ALStructure 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=$(pwd)
-str_bin=$(which alstructure_wrapper.R)
+str_bin=$(which alstructure_wrapper.R || true)
 structure_threader_exec=$(which structure_threader)
 
 tar xvfJ "${git_dir}/tests/data/BigTestData.bed.tar.xz" -C "${git_dir}/tests/data/"

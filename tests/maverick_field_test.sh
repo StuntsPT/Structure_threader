@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2017 Francisco Pina Martins <f.pinamartins@gmail.com>
+# Copyright 2017-2026 Francisco Pina Martins <f.pinamartins@gmail.com>
 # This file is part of structure_threader.
 # structure_threader is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ NoColor='\033[0m'
 echo "Runnig MavericK 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=$(pwd)
-maverick_bin=$(which MavericK)
+maverick_bin=$(which MavericK || true)
 structure_threader_exec=$(which structure_threader)
 
 ${structure_threader_exec} run -i ${git_dir}/tests/data/Reduced_dataset.structure -o ~/results_mav -mv ${maverick_bin} -K 3 -t 4 --params ${git_dir}/tests/data/parameters.txt
