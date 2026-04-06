@@ -1,6 +1,6 @@
 # Structure_threader Snakemake workflow
 #
-# Supported wrappers: structure, faststructure, maverick, alstructure
+# Supported wrappers: structure, faststructure, maverick, alstructure, neuraladmixture
 #
 # Pipeline DAG per wrapper:
 #
@@ -55,10 +55,10 @@ if not K_LIST:
 
 # ALStructure cannot handle K=1 — strip it here so all downstream rules
 # see the corrected list. The shim also strips it, but we guard here too.
-if WRAPPER == "alstructure":
+if WRAPPER == "alstructure" or WRAPPER == "neuraladmixture":
     K_LIST = [k for k in K_LIST if k != 1]
     if not K_LIST:
-        raise ValueError("[structure_threader] ALStructure requires at least one K > 1.")
+        raise ValueError(f"[structure_threader] {WRAPPER} requires at least one K > 1.")
 
 SEED     = config.get("seed", 1235813)
 POPFILE  = config.get("popfile")
@@ -198,6 +198,65 @@ def all_als_qfiles():
 localrules: all, prepare_dirs
 
 
+# ===========================================================================
+# NeuralAdmixture-specific constants
+# Resolved at DAG-build time so both _targets() and neuraladmixture.smk
+# share the same values without recomputing them.
+# ===========================================================================
+
+NAD_EXEC_MODE  = config.get("nad_exec_mode", "train")
+NAD_SUPERVISED = config.get("nad_supervised", False)
+NAD_POPFILE    = config.get("nad_popfile")
+NAD_INIT       = config.get("nad_init")
+NAD_THREADS    = config.get("nad_threads", 1)   # passed as --threads to NAD (required)
+NAD_GPUS       = config.get("nad_gpus", 0)
+NAD_SEED       = config.get("nad_seed", SEED)   # NAD-specific seed; falls back to global SEED
+NAD_INPUT_SENTINEL = os.path.join(OUTDIR, ".neuraladmixture_input_ready")
+
+# Resolve the infile NAD actually receives (VCF.GZ → extract .vcf first)
+if WRAPPER == "neuraladmixture" and INFILE.endswith(".vcf.gz"):
+    NAD_INFILE = INFILE[:-3]   # extracted .vcf path
+else:
+    NAD_INFILE = INFILE
+
+# Supervised-mode constants (only meaningful when NAD_SUPERVISED=True)
+def _nad_count_pops(popfile):
+    """Count unique populations in the NAD population file."""
+    if not popfile or not os.path.isfile(popfile):
+        return 0
+    pops = set()
+    with open(popfile) as fh:
+        for line in fh:
+            p = line.strip().upper()
+            if p:
+                pops.add(p)
+    return len(pops)
+
+if WRAPPER == "neuraladmixture":
+    NAD_N_POPS = _nad_count_pops(NAD_POPFILE) if NAD_SUPERVISED else 0
+    NAD_SUPERVISED_RUN_NAME  = f"nad_K{NAD_N_POPS}_supervised"
+    NAD_SUPERVISED_OUTPUT_DIR = os.path.join(OUTDIR, NAD_SUPERVISED_RUN_NAME) + os.sep
+    NAD_SUPERVISED_QFILE = os.path.join(
+        OUTDIR, NAD_SUPERVISED_RUN_NAME,
+        f"nad_K{NAD_N_POPS}_supervised.{NAD_N_POPS}.Q"
+    )
+else:
+    NAD_N_POPS = 0
+    NAD_SUPERVISED_RUN_NAME  = ""
+    NAD_SUPERVISED_OUTPUT_DIR = ""
+    NAD_SUPERVISED_QFILE = ""
+
+NEURALADMIXTURE_IMAGE = config.get(
+    "neuraladmixture_image",
+    "docker://docker.io/stunts/neural-admixture:1.6.7_0"
+)
+
+def all_nad_qfiles():
+    if NAD_SUPERVISED:
+        return [NAD_SUPERVISED_QFILE]
+    return [os.path.join(OUTDIR, f"nad_K{k}", f"nad_K{k}.{k}.Q")
+            for k in K_LIST]
+
 # ---------------------------------------------------------------------------
 # Target rule
 # ---------------------------------------------------------------------------
@@ -217,7 +276,17 @@ def _targets():
         # Cleanup sentinel if VCF input was used
         if ALS_TSV_TO_CLEAN:
             t.append(os.path.join(OUTDIR, ".alstructure_cleanup_done"))
-    if WRAPPER != "alstructure" and not NO_TESTS:
+    elif WRAPPER == "neuraladmixture":
+        t += all_nad_qfiles()
+        # notests is always True for NAD
+        t.append(bestk_sentinel())
+        # Cleanup sentinel if VCF.GZ input was used
+        if INFILE.endswith(".vcf.gz"):
+            t.append(os.path.join(OUTDIR, ".neuraladmixture_cleanup_done"))
+        # Supervised mode: no plots
+        if NAD_SUPERVISED:
+            return t
+    if WRAPPER not in ("alstructure", "neuraladmixture") and not NO_TESTS:
         t.append(bestk_sentinel())
     if not NO_PLOTS:
         t.append(plot_sentinel())
@@ -241,6 +310,8 @@ elif WRAPPER == "maverick":
     include: "rules/maverick.smk"
 elif WRAPPER == "alstructure":
     include: "rules/alstructure.smk"
+elif WRAPPER == "neuraladmixture":
+    include: "rules/neuraladmixture.smk"
 else:
     raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
-                     "Supported: structure, faststructure, maverick, alstructure")
+                     "Supported: structure, faststructure, maverick, alstructure, neuraladmixture")

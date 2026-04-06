@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------------
 # Wrapper selection  (-st / -fs / -mv)
 # ---------------------------------------------------------------------------
-wrapper: "structure"          # "structure" | "faststructure" | "maverick" | "alstructure"
+wrapper: "structure"          # "structure" | "faststructure" | "maverick" | "alstructure" | "neuraladmixture"
 
 # ---------------------------------------------------------------------------
 # Input / Output  (-i, -o)
@@ -74,4 +74,17 @@ extra_opts: ""
 structure_image:     "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
 faststructure_image: "docker://quay.io/biocontainers/faststructure:1.0--py27h549429d_0"
 maverick_image:      "docker://quay.io/biocontainers/maverick:1.0.5--hd03093a_3"
-alstructure_image:   "docker://quay.io/biocontainers/r-alstructure:0.1.1--r43h785f33e_3"
+alstructure_image:       "docker://quay.io/biocontainers/r-alstructure:0.1.1--r43h785f33e_3"
+
+# ---------------------------------------------------------------------------
+# NeuralAdmixture options  (--exec_mode, --supervised, --nad_pop, etc.)
+# ---------------------------------------------------------------------------
+nad_exec_mode: "train"        # "train" | "infer"
+nad_supervised: false          # true → supervised mode (requires nad_popfile)
+nad_popfile: null              # population file for supervised mode
+nad_init: null                 # init file path for --init_file (optional)
+nad_threads: 1                 # passed as --threads to NAD (required by v1.6.7+)
+nad_gpus: 0                    # number of GPUs (0 = CPU only)
+nad_seed: 1235813              # NeuralAdmixture random seed
+
+neuraladmixture_image:   "docker://quay.io/biocontainers/neural-admixture:1.2.1--pyhdfd78af_0"

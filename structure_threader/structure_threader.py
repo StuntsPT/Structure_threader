@@ -35,7 +35,11 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _DEFAULT_SNAKEFILE = os.path.join(_SCRIPT_DIR, "Snakefile")
-_PORTED = {"structure", "faststructure", "maverick", "alstructure"}
+_PORTED = {"structure",
+           "faststructure",
+           "maverick",
+           "alstructure",
+           "neuraladmixture"}
 
 
 # ---------------------------------------------------------------------------
@@ -55,11 +59,11 @@ def build_parser():
     run = subs.add_parser("run", help="Perform a full run.")
 
     io = run.add_argument_group("Input / Output")
-    io.add_argument("-i",       dest="infile",     required=True, metavar="FILE",
+    io.add_argument("-i", dest="infile", required=True, metavar="FILE",
                     help="Input file.")
-    io.add_argument("-o",       dest="outdir",     required=True, metavar="DIR",
+    io.add_argument("-o", dest="outdir", required=True, metavar="DIR",
                     help="Output directory.")
-    io.add_argument("--params", dest="params",     default=None,  metavar="FILE",
+    io.add_argument("--params", dest="params", default=None, metavar="FILE",
                     help="Parameter file (mainparams for STRUCTURE, "
                          "parameters.txt for MavericK).")
 
@@ -79,7 +83,7 @@ def build_parser():
                          help="Wrap ALStructure.")
     prog_ex.add_argument("-nad", dest="wrapper", action="store_const",
                          const="neuraladmixture",
-                         help="Wrap NeuralAdmixture (not yet ported).")
+                         help="Wrap NeuralAdmixture.")
 
     k = run.add_argument_group("K options (provide exactly one)")
     k_ex = k.add_mutually_exclusive_group(required=True)
@@ -102,6 +106,21 @@ def build_parser():
     ro.add_argument("--prior",      dest="fs_prior",   default="simple",
                     choices=["simple", "logistic"],
                     help="fastSTRUCTURE prior (default: simple).")
+    ro.add_argument("--exec_mode",  dest="nad_exec_mode", default="train",
+                    choices=["train", "infer"],
+                    help="NeuralAdmixture execution mode (default: train).")
+    ro.add_argument("--supervised", dest="nad_supervised", action="store_true",
+                    help="Run NeuralAdmixture in supervised mode.")
+    ro.add_argument("--nad_pop",    dest="nad_popfile", default=None, metavar="FILE",
+                    help="Population file for supervised NeuralAdmixture.")
+    ro.add_argument("--init",       dest="nad_init", default=None, metavar="STR",
+                    help="NeuralAdmixture initialization method.")
+    ro.add_argument("--nad_threads", dest="nad_threads", type=int, default=1, metavar="INT",
+                    help="Threads for NeuralAdmixture --threads (required by NAD, default: 1).")
+    ro.add_argument("--nad_gpus",   dest="nad_gpus", type=int, default=0, metavar="INT",
+                    help="GPUs for NeuralAdmixture (default: 0 = CPU only).")
+    ro.add_argument("--nad_seed",   dest="nad_seed", type=int, default=1235813, metavar="INT",
+                    help="NeuralAdmixture random seed (default: 1235813).")
 
     ids = run.add_argument_group("Individual / Population labels")
     ids_ex = ids.add_mutually_exclusive_group()
@@ -141,6 +160,8 @@ def build_parser():
                     default=None, metavar="URI")
     sm.add_argument("--alstructure-image",   dest="alstructure_image",
                     default=None, metavar="URI")
+    sm.add_argument("--neuraladmixture-image", dest="neuraladmixture_image",
+                    default=None, metavar="URI")
 
     # ── plot ───────────────────────────────────────────────────────────────
     plot = subs.add_parser("plot", help="Re-draw plots from existing results.")
@@ -148,7 +169,7 @@ def build_parser():
     pm.add_argument("-i", dest="results_path", required=True,  metavar="DIR")
     pm.add_argument("-f", dest="program",      required=True,
                    choices=["structure", "faststructure", "maverick",
-                             "alstructure"])
+                             "alstructure", "neuraladmixture"])
     pm.add_argument("-K", dest="bestk",        required=True, nargs="+",
                    metavar="INT")
     pm.add_argument("-o", dest="outpath",      default=".", metavar="DIR")
@@ -188,11 +209,14 @@ def handle_run(arg):
     if arg.wrapper == "maverick" and not arg.params:
         logging.error("-mv requires --params (MavericK parameters file).")
         sys.exit(1)
-    if arg.wrapper == "alstructure":
-        # K=1 is unsupported by ALStructure; strip it with a warning
+    if arg.wrapper == "neuraladmixture" and arg.nad_supervised and not arg.nad_popfile:
+        logging.error("--supervised requires --nad_pop (population file).")
+        sys.exit(1)
+    if arg.wrapper == "alstructure" or arg.wrapper == "neuraladmixture":
+        # K=1 is unsupported by ALStructure and NeuralAdmixture; strip it with a warning
         k_list = arg.K_list if arg.K_list else list(range(1, arg.K + 1))
         if 1 in k_list:
-            logging.warning("ALStructure cannot run K=1 — removing it from the K list.")
+            logging.warning(f"{arg.wrapper} cannot run K=1 — removing it from the K list.")
         # The Snakefile also strips K=1, but we update K/K_list here so the
         # config reflects what will actually run.
         k_list = [k for k in k_list if k != 1]
@@ -235,6 +259,13 @@ def handle_run(arg):
         "use_ind_labels": arg.use_ind,
         "extra_opts":     arg.extra_opts,
         "fs_prior":       arg.fs_prior,
+        "nad_exec_mode":  arg.nad_exec_mode,
+        "nad_supervised": arg.nad_supervised,
+        "nad_popfile":    os.path.abspath(arg.nad_popfile) if arg.nad_popfile else None,
+        "nad_init":       arg.nad_init,
+        "nad_threads":    arg.nad_threads,
+        "nad_gpus":       arg.nad_gpus,
+        "nad_seed":       arg.nad_seed,
         # Wrapper-specific params file — stored under its own key so both
         # STRUCTURE mainparams and MavericK parameters.txt can coexist.
         "mainparams":     (os.path.abspath(arg.params)
@@ -253,7 +284,8 @@ def handle_run(arg):
     for attr, key in [("structure_image",     "structure_image"),
                       ("faststructure_image", "faststructure_image"),
                       ("maverick_image",      "maverick_image"),
-                      ("alstructure_image",  "alstructure_image")]:
+                      ("alstructure_image",  "alstructure_image"),
+                      ("neuraladmixture_image", "neuraladmixture_image")]:
         val = getattr(arg, attr, None)
         if val:
             cfg[key] = val
@@ -286,6 +318,8 @@ def handle_run(arg):
             bind_paths.add(os.path.dirname(os.path.abspath(arg.popfile)))
         if arg.indfile:
             bind_paths.add(os.path.dirname(os.path.abspath(arg.indfile)))
+        if arg.wrapper == "neuraladmixture" and arg.nad_popfile:
+            bind_paths.add(os.path.dirname(os.path.abspath(arg.nad_popfile)))
         if arg.wrapper == "alstructure":
             # The bundled alstructure_wrapper.R must be reachable inside the
             # container. Bind-mount the wrappers/ directory from the repo.
@@ -334,6 +368,9 @@ def handle_plot(arg):
                    for k in bestk]
     elif arg.program == "alstructure":
         infiles = [os.path.join(results_path, f"alstr_K{k}")
+                   for k in bestk]
+    elif arg.program == "neuraladmixture":
+        infiles = [os.path.join(results_path, f"nad_K{k}", f"nad_K{k}.{k}.Q")
                    for k in bestk]
     else:
         logging.error(f"plot for '{arg.program}' not yet ported.")

@@ -95,6 +95,7 @@ rule plot:
         files   = (all_structure_f_files()   if WRAPPER == "structure"
                    else all_fs_meanq_files() if WRAPPER == "faststructure"
                    else all_als_qfiles()     if WRAPPER == "alstructure"
+                   else all_nad_qfiles()     if WRAPPER == "neuraladmixture"
                    else all_mav_qmatrix_files()),
         bestk_f = bestk_sentinel() if not NO_TESTS else [],
     output:
@@ -141,6 +142,12 @@ rule plot:
         elif WRAPPER == "alstructure":
             plt_files = [os.path.join(OUTDIR, f"alstr_K{k}")
                          for k in K_LIST]
+        elif WRAPPER == "neuraladmixture":
+            if NAD_SUPERVISED:
+                plt_files = [NAD_SUPERVISED_QFILE]
+            else:
+                plt_files = [os.path.join(OUTDIR, f"nad_K{k}", f"nad_K{k}.{k}.Q")
+                             for k in K_LIST]
 
         logging.info("Drawing admixture plots …")
         # bestk (from the sentinel) identifies which K values the bestK test
