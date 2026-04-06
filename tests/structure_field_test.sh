@@ -23,11 +23,8 @@ NoColor='\033[0m'
 echo "Runnig STRUCTURE 'field test'. This will simulate a full wrapped run on small test data."
 
 git_dir=$(pwd)
-echo "$git_dir"
-str_bin=$(which structure)
-echo "$str_bin"
+str_bin=$(which structure || true)
 structure_threader_exec=$(which structure_threader)
-echo "$structure_threader_exec"
 
 ${structure_threader_exec} run -i "${git_dir}/tests/data/Reduced_dataset.structure" -o ~/results_st -st "${str_bin}" -K 3 -t 4 -R 5 --params "${git_dir}/tests/data/mainparams"
 
