@@ -25,6 +25,9 @@ echo "Runnig STRUCTURE 'field test'. This will simulate a full wrapped run on sm
 git_dir=$(pwd)
 str_bin=$(which structure)
 structure_threader_exec=$(which structure_threader)
+echo $git_dir
+echo $str_bin
+echo $structure_threader_exec
 
 ${structure_threader_exec} run -i "${git_dir}/tests/data/Reduced_dataset.structure" -o ~/results_st -st "${str_bin}" -K 3 -t 4 -R 5 --params "${git_dir}/tests/data/mainparams"
 
