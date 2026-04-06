@@ -106,7 +106,7 @@ else:
 # Container images
 STRUCTURE_IMAGE = config.get(
     "structure_image",
-    "docker://quay.io/biocontainers/structure:2.3.4--hec16e2b_4"
+    "docker://docker.io/stunts/structure:2.3.4_0"
 )
 FASTSTRUCTURE_IMAGE = config.get(
     "faststructure_image",
