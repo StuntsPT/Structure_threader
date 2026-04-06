@@ -1,4 +1,62 @@
-# pyproject.toml
 [build-system]
-requires = ["setuptools >= 42.0.0, < 81"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "structure_threader"
+version = "2.1.0"
+description = "A program to parallelize runs of 'Structure', 'fastStructure', 'MavericK', ALStructure and NeuralAdmixture."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Francisco Pina-Martins", email = "f.pinamartins@gmail.com" }
+]
+license = { text = "GPL-3.0-or-later" }
+
+dependencies = [
+    "plotly==5.24.1",
+    "colorlover",
+    "numpy>=1.12.1",
+    "matplotlib",
+    "snakemake>=9.14.4"
+]
+
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/StuntsPT/Structure_threader"
+Download = "https://gitlab.com/StuntsPT/Structure_threader/-/archive/2.1.0/Structure_threader-2.1.0.tar.gz"
+
+[project.scripts]
+structure_threader = "structure_threader.structure_threader:main"
+
+[tool.setuptools]
+packages = [
+    "structure_threader",
+    "structure_threader.evanno",
+    "structure_threader.plotter",
+    "structure_threader.sanity_checks",
+    "structure_threader.colorer",
+    "structure_threader.wrappers",
+    "structure_threader.skeletons"
+]
+
+# Include non-code files
+[tool.setuptools.package-data]
+"structure_threader.wrappers" = ["alstructure_wrapper.R"]
+
+# Data files (bin placement)
+[tool.setuptools.data-files]
+"bin" = [
+    "structure_threader/wrappers/alstructure_wrapper.R"
+]

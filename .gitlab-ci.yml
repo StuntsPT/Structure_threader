@@ -51,8 +51,8 @@ deployment:
         - pip install virtualenv
         - virtualenv venv
         - source venv/bin/activate
-        - pip install twine
-        - python setup.py sdist
+        - pip install build twine
+        - python -m build
         - twine upload dist/* -u __token__ -p $pypi_token
     only:
         - tags
