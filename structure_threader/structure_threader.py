@@ -35,11 +35,7 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _DEFAULT_SNAKEFILE = os.path.join(_SCRIPT_DIR, "Snakefile")
-_PORTED = {"structure",
-           "faststructure",
-           "maverick",
-           "alstructure",
-           "neuraladmixture"}
+_PORTED = {"structure", "faststructure", "maverick", "alstructure", "neuraladmixture"}
 
 
 # ---------------------------------------------------------------------------
@@ -59,31 +55,43 @@ def build_parser():
     run = subs.add_parser("run", help="Perform a full run.")
 
     io = run.add_argument_group("Input / Output")
-    io.add_argument("-i", dest="infile", required=True, metavar="FILE",
+    io.add_argument("-i",       dest="infile",     required=True, metavar="FILE",
                     help="Input file.")
-    io.add_argument("-o", dest="outdir", required=True, metavar="DIR",
+    io.add_argument("-o",       dest="outdir",     required=True, metavar="DIR",
                     help="Output directory.")
-    io.add_argument("--params", dest="params", default=None, metavar="FILE",
+    io.add_argument("--params", dest="params",     default=None,  metavar="FILE",
                     help="Parameter file (mainparams for STRUCTURE, "
                          "parameters.txt for MavericK).")
 
     prog = run.add_argument_group("Wrapped program (mutually exclusive)")
     prog_ex = prog.add_mutually_exclusive_group(required=True)
-    prog_ex.add_argument("-st",  dest="wrapper", action="store_const",
-                         const="structure",
-                         help="Wrap STRUCTURE.")
-    prog_ex.add_argument("-fs",  dest="wrapper", action="store_const",
-                         const="faststructure",
-                         help="Wrap fastSTRUCTURE.")
-    prog_ex.add_argument("-mv",  dest="wrapper", action="store_const",
-                         const="maverick",
-                         help="Wrap MavericK.")
-    prog_ex.add_argument("-als", dest="wrapper", action="store_const",
-                         const="alstructure",
-                         help="Wrap ALStructure.")
-    prog_ex.add_argument("-nad", dest="wrapper", action="store_const",
-                         const="neuraladmixture",
-                         help="Wrap NeuralAdmixture.")
+    # nargs='?' lets these flags optionally consume the following path argument
+    # (e.g. -st /usr/local/bin/structure) for backward compatibility with the
+    # original structure_threader. The path is accepted but silently ignored
+    # since the wrapped binary now lives inside a container.
+    prog_ex.add_argument("-st",  dest="wrapper", nargs="?",
+                         const="structure",  default=None,
+                         metavar="PATH",
+                         help="Wrap STRUCTURE (PATH is accepted but ignored; "
+                              "binary is containerised).")
+    prog_ex.add_argument("-fs",  dest="wrapper", nargs="?",
+                         const="faststructure", default=None,
+                         metavar="PATH",
+                         help="Wrap fastSTRUCTURE (PATH is accepted but ignored).")
+    prog_ex.add_argument("-mv",  dest="wrapper", nargs="?",
+                         const="maverick", default=None,
+                         metavar="PATH",
+                         help="Wrap MavericK (PATH is accepted but ignored).")
+    prog_ex.add_argument("-als", dest="wrapper", nargs="?",
+                         const="alstructure", default=None,
+                         metavar="PATH",
+                         help="Wrap ALStructure (PATH is accepted but ignored).")
+    prog_ex.add_argument("-nad", dest="wrapper", nargs="?",
+                         const="neuraladmixture", default=None,
+                         metavar="PATH",
+                         help="Wrap NeuralAdmixture (PATH is accepted but ignored).")
+
+    # ── post-parse wrapper normalisation is done in handle_run ──────────────
 
     k = run.add_argument_group("K options (provide exactly one)")
     k_ex = k.add_mutually_exclusive_group(required=True)
@@ -194,6 +202,24 @@ def build_parser():
 # ---------------------------------------------------------------------------
 
 def handle_run(arg):
+    # Normalise wrapper: when the user passes a binary path after the flag
+    # (e.g. -st /usr/local/bin/structure) argparse stores the path in
+    # arg.wrapper instead of the const.  Map it back to the canonical name.
+    _PATH_TO_WRAPPER = {
+        "-st": "structure", "-fs": "faststructure", "-mv": "maverick",
+        "-als": "alstructure", "-nad": "neuraladmixture",
+    }
+    if arg.wrapper not in _PORTED:
+        # Identify which flag was used and override with its canonical const
+        for flag, name in _PATH_TO_WRAPPER.items():
+            if flag in sys.argv:
+                logging.warning(
+                    f"Binary path '{arg.wrapper}' passed to {flag} — "
+                    "ignored (the binary runs inside a container)."
+                )
+                arg.wrapper = name
+                break
+
     if arg.wrapper not in _PORTED:
         logging.error(
             f"Wrapper '{arg.wrapper}' is not yet ported to the Snakemake "
@@ -212,11 +238,11 @@ def handle_run(arg):
     if arg.wrapper == "neuraladmixture" and arg.nad_supervised and not arg.nad_popfile:
         logging.error("--supervised requires --nad_pop (population file).")
         sys.exit(1)
-    if arg.wrapper == "alstructure" or arg.wrapper == "neuraladmixture":
-        # K=1 is unsupported by ALStructure and NeuralAdmixture; strip it with a warning
+    if arg.wrapper == "alstructure":
+        # K=1 is unsupported by ALStructure; strip it with a warning
         k_list = arg.K_list if arg.K_list else list(range(1, arg.K + 1))
         if 1 in k_list:
-            logging.warning(f"{arg.wrapper} cannot run K=1 — removing it from the K list.")
+            logging.warning("ALStructure cannot run K=1 — removing it from the K list.")
         # The Snakefile also strips K=1, but we update K/K_list here so the
         # config reflects what will actually run.
         k_list = [k for k in k_list if k != 1]
