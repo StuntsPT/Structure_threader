@@ -48,15 +48,20 @@ packages = [
     "structure_threader.sanity_checks",
     "structure_threader.colorer",
     "structure_threader.wrappers",
-    "structure_threader.skeletons"
+    "structure_threader.skeletons",
+    "structure_threader.rules"
 ]
+include-package-data = true
 
 # Include non-code files
 [tool.setuptools.package-data]
 "structure_threader.wrappers" = ["alstructure_wrapper.R"]
+"structure_threader" = ["Snakefile"]
+"structure_threader.rules" = ["*"]
 
 # Data files (bin placement)
 [tool.setuptools.data-files]
 "bin" = [
     "structure_threader/wrappers/alstructure_wrapper.R"
 ]
+

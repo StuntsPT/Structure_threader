@@ -1,1 +1,2 @@
-recursive-include structure_threader/bins *
+include Snakefile
+recursive-include rules *.smk
