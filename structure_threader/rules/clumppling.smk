@@ -140,11 +140,8 @@ rule clumppling:
              -o {params.output_dir} \
              -f {params.fmt} \
              --extension {params.extension} \
-             --plot_type {params.plot_type} \
-             --fig_format {params.fig_format} \
-             --cd_method {params.cd_method} \
-             --cd_res {params.cd_res} \
-             --vis {params.vis}"
+             --plot_type all \
+             --fig_format {params.fig_format}"
 
         if [ -n "{params.ind_labels}" ]; then
             CMD="$CMD --ind_labels {params.ind_labels}"
