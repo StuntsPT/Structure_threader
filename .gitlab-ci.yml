@@ -1,6 +1,9 @@
 default:
   image: stunts/structure_threader_ci:001
 
+variables:
+  APPTAINER_OPTS: "--fakeroot"
+
 stages:
   - tests
   - deployment
