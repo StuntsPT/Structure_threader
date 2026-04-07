@@ -18,6 +18,7 @@ dependencies = [
     "colorlover",
     "numpy>=1.12.1",
     "matplotlib",
+    "pandas==2.3.3",
     "snakemake>=9.14.4"
 ]
 
