@@ -104,6 +104,28 @@ if WRAPPER == "alstructure":
 else:
     ALS_RSCRIPT_INFILE, ALS_TSV_TO_CLEAN = None, None
 
+# ---------------------------------------------------------------------------
+# Binary path for --no-container mode
+# When containers are used this is None and each rule uses the binary name
+# baked into the container's PATH. When --no-container is active this holds
+# the user-supplied path (or a sensible default bare name as fallback).
+# ---------------------------------------------------------------------------
+
+_DEFAULT_BINS = {
+    "structure":       "structure",
+    "faststructure":   "structure.py",
+    "maverick":        "MavericK",
+    "alstructure":     "Rscript",
+    "neuraladmixture": "neural-admixture",
+    "clumppling":      "python",   # invoked as 'python -m clumppling'
+}
+
+NO_CONTAINER  = config.get("no_container", False)
+WRAPPER_BIN   = config.get("wrapper_bin") or _DEFAULT_BINS.get(WRAPPER, WRAPPER)
+# Clumppling always uses 'python' as its executable (python -m clumppling),
+# but in --no-container mode the user may need a specific python path.
+CLUMPPLING_BIN = config.get("clumppling_bin", "python")
+
 # Container images
 STRUCTURE_IMAGE = config.get(
     "structure_image",

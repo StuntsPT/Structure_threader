@@ -30,6 +30,7 @@ rule run_faststructure:
         prior       = FS_PRIOR,
         seed        = SEED,
         extra       = config.get("extra_opts", ""),
+        bin         = WRAPPER_BIN,
         # We need the infile without extension for STR format
         # (fastSTRUCTURE appends .str itself when using --format str)
         infile_stem = lambda wc: (
@@ -42,7 +43,7 @@ rule run_faststructure:
         os.path.join(OUTDIR, "logs", "faststructure_K{k}.log"),
     threads: 1
     container:
-        FASTSTRUCTURE_IMAGE
+        None if NO_CONTAINER else FASTSTRUCTURE_IMAGE
     shell:
         r"""
         # Determine format flag
@@ -63,7 +64,7 @@ rule run_faststructure:
             fi
         fi
 
-        CMD="structure.py \
+        CMD="{params.bin} \
              -K {wildcards.k} \
              --input $INFILE_ARG \
              --output {params.output_stem} \

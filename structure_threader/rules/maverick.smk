@@ -40,16 +40,17 @@ rule run_maverick:
         # Alpha failsafe: if alpha/alphaPropSD are comma-separated in the
         # params file we pass the per-K value on the CLI.
         alpha_args  = lambda wc: _mav_alpha_args(int(wc.k)),
+        bin         = WRAPPER_BIN,
     log:
         os.path.join(OUTDIR, "logs", "maverick_K{k}.log"),
     threads: 1
     container:
-        MAVERICK_IMAGE
+        None if NO_CONTAINER else MAVERICK_IMAGE
     shell:
         r"""
         mkdir -p {params.output_dir}
 
-        CMD="MavericK \
+        CMD="{params.bin} \
              -Kmin {wildcards.k} \
              -Kmax {wildcards.k} \
              -data {input.infile} \

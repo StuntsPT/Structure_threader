@@ -69,6 +69,14 @@ use_ind_labels: false
 extra_opts: ""
 
 # ---------------------------------------------------------------------------
+# Container / binary options
+# ---------------------------------------------------------------------------
+# no_container: false       # set to true to use local binaries (--no-container)
+# wrapper_bin: null         # path to the wrapped binary, used when no_container
+#                           # is true. If null, the bare binary name is used.
+# clumppling_bin: "python"  # python interpreter for clumppling (no_container mode)
+
+# ---------------------------------------------------------------------------
 # Clumppling alignment options
 # ---------------------------------------------------------------------------
 no_clumpp: false               # true → skip Clumppling entirely (--no_clumpp)

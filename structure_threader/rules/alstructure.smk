@@ -74,15 +74,16 @@ rule run_alstructure:
     params:
         rscript_infile = ALS_RSCRIPT_INFILE,
         output_stem    = lambda wc: os.path.join(OUTDIR, f"alstr_K{wc.k}"),
+        bin         = WRAPPER_BIN,
     log:
         os.path.join(OUTDIR, "logs", "alstructure_K{k}.log"),
     threads: 1
     container:
-        ALSTRUCTURE_IMAGE
+        None if NO_CONTAINER else ALSTRUCTURE_IMAGE
     shell:
         r"""
-        echo "Running: Rscript {input.wrapper_r} {params.rscript_infile} {wildcards.k} {params.output_stem}" > {log}
-        Rscript {input.wrapper_r} \
+        echo "Running: {params.bin} {input.wrapper_r} {params.rscript_infile} {wildcards.k} {params.output_stem}" > {log}
+        {params.bin} {input.wrapper_r} \
             {params.rscript_infile} \
             {wildcards.k} \
             {params.output_stem} >> {log} 2>&1

@@ -22,14 +22,15 @@ rule run_structure:
         seed        = lambda wc: SEED_MAP[(int(wc.k), int(wc.rep))],
         mainparams  = MAINPARAMS or "",
         extra       = config.get("extra_opts", ""),
+        bin         = WRAPPER_BIN,
     log:
         os.path.join(OUTDIR, "logs", "structure_K{k}_rep{rep}.log"),
     threads: 1    # STRUCTURE is single-threaded; parallelism = many jobs at once
     container:
-        STRUCTURE_IMAGE
+        None if NO_CONTAINER else STRUCTURE_IMAGE
     shell:
         """
-        CMD="structure -K {wildcards.k} \
+        CMD="{params.bin} -K {wildcards.k} \
              -i {input.infile} \
              -o {params.output_stem} \
              -D {params.seed}"

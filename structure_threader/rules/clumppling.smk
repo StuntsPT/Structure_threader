@@ -129,19 +129,23 @@ rule clumppling:
         cd_res     = config.get("clumppling_cd_res", 1.0),
         vis        = config.get("clumppling_vis", True),
         ind_labels = INDFILE or "",
+        bin        = CLUMPPLING_BIN,
     log:
         os.path.join(OUTDIR, "logs", "clumppling.log"),
     container:
-        CLUMPPLING_IMAGE
+        None if NO_CONTAINER else CLUMPPLING_IMAGE
     shell:
         r"""
-        CMD="python -m clumppling \
+        CMD="{params.bin} -m clumppling \
              -i {params.input_dir} \
              -o {params.output_dir} \
              -f {params.fmt} \
              --extension {params.extension} \
-             --plot_type all \
-             --fig_format {params.fig_format}"
+             --plot_type {params.plot_type} \
+             --fig_format {params.fig_format} \
+             --cd_method {params.cd_method} \
+             --cd_res {params.cd_res} \
+             --vis {params.vis}"
 
         if [ -n "{params.ind_labels}" ]; then
             CMD="$CMD --ind_labels {params.ind_labels}"

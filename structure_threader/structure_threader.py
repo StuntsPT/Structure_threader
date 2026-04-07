@@ -65,31 +65,25 @@ def build_parser():
 
     prog = run.add_argument_group("Wrapped program (mutually exclusive)")
     prog_ex = prog.add_mutually_exclusive_group(required=True)
-    # nargs='?' lets these flags optionally consume the following path argument
-    # (e.g. -st /usr/local/bin/structure) for backward compatibility with the
-    # original structure_threader. The path is accepted but silently ignored
-    # since the wrapped binary now lives inside a container.
-    prog_ex.add_argument("-st",  dest="wrapper", nargs="?",
-                         const="structure",  default=None,
-                         metavar="PATH",
-                         help="Wrap STRUCTURE (PATH is accepted but ignored; "
-                              "binary is containerised).")
-    prog_ex.add_argument("-fs",  dest="wrapper", nargs="?",
-                         const="faststructure", default=None,
-                         metavar="PATH",
-                         help="Wrap fastSTRUCTURE (PATH is accepted but ignored).")
-    prog_ex.add_argument("-mv",  dest="wrapper", nargs="?",
-                         const="maverick", default=None,
-                         metavar="PATH",
-                         help="Wrap MavericK (PATH is accepted but ignored).")
-    prog_ex.add_argument("-als", dest="wrapper", nargs="?",
-                         const="alstructure", default=None,
-                         metavar="PATH",
-                         help="Wrap ALStructure (PATH is accepted but ignored).")
-    prog_ex.add_argument("-nad", dest="wrapper", nargs="?",
-                         const="neuraladmixture", default=None,
-                         metavar="PATH",
-                         help="Wrap NeuralAdmixture (PATH is accepted but ignored).")
+    # These flags identify the wrapper. An optional binary path may follow each
+    # flag (e.g. -st /usr/local/bin/structure); it is extracted from sys.argv
+    # in handle_run() and used only when --no-container is active.
+    prog_ex.add_argument("-st",  dest="wrapper", action="store_const",
+                         const="structure",
+                         help="Wrap STRUCTURE. Optionally follow with binary path "
+                              "for --no-container mode.")
+    prog_ex.add_argument("-fs",  dest="wrapper", action="store_const",
+                         const="faststructure",
+                         help="Wrap fastSTRUCTURE. Optionally follow with binary path.")
+    prog_ex.add_argument("-mv",  dest="wrapper", action="store_const",
+                         const="maverick",
+                         help="Wrap MavericK. Optionally follow with binary path.")
+    prog_ex.add_argument("-als", dest="wrapper", action="store_const",
+                         const="alstructure",
+                         help="Wrap ALStructure. Optionally follow with Rscript path.")
+    prog_ex.add_argument("-nad", dest="wrapper", action="store_const",
+                         const="neuraladmixture",
+                         help="Wrap NeuralAdmixture. Optionally follow with binary path.")
 
     # ── post-parse wrapper normalisation is done in handle_run ──────────────
 
@@ -169,7 +163,13 @@ def build_parser():
     sm = run.add_argument_group("Snakemake / container options")
     sm.add_argument("--use-singularity",     dest="use_singularity",
                     action="store_true",
-                    help="Run rules inside Singularity/Apptainer containers.")
+                    help="Run rules inside Singularity/Apptainer containers "
+                         "(auto-enabled when apptainer/singularity is detected).")
+    sm.add_argument("--no-container",        dest="no_container",
+                    action="store_true",
+                    help="Disable containers and use local binaries instead. "
+                         "Binary paths can be passed after each wrapper flag "
+                         "(e.g. -st /usr/local/bin/structure).")
     sm.add_argument("--use-docker",          dest="use_docker",
                     action="store_true",
                     help="Run rules inside Docker containers.")
@@ -223,23 +223,26 @@ def build_parser():
 # ---------------------------------------------------------------------------
 
 def handle_run(arg):
-    # Normalise wrapper: when the user passes a binary path after the flag
-    # (e.g. -st /usr/local/bin/structure) argparse stores the path in
-    # arg.wrapper instead of the const.  Map it back to the canonical name.
-    _PATH_TO_WRAPPER = {
+    # Detect wrapper and extract optional binary path from sys.argv.
+    # The flag identifies the wrapper; the next token (if it doesn't start
+    # with '-') is treated as the binary path for --no-container mode.
+    _FLAG_TO_WRAPPER = {
         "-st": "structure", "-fs": "faststructure", "-mv": "maverick",
         "-als": "alstructure", "-nad": "neuraladmixture",
     }
-    if arg.wrapper not in _PORTED:
-        # Identify which flag was used and override with its canonical const
-        for flag, name in _PATH_TO_WRAPPER.items():
-            if flag in sys.argv:
-                logging.warning(
-                    f"Binary path '{arg.wrapper}' passed to {flag} — "
-                    "ignored (the binary runs inside a container)."
-                )
-                arg.wrapper = name
-                break
+    binary_path = None
+    for flag, name in _FLAG_TO_WRAPPER.items():
+        if flag in sys.argv:
+            idx = sys.argv.index(flag)
+            if idx + 1 < len(sys.argv) and not sys.argv[idx + 1].startswith("-"):
+                binary_path = sys.argv[idx + 1]
+                if not arg.no_container:
+                    logging.warning(
+                        f"Binary path '{binary_path}' passed to {flag} — "
+                        "ignored (using container). Pass --no-container to "
+                        "use local binaries."
+                    )
+            break
 
     if arg.wrapper not in _PORTED:
         logging.error(
@@ -310,6 +313,9 @@ def handle_run(arg):
         "blacknwhite":    arg.blacknwhite,
         "use_ind_labels": arg.use_ind,
         "extra_opts":     arg.extra_opts,
+        # Binary path for --no-container mode. None when using containers.
+        "wrapper_bin":    binary_path,
+        "no_container":   arg.no_container,
         "fs_prior":       arg.fs_prior,
         "nad_exec_mode":  arg.nad_exec_mode,
         "nad_supervised": arg.nad_supervised,
@@ -342,6 +348,41 @@ def handle_run(arg):
         val = getattr(arg, attr, None)
         if val:
             cfg[key] = val
+
+    # ── Container runtime auto-detection (must run BEFORE writing config) ────────────────
+    # We need to know whether containers are active so that wrapper_bin is
+    # correctly nulled out in the config when running inside a container
+    # (the binary lives on the container's PATH, not on the host path).
+    if arg.no_container:
+        # Explicit opt-out: use local binaries.
+        logging.info("Container mode disabled — using local binaries.")
+    elif arg.use_singularity or arg.use_docker or arg.use_conda:
+        pass   # user made an explicit container choice; honour it below
+    else:
+        # Auto-detect: enable Singularity/Apptainer if available
+        import shutil as _shutil
+        if _shutil.which("apptainer") or _shutil.which("singularity"):
+            logging.info(
+                "Container runtime detected — enabling Singularity automatically. "
+                "Pass --no-container to use local binaries instead."
+            )
+            arg.use_singularity = True
+        else:
+            logging.warning(
+                "No container runtime found (apptainer/singularity/docker). "
+                "Falling back to local binaries — ensure wrapped programs are "
+                "on PATH, or install a container runtime."
+            )
+
+    # When running in container mode, any host binary path the user supplied
+    # after the wrapper flag (e.g. -nad /usr/bin/neural-admixture) must NOT
+    # be forwarded to the Snakemake rules — the binary is on the container's
+    # PATH and the host path is meaningless (and likely absent) inside it.
+    # Setting wrapper_bin to None lets the Snakefile fall back to the bare
+    # default name from _DEFAULT_BINS (e.g. "neural-admixture").
+    using_container = (arg.use_singularity or arg.use_docker) and not arg.no_container
+    if using_container:
+        cfg["wrapper_bin"] = None
 
     # Write config
     os.makedirs(arg.outdir, exist_ok=True)
@@ -470,7 +511,7 @@ def main():
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(0)
-    arg = parser.parse_args()
+    arg, _ = parser.parse_known_args()  # unknown args = binary paths after flags
 
     if arg.main_op == "run":
         handle_run(arg)

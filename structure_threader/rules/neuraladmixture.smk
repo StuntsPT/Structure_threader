@@ -71,14 +71,15 @@ if not NAD_SUPERVISED:
             threads    = NAD_THREADS,
             init_file  = NAD_INIT or "",
             gpus       = NAD_GPUS,
+            bin        = WRAPPER_BIN,
         log:
             os.path.join(OUTDIR, "logs", "neuraladmixture_K{k}.log"),
         threads: 1   # Snakemake scheduler slot; NAD parallelism via --threads
         container:
-            NEURALADMIXTURE_IMAGE
+            None if NO_CONTAINER else NEURALADMIXTURE_IMAGE
         shell:
             r"""
-            CMD="neural-admixture {params.exec_mode} \
+            CMD="{params.bin} {params.exec_mode} \
                  --name {params.run_name} \
                  --k {wildcards.k} \
                  --data_path {input.infile} \
@@ -120,14 +121,15 @@ else:
             init_file  = NAD_INIT or "",
             gpus       = NAD_GPUS,
             n_pops     = NAD_N_POPS,
+            bin        = WRAPPER_BIN,
         log:
             os.path.join(OUTDIR, "logs", "neuraladmixture_supervised.log"),
         threads: 1
         container:
-            NEURALADMIXTURE_IMAGE
+            None if NO_CONTAINER else NEURALADMIXTURE_IMAGE
         shell:
             r"""
-            CMD="neural-admixture {params.exec_mode} \
+            CMD="{params.bin} {params.exec_mode} \
                  --name {params.run_name} \
                  --k {params.n_pops} \
                  --data_path {input.infile} \
