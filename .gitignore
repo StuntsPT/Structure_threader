@@ -62,3 +62,6 @@ target/
 
 # Dolphin breadcrumbs
 *.directory
+
+# Snakemake cache
+structure_threader/.snakemake
