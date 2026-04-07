@@ -10,6 +10,7 @@ RUN cd structure_kernel_src && sed -i 's/OPT = -O3/OPT = -O3 -fcommon/' Makefile
 # Final image
 FROM alpine:3.23.3
 
+RUN apk add --update bash
 COPY --from=builder /app/structure_kernel_src/structure /usr/local/bin
 
 WORKDIR /workspace
