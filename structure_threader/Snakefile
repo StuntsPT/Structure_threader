@@ -351,10 +351,11 @@ elif WRAPPER == "alstructure":
     include: "rules/alstructure.smk"
 elif WRAPPER == "neuraladmixture":
     include: "rules/neuraladmixture.smk"
-
-# Clumppling is always included (available for all wrappers that support it)
-if not NO_CLUMPP and not (WRAPPER == "neuraladmixture" and NAD_SUPERVISED):
-    include: "rules/clumppling.smk"
 else:
     raise ValueError(f"[structure_threader] Unknown wrapper '{WRAPPER}'. "
                      "Supported: structure, faststructure, maverick, alstructure, neuraladmixture")
+
+# Clumppling is included for all wrappers except supervised NeuralAdmixture
+# (a single supervised run has no replicates to align) and when --no_clumpp is set.
+if not NO_CLUMPP and not (WRAPPER == "neuraladmixture" and NAD_SUPERVISED):
+    include: "rules/clumppling.smk"
