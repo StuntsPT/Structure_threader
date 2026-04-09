@@ -133,7 +133,7 @@ STRUCTURE_IMAGE = config.get(
 )
 FASTSTRUCTURE_IMAGE = config.get(
     "faststructure_image",
-    "docker://quay.io/biocontainers/faststructure:1.0--py549429d_0"
+    "docker://docker.io/stunts/faststructure:1.0_0"
 )
 MAVERICK_IMAGE = config.get(
     "maverick_image",
