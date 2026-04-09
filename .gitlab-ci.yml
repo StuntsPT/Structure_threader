@@ -44,6 +44,8 @@ tests:
       - tests/maverick_field_test.sh
       - tests/alstructure_field_tests.sh
       - tests/neuraladmixture_field_tests.sh
+    after_script:
+      - cat /root/results_nad/logs/neuraladmixture_K3.log || true
 
 
 deployment:
