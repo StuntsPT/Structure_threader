@@ -70,6 +70,8 @@ rule prepare_clumppling_input:
             os.makedirs(CLUMPPLING_TEMP, exist_ok=True)
             logging.info("Preparing MavericK Q-matrices for Clumppling …")
             for k in K_LIST:
+                if k == 1:
+                    continue  # clumppling ignores K=1; skip to avoid the warning
                 out_file = os.path.join(CLUMPPLING_TEMP, f"K{k}.Q")
                 for suffix in (f"outputQmatrix_pop_K{k}.csv",
                                f"outputQmatrix_ind_K{k}.csv"):
@@ -77,8 +79,15 @@ rule prepare_clumppling_input:
                     if os.path.exists(src):
                         Q_df = pd.read_csv(src)
                         deme_cols = [c for c in Q_df.columns if "deme" in c]
-                        Q_df[deme_cols].to_csv(out_file, index=False,
-                                               header=False, sep=" ")
+                        q = Q_df[deme_cols]
+                        # MavericK truncates values to 3 decimal places, so
+                        # rows like (0.320, 0.342, 0.337) sum to 0.999 rather
+                        # than 1.000. Clumppling enforces ±1e-6 row-sum
+                        # tolerance and rejects non-conforming rows, producing
+                        # empty plots. Re-normalising rescales rows to sum to
+                        # exactly 1.0 without changing relative proportions.
+                        q = q.div(q.sum(axis=1), axis=0)
+                        q.to_csv(out_file, index=False, header=False, sep=" ")
                         break
 
         elif WRAPPER == "alstructure":
