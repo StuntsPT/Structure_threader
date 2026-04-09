@@ -31,10 +31,11 @@ ${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/r
 
 echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
 
-tar xvfJ "${git_dir}/tests/data/BigTestData.pgen.tar.xz" -C "${git_dir}/tests/data/"
-${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.pgen" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --nad_seed 42 --ind "${git_dir}/tests/data/indfile.txt"
+# Neural admixtre 1.6.7 as a bug parsing .pgen files, due to chanegs in cython. This test is removed until they fix it.
+#tar xvfJ "${git_dir}/tests/data/BigTestData.pgen.tar.xz" -C "${git_dir}/tests/data/"
+#${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.pgen" -o ~/results_nad -nad "${str_bin}" -K 4 --exec_mode train --nad_seed 42 --ind "${git_dir}/tests/data/indfile.txt"
 
-echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.pgen\` file. Yay!${NoColor}"
+#echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.pgen\` file. Yay!${NoColor}"
 
 ${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" --exec_mode train --supervised True --nad_seed 42 --nad_pop "${git_dir}/tests/data/nad_popfile.txt"
 
