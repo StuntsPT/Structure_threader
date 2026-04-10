@@ -37,7 +37,6 @@ echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on th
 
 #echo -e "${LightGreen}Neural ADMIXTURE Train 'Field test' ran successfully on the \`.pgen\` file. Yay!${NoColor}"
 
-# The same bug from above also seems to affect the supervised run...
-#${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" --exec_mode train --supervised True --nad_seed 42 --nad_pop "${git_dir}/tests/data/nad_popfile.txt"
+${structure_threader_exec} run -i "${git_dir}/tests/data/BigTestData.bed" -o ~/results_nad -nad "${str_bin}" --exec_mode train --supervised True --nad_seed 42 -K 4 --nad_pop "${git_dir}/tests/data/nad_popfile.txt"
 
-#echo -e "${LightGreen}Neural ADMIXTURE Supervised Train 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
+echo -e "${LightGreen}Neural ADMIXTURE Supervised Train 'Field test' ran successfully on the \`.bed\` file. Yay!${NoColor}"
