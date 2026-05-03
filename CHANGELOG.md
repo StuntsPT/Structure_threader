@@ -1,5 +1,92 @@
 # *Structure_threader* changelog
 
+## Changes in v2.1.0
+
+### Architecture
+
+* **Complete rewrite of the execution engine.** *Structure_threader* is now
+  built on [Snakemake](https://snakemake.readthedocs.io/), replacing the
+  in-process Python threading model with a proper workflow manager.
+  Each wrapped program runs as an independent Snakemake rule, enabling native
+  integration with cluster schedulers (SLURM, SGE, PBS) and full checkpoint
+  recovery — re-running after a failure resumes from where it stopped.
+
+* **Container support for all wrapped programs.** Every wrapper now has a
+  dedicated container image (Docker/Singularity/Apptainer). This eliminates
+  the dependency and version-conflict problems that made installation
+  increasingly painful in v2.0.x (incompatible bioconda packages,
+  conflicting Python versions for NeuralAdmixture and Clumppling, etc.).
+  Containers are auto-detected and enabled by default when
+  Apptainer/Singularity is available on the system.
+
+* **Backward-compatible CLI.** The `structure_threader` command-line interface
+  is preserved. All existing flags work as before. Binary paths passed after
+  wrapper flags (e.g. `-st /usr/local/bin/structure`) are accepted for
+  backward compatibility; they are used in `--no-container` mode and silently
+  ignored when containers are active.
+
+### New features
+
+* **`--no-container` flag.** Disables containerisation and uses local
+  binaries instead, restoring pre-v2.1.0 behaviour. Binary paths supplied
+  after wrapper flags are forwarded to the rules in this mode.
+
+* **Container auto-detection.** If neither `--use-singularity` nor
+  `--use-docker` nor `--no-container` is passed, *Structure_threader*
+  automatically detects whether Apptainer/Singularity is available and
+  enables it. If no container runtime is found, it falls back to local
+  binaries with a warning.
+
+* **Clumppling is now called as a standalone program** (`python -m clumppling`)
+  rather than as a Python library. This removes the last in-process dependency
+  conflict and makes the interface stable across Clumppling versions. All
+  Clumppling options (`--plot_type`, `--fig_format`, `--cd_method`,
+  `--cd_res`, `--vis`) are now directly exposed as *Structure_threader* flags.
+
+* **Comparative plots now include all tested K values** (excluding K=1, which
+  carries no admixture information). Individual SVG plots are generated for
+  every K, leaving the final K selection to the user.
+
+* **`--nad_seed`** flag added for NeuralAdmixture. Separate from the global
+  `--seed` to match NeuralAdmixture's own seeding semantics.
+
+* **`--nad_threads`** replaces `--nad_cpus`, matching the NeuralAdmixture
+  v1.6.7+ API where `--threads` is a required argument.
+
+### Bug fixes
+
+* Fixed `colorer.py` crashing when Snakemake passed `None` as a log message.
+  The monkey-patch has been replaced with a safe `_ColoredStreamHandler`
+  subclass that guards against non-string messages and does not intercept
+  third-party loggers.
+
+* Fixed `structureHarvester.main()` returning `None` as best K due to a
+  pre-existing bug where the return value of `writeEvannoTableToFile()` was
+  discarded inside `evannoMethod()`. The call chain is now invoked correctly.
+
+* Fixed supervised NeuralAdmixture runs raising a spurious
+  `ValueError: Unknown wrapper 'neuraladmixture'` caused by a misplaced
+  `else` clause in the Snakemake include dispatch.
+
+* Fixed MavericK Q-matrices being rejected by Clumppling with
+  "Rows do not sum to 1" errors. MavericK truncates output values to 3
+  decimal places, causing row sums to deviate by up to ±0.001. Values are
+  now re-normalised before being written to Clumppling's input directory.
+
+* Fixed NeuralAdmixture `.Q` files not being found by Clumppling because they
+  reside in per-K subdirectories rather than directly in the output directory.
+  Files are now copied to a flat staging directory before Clumppling runs.
+
+* Fixed `SyntaxWarning: invalid escape sequence` in `faststructure.smk` caused
+  by backslash line-continuations in triple-quoted shell strings. Shell blocks
+  that contain backslashes now use raw strings (`r"""..."""`).
+
+### Removed
+
+* **`helper_scripts/`** — Binary installation scripts (`install_structure.sh`,
+  `install_maverick.sh`, `install_faststructure.sh`) are no longer needed.
+
+---
 ## Changes since v1.3.11
 
 ## New features
