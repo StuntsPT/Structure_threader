@@ -28,7 +28,7 @@ Specific instructions for the preferred installation methods are provided for ea
 
 3. Install *Structure_threader*.
 
-    Now that you have Bioconda, installing *Structure_threader* is simple to install:
+    Now that you have Bioconda, installing *Structure_threader* is straightforward:
 
     ```
     $ conda create -n stenv python=3.11
@@ -38,9 +38,25 @@ Specific instructions for the preferred installation methods are provided for ea
 
     Replace `conda` with `micromamba` if using that. You can also replace `stenv` with any name you'd like to give the environment.
 
-4. Use *Structure_threader*.
+4. Install a container runtime.
 
-    Running the commands from step 3 will install the program to that environment's prefix. You can run it after activating that environment just by calling `structure_threader`. All dependencies should be automatically installed for you, including all supported tools, except for *Neural ADMIXTURE*. You can get *Neural ADMIXTURE* by running `pip install neural-admixture` inside the prefix. ALStructure can be run using an included wrapper, as R dependencies are installed.
+    As of version 2.1.0, *Structure_threader* runs the wrapped programs inside [Apptainer/Singularity](https://apptainer.org/) containers by default. If Apptainer or Singularity is already installed on your system, *Structure_threader* will detect and use it automatically.
+
+    If you are on a system where you have administrative access (e.g. your own workstation), you can install Apptainer from your distribution's package manager. On Debian/Ubuntu-based systems:
+
+    ```
+    $ sudo add-apt-repository -y ppa:apptainer/ppa
+    $ sudo apt update
+    $ sudo apt install apptainer-suid
+    ```
+
+    The `apptainer-suid` package is recommended over `apptainer` as it works in environments where unprivileged user namespaces are disabled (common on HPC clusters and shared servers).
+
+    If no container runtime is available, *Structure_threader* will fall back to using locally installed binaries and print a warning. You can also explicitly opt out of containers using `--no-container`.
+
+5. Use *Structure_threader*.
+
+    Running the commands from step 3 will install the program to that environment's prefix. You can run it after activating that environment just by calling `structure_threader`. All dependencies should be automatically installed for you, including Snakemake. You can get *Neural ADMIXTURE* by running `pip install neural-admixture` inside the prefix. ALStructure can be run using an included wrapper, as R dependencies are installed.
 
 ### Windows
 
@@ -56,52 +72,34 @@ If you have Windows 10 build 19041 or above, you can run *Structure_threader* us
 
 #### Native
 
-1. Install Python 3.11.
+1. Install Python 3.11 or later.
 
-    Currently, only versions 3.9-3.11 are supported (>3.12 won't work at all). You can install it from [here](https://www.python.org/downloads/). If you need further help with the installation on Windows, here is [the official guide](https://docs.python.org/3/using/windows.html).
+    You can install it from [here](https://www.python.org/downloads/). If you need further help with the installation on Windows, here is [the official guide](https://docs.python.org/3/using/windows.html).
 
 2. Install `pip`.
 
-    `pip` is a [package manager for Python](https://en.wikipedia.org/wiki/Pip_(package_manager)). If `pip` is not already installed in  your system, you can follow the official instructions on how to get it [here](https://pip.pypa.io/en/stable/installation/). **Make sure you run get-pip.py using Python 3 in order to be able to use *Structure_threader*.** Like this: `C:\Python3.11\python.exe get-pip.py`. Change the path "Python3.11" to whatever version of Python 3 you have installed.
+    `pip` is a [package manager for Python](https://en.wikipedia.org/wiki/Pip_(package_manager)). If `pip` is not already installed in your system, you can follow the official instructions on how to get it [here](https://pip.pypa.io/en/stable/installation/).
 
 3. Install *Structure_threader*.
 
-    Now that you have Python 3 and `pip` installed, installing *Structure_threader* is just one terminal command away: `C:\Python3.11\python.exe -m pip install structure_threader`. Don't forget to change the path "Python3.11" to whatever version of Python 3 you have installed.
+    Now that you have Python 3 and `pip` installed, installing *Structure_threader* is just one terminal command away: `C:\Python311\python.exe -m pip install structure_threader`. Don't forget to change the path "Python311" to whatever version of Python 3 you have installed.
 
 4. Use *Structure_threader*.
 
-    Running the command from step 3 will install the program to `C:\Python3.11\Scripts`. You can run it by calling it directly `C:\Python3.11\Scripts\structure_threader.exe`. Please note that on Windows the installation of some software wrapped by *Structure_threader* (*Structure*, *fastStructure* and *MavericK*) is not done automatically. You will have to either install or compile the binaries for them yourself.
+    Running the command from step 3 will install the program to `C:\Python311\Scripts`. You can run it by calling it directly: `C:\Python311\Scripts\structure_threader.exe`. Please note that on Windows, container support via Apptainer is not available. You will need to either use `--no-container` with locally installed binaries, or use WSL 2 (recommended).
 
 
 ## Alternative methods (advanced)
-You can also run *Structure_threader* via `pip`, by running the command:
+You can also install *Structure_threader* via `pip`:
 
 ```
 pip install structure_threader
 ```
 
-If you want Structure, fastStructure, MavericK and Neural ADMIXTURE to also be installed through this method (**only binaries for GNU/Linux and macOS are available**, except for Neural ADMIXTURE, which is pure Python), you need to set the environment variable `ST_INSTALL_BINARIES` to `True`. You can do this temporarily by prefixing the install command with it:
+You can also clone the repository (or download one of the tags' source code) and install from the source directory:
 
 ```
-ST_INSTALL_BINARIES=True pip install structure_threader
+pip install .
 ```
 
-Please note that these binaries are installed in the "standard" `setup.py`
-[locations](https://docs.python.org/3/installing/index.html), eg. `/usr/bin/` if installed
-as `root`, or `~/.local/bin/` if installed with the option `--user`, etc...
-
-You can also clone the repository (or download one of the tags' source code),
-and place the contents of the directory "structure_threader", on any location
-on your `$PATH` environment variable.
-
-Another alternative, that can be used since version 0.1.6 is the `setup.py`
-method. Be aware that this method has since been [deprecated by Python](https://packaging.python.org/en/latest/discussions/setup-py-deprecated/). This can be used either by running `python3 setup.py install` (or even
-better, `pip install .`) from the distribution's root directory (where
-`setup.py` is located).
-
-If you wish to compile your own binaries for these programs, you may wish to
-rely on our
-["helper_scripts"](https://gitlab.com/StuntsPT/Structure_threader/-/tree/master/helper_scripts)
-which contain commands to compile and install *Structure*, *fastStructure* **and** *MavericK* (along with any required dependencies). For more details check the next few sections.
-
-If you wish to compile your own binaries for the external programs, the manual section [External programs](external.md) describes how the distributed binaries were built. Instructions and a build script are provided for *Structure*, *fastStructure* and *MavericK*.
+If you wish to compile your own binaries for the external programs, the manual section [External programs](external.md) describes how the distributed legacy binaries were built. Instructions and build scripts are provided for *Structure*, *fastStructure* and *MavericK*, though these are only needed if you intend to use `--no-container` with locally compiled programs.

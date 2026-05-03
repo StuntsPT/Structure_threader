@@ -1,14 +1,12 @@
 # Manually installing external programs
 
 If you wish to compile your own binaries for these programs, you may wish to
-rely on our
-["helper_scripts"](https://gitlab.com/StuntsPT/Structure_threader/-/tree/master/helper_scripts)
-which contain commands to compile and install *MavericK*, *Structure* **and**
+rely on the build scripts located in the `container_images/` directory of the repository, which contain commands to compile and install *MavericK*, *Structure* **and**
 *fastStructure* (along with any required dependencies). For more details check
 the next few sections.
 
-## Structure_threader helper scripts
-The directory "helper_scripts" contains three scripts that will install *Structure*, *fastStructre* and *MavericK* respectively in a *semi* automatic way.
+## Structure_threader build scripts
+The directory `container_images/` contains subdirectories for each wrapped program, each with a Dockerfile and in some cases a build script. The scripts `install_structure.sh`, `install_maverick.sh` and `install_faststructure.sh` will install the respective programs in a *semi* automatic way.
 
 All scripts default the programs' install locations to ~/Software/<program_name>. You can change this in the scripts themselves should you wish to change this location.
 

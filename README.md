@@ -19,10 +19,10 @@ $ conda activate stenv
 *Structure_threader* is available on [Bioconda](https://bioconda.github.io/recipes/structure_threader/README.html) and
 [PyPI](https://pypi.python.org/pypi/structure_threader/). It's best installed by running the above commands. If you install using `pip`, and are on a \*nix like
 platform, you can use the `--user` option if you can't (or don't) want to install
-the program as the `root` user. Binaries for Structure, fastStructure and
-*MavericK* are also distributed through PyPI for GNU/Linux and macOS, and are installed when the environment variable `ST_INSTALL_BINARIES=True` is set. Please note that the macOS binaries included in the PyPI version (and stored in this repository) are only compiled for x64, so it will require [Rosetta 2](https://support.apple.com/102527) for Mac computers with Apple silicon. For more details,
-please [check the
-manual](https://structure-threader.readthedocs.io/en/latest/install/).
+the program as the `root` user. For more details,
+please [check the manual](https://structure-threader.readthedocs.io/en/latest/install/).
+
+As of version 2.1.0, *Structure_threader* is powered by [Snakemake](https://snakemake.readthedocs.io/) and runs all wrapped programs inside [Apptainer/Singularity](https://apptainer.org/) containers by default, so no manual installation of the wrapped programs is required. Container support is auto-detected at runtime; pass `--no-container` to use locally installed binaries instead.
 
 
 ## Manual
