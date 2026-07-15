@@ -13,14 +13,10 @@ A program to automate and parallelize the runs of [Structure](https://web.stanfo
 ```bash
 $ conda create -n stenv python=3.11
 $ conda activate stenv
-(stenv) $ conda install structure_threader
+(stenv) $ pip install git+https://gitlab.com/StuntsPT/Structure_threader.git@v2.1.0
 ```
 
-*Structure_threader* is available on [Bioconda](https://bioconda.github.io/recipes/structure_threader/README.html) and
-[PyPI](https://pypi.python.org/pypi/structure_threader/). It's best installed by running the above commands. If you install using `pip`, and are on a \*nix like
-platform, you can use the `--user` option if you can't (or don't) want to install
-the program as the `root` user. For more details,
-please [check the manual](https://structure-threader.readthedocs.io/en/latest/install/).
+*Structure_threader* is available on [PyPI](https://pypi.python.org/pypi/structure_threader/). It's best installed by running the above commands. 
 
 As of version 2.1.0, *Structure_threader* is powered by [Snakemake](https://snakemake.readthedocs.io/) and runs all wrapped programs inside [Apptainer/Singularity](https://apptainer.org/) containers by default, so no manual installation of the wrapped programs is required. Container support is auto-detected at runtime; pass `--no-container` to use locally installed binaries instead.
 
